@@ -188,6 +188,11 @@
     </Reference>
   </ItemGroup>
   <ItemGroup>
+    <Content Include="App_Code\dsReporteCruzado.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>dsReporteCruzado.xsd</DependentUpon>
+    </Content>
     <Compile Include="App_Start\AuthConfig.cs" />
     <Compile Include="App_Start\BundleConfig.cs" />
     <Compile Include="App_Start\FilterConfig.cs" />
@@ -2013,6 +2018,17 @@
     <Content Include="Scripts\datatables\extras\TableTools\media\js\TableTools.min.js.gz" />
     <Content Include="Scripts\datatables\images\Sorting icons.psd" />
     <Content Include="Scripts\datatables\server_side.php" />
+    <Content Include="App_Code\dsReporteCruzado.xsc">
+      <DependentUpon>dsReporteCruzado.xsd</DependentUpon>
+    </Content>
+    <None Include="App_Code\dsReporteCruzado.xsd">
+      <SubType>Designer</SubType>
+      <Generator>MSDataSetGenerator</Generator>
+      <LastGenOutput>dsReporteCruzado.Designer.cs</LastGenOutput>
+    </None>
+    <Content Include="App_Code\dsReporteCruzado.xss">
+      <DependentUpon>dsReporteCruzado.xsd</DependentUpon>
+    </Content>
     <None Include="Properties\PublishProfiles\SchoolPanel.pubxml" />
     <None Include="Properties\PublishProfiles\schoolPanelPublish.pubxml" />
     <None Include="Scripts\jquery-1.9.1.intellisense.js" />
@@ -2386,7 +2402,6 @@
     <Content Include="Views\Evaluation\CertificactionLookUp.cshtml" />
   </ItemGroup>
   <ItemGroup>
-    <Folder Include="App_Code\" />
     <Folder Include="App_Data\" />
     <Folder Include="exports\" />
     <Folder Include="file-manager\upload\.thumbs\files\" />
