@@ -1,0 +1,42 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmCourse
+
+@{
+    ViewBag.Title = "Details";
+}
+
+<h2>Details</h2>
+@using (Html.BeginForm("Create", null, FormMethod.Post, new { @class = "form_validation_ttip" }))
+{
+    <fieldset>
+        <legend>Detalles curso</legend>
+
+        @Html.HiddenFor(model => model.id)
+        @Html.HiddenFor(model => model.idColegio)
+
+        <div class="row-fluid">
+            <label>Grado</label>
+            @Html.TextBoxFor(model => model.desGrado, new { readOnly=true })
+        </div>
+        <div class="row-fluid">
+            <label>Año</label>
+            @Html.TextBoxFor(model => model.ano, new { readOnly=true })
+        </div>
+        <div class="row-fluid">
+            <label>Nombre curso</label>
+            @Html.TextBoxFor(model => model.Descripcion, new { readOnly=true })
+        </div>
+        <div class="row-fluid">
+            <label>Director de curso</label>
+            @Html.TextBoxFor(model => model.desDirectorCurso, new { readOnly=true })
+        </div>
+        <div class="row-fluid">
+            <div class="span3">
+                <p>
+                    @Html.ActionLink("Editar", "Edit", new { id = Model.id, idGrado = Model.idGrado }, new { @class = "btn btn-info" }) |
+                    @Html.ActionLink("Volver a la lista", "Index")
+                </p>
+            </div>
+        </div>
+    </fieldset>
+ 
+}

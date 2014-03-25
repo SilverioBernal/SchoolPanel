@@ -1,0 +1,91 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmPerson
+
+@{
+    ViewBag.Title = "CreateWorker";
+}
+
+
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+
+<h2>Maestro de funcionarios</h2>
+<div class="row-fluid">
+    <div class="span12">
+        @using (Html.BeginForm("CreateWorker", null, FormMethod.Post, new { @class = "form_validation_ttip" }))
+        {
+    
+            <fieldset>
+                <legend>Nuevo funcionario</legend>
+                <div class="row-fluid">
+                    <div class="span3">
+                        @*<div class="span2">*@
+                            <label>Documento<span class="f_req">*</span></label>
+                            @Html.DropDownListFor(c => c.tipoDocumento, new SelectList(Model.lsTipoDocumento, "key", "value", Model.tipoDocumento), "--", new { @class = "required span4" })
+                            @Html.TextBoxFor(model => model.documento, new { @class = "required span8" })
+                        @*</div>*@
+                    </div>
+                    <div class="span9">
+                        <div class="span3">
+                            <label>1er. nombre<span class="f_req">*</span></label>
+                            @Html.TextBoxFor(model => model.primerNombre, new { @class = "required span12" })
+                        </div>
+                        <div class="span2">
+                            <label>2do. nombre</label>
+                            @Html.TextBoxFor(model => model.segundoNombre, new { @class = "span12" })
+                        </div>
+                        <div class="span3">
+                            <label>1er. apellido<span class="f_req">*</span></label>
+                            @Html.TextBoxFor(model => model.primerApellido, new { @class = "required span12" })
+                        </div>
+                        <div class="span2">
+                            <label>2do. apellido</label>
+                            @Html.TextBoxFor(model => model.segundoApellido, new { @class = "span12" })
+                        </div>
+                        <div class="span2">
+                            <label>Genero<span class="f_req">*</span></label>
+                            @Html.RadioButtonFor(model => model.sexo, "false") F
+                        @Html.RadioButtonFor(model => model.sexo, "true") M
+                        </div>
+                    </div>
+                </div>
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Ciudad<span class="f_req">*</span></label>
+                        @Html.TextBoxFor(model => model.ciudad, new { @class = "required span12" })
+                    </div>
+                    <div class="span4">
+                        <label>Dirección<span class="f_req">*</span></label>
+                        @Html.TextBoxFor(model => model.direccion, new { @class = "required span12" })
+                    </div>
+                    <div class="span2">
+                        <label>Teléfono<span class="f_req">*</span></label>
+                        @Html.TextBoxFor(model => model.telefono, new { @class = "required span12" })
+                    </div>
+                    <div class="span4">
+                        <label>e-mail<span class="f_req">*</span></label>
+                        @Html.TextBoxFor(model => model.email, new { @class = "required span12" })
+                    </div>
+                </div>
+                <hr />
+                <div class="row-fluid">
+                    <div class="span3">
+                        <label>Sede<span class="f_req">*</span></label>
+                        @Html.DropDownListFor(c => c.idSede, new SelectList(Model.lsPlace, "id", "descripcion", Model.idSede), "-- Selecione una sede --", new { @class="required span12" })
+                    </div>                    
+                    <div class="span3">
+                        <label>Jornada<span class="f_req">*</span></label>
+                        @Html.DropDownListFor(c => c.idJornada, new SelectList(Model.lsJornada, "key", "value", Model.idSede), "-- Selecione una jornada --", new { @class="required span12" })
+                    </div>                    
+                </div>
+
+                <p>
+                    <input type="submit" value="Guardar" class="btn btn-info" />|
+                    @Html.ActionLink("Volver a la lista", "IndexSchoolWorker")
+                </p>
+            </fieldset>
+       
+        }
+    </div>
+</div>

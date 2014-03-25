@@ -1,0 +1,68 @@
+﻿@model IEnumerable<Orkidea.SchoolPanel.WebFront.Models.vmPerson>
+
+@{
+    ViewBag.Title = "IndexAllSchoolStudent";
+}
+
+@*@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")*@
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@*@Scripts.Render("~/Scripts/gebo_tables.js")*@
+
+<h2>Maestro de estudiantes</h2>
+
+<p>
+    @Html.ActionLink("Crear Nuevo", "CreateStudent", null, new { @class = "btn btn-info" }) | @Html.ActionLink("Volver al home", "Index", "Home")
+</p>
+<div class="row-fluid tablaIndex">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>
+                    <th>Código</th>
+                    <th>Usuario</th>
+                    <th>Nombre</th>
+                    <th>Sede</th>
+                    <th>Jornada</th>
+                    <th>Estado</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.id)</td>
+                        <td>@Html.DisplayFor(modelItem => item.usuario)</td>
+                        <td>@Html.DisplayFor(modelItem => item.nombreCompleto)</td>
+                        <td>@Html.DisplayFor(modelItem => item.nombreSede)</td>
+                        <td>@Html.DisplayFor(modelItem => item.nombreJornada)</td>
+                        <td>@Html.DisplayFor(modelItem => item.desRetirado)</td>
+                        <td>
+                            <a href="@Url.Action("CertificactionLookUp", "Evaluation", new { id = item.id })" class="sepV_a" title="Buscar"><i class="icon-search"></i></a>                            
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>    
+</div>
+
+<script>
+    $('#dt_gal').dataTable();
+</script>
+
+

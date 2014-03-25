@@ -1,0 +1,103 @@
+﻿@model IEnumerable<Orkidea.SchoolPanel.WebFront.Models.vmPerson>
+
+@{
+    ViewBag.Title = "IndexSchoolWorker";
+}
+
+@*@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")*@
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@*@Scripts.Render("~/Scripts/gebo_tables.js")*@
+
+<h2>Maestro de funcionarios</h2>
+
+<p>
+    @Html.ActionLink("Crear Nuevo", "CreateWorker", null, new { @class = "btn btn-info" }) | @Html.ActionLink("Volver al home", "Index", "Home")
+</p>
+<div class="row-fluid tablaIndex">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>
+                    @*<th>Código</th>*@
+                    <th>Documento</th>
+                    <th>Nombre</th>
+                    <th>Sede</th>                   
+                    <th>Jornada</th>                   
+                    <th>Estado</th>                   
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        @*<td>@Html.DisplayFor(modelItem => item.id)</td>*@
+                        <td>@Html.DisplayFor(modelItem => item.documento)</td>
+                        <td>@Html.DisplayFor(modelItem => item.nombreCompleto)</td>
+                        <td>@Html.DisplayFor(modelItem => item.nombreSede)</td>
+                        <td>@Html.DisplayFor(modelItem => item.nombreJornada)</td>
+                        <td>@Html.DisplayFor(modelItem => item.desRetirado)</td>
+                        <td>
+                            <a href="@Url.Action("EditWorker", "Person", new { id = item.id })" class="sepV_a" title="Editar"><i class="icon-pencil"></i></a>
+                            <span>|</span>       
+                            <a href="#confirmModal" data-toggle="modal" title="Eliminar" class="eliminar"><i class="icon-trash"></i></a>
+                                                                             
+                            @Html.HiddenFor(modelItem => item.id, new { id="idPersonaActual"})
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="confirmModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Maestro de coordinadores</h3>
+        </div>
+        <div class="modal-body" id="mensaje">
+            <input id="txtId" class="hide" />
+            <p>¿Está seguro de borrar este coordinador?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+            <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" id="btnBorrar">Si</button>
+            @*<a href="@Url.Action("Delete", "School", new { id = item.id })" role="button" class="btn btn-primary" data-toggle="modal">Si</a>*@
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#dt_gal').dataTable();
+
+    $('.tablaIndex').click(function (e) {
+        var reg = e.target.parentNode.parentNode
+        var id = $(reg).find('#idPersonaActual')[0].value;
+        $('#txtId').val(id);
+    })
+
+    $('#btnBorrar').click(function () {
+        var code = $('#txtId').val();
+
+
+        var link = '@Url.Action("DeleteWorker", new { id = "-1" })';
+        link = link.replace("-1", code);
+        window.location.href = link;
+    });
+</script>
+
+
+ 

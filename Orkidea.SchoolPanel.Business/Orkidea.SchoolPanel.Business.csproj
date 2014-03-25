@@ -1,0 +1,101 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="4.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">AnyCPU</Platform>
+    <ProjectGuid>{90F56B70-09D0-4D2E-8145-F623599ECB69}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Orkidea.SchoolPanel.Business</RootNamespace>
+    <AssemblyName>Orkidea.SchoolPanel.Business</AssemblyName>
+    <TargetFrameworkVersion>v4.5</TargetFrameworkVersion>
+    <FileAlignment>512</FileAlignment>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
+    <DebugSymbols>true</DebugSymbols>
+    <DebugType>full</DebugType>
+    <Optimize>false</Optimize>
+    <OutputPath>bin\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
+    <DebugType>pdbonly</DebugType>
+    <Optimize>true</Optimize>
+    <OutputPath>bin\Release\</OutputPath>
+    <DefineConstants>TRACE</DefineConstants>
+    <ErrorReport>prompt</ErrorReport>
+    <WarningLevel>4</WarningLevel>
+  </PropertyGroup>
+  <ItemGroup>
+    <Reference Include="CrystalDecisions.CrystalReports.Engine, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="CrystalDecisions.Shared, Version=13.0.2000.0, Culture=neutral, PublicKeyToken=692fbea5521e1304, processorArchitecture=MSIL" />
+    <Reference Include="EntityFramework">
+      <HintPath>..\packages\EntityFramework.5.0.0\lib\net45\EntityFramework.dll</HintPath>
+    </Reference>
+    <Reference Include="System" />
+    <Reference Include="System.ComponentModel.DataAnnotations" />
+    <Reference Include="System.Configuration" />
+    <Reference Include="System.Core" />
+    <Reference Include="System.Data.Entity" />
+    <Reference Include="System.Runtime.Serialization" />
+    <Reference Include="System.Security" />
+    <Reference Include="System.Xml.Linq" />
+    <Reference Include="System.Data.DataSetExtensions" />
+    <Reference Include="Microsoft.CSharp" />
+    <Reference Include="System.Data" />
+    <Reference Include="System.Xml" />
+  </ItemGroup>
+  <ItemGroup>
+    <Compile Include="AcademicPeriodBiz.cs" />
+    <Compile Include="AsignatureBiz.cs" />
+    <Compile Include="CourseAsignatureBiz.cs" />
+    <Compile Include="CourseBiz.cs" />
+    <Compile Include="EvaluationNoteBiz.cs" />
+    <Compile Include="GradeBiz.cs" />
+    <Compile Include="KnowledgeAreaBiz.cs" />
+    <Compile Include="CourseStudentBiz.cs" />
+    <Compile Include="EvaluationBiz.cs" />
+    <Compile Include="NewsAttachmentBiz.cs" />
+    <Compile Include="NewsPaperBiz.cs" />
+    <Compile Include="PersonBiz.cs" />
+    <Compile Include="PlaceBiz.cs" />
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="SchoolBiz.cs" />
+    <Compile Include="Obsolete_StudentBitacoreBiz.cs" />
+    <Compile Include="StudentAbsenceBiz.cs" />
+    <Compile Include="TaskAttachmentBiz.cs" />
+    <Compile Include="TaskBiz.cs" />
+    <Compile Include="ValuationLevelBiz.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\Orkidea.SchoolPanel.DataAccessEF\Orkidea.SchoolPanel.DataAccessEF.csproj">
+      <Project>{29d5bd37-a420-42fa-aece-295b04f91739}</Project>
+      <Name>Orkidea.SchoolPanel.DataAccessEF</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Orkidea.SchoolPanel.Entities\Orkidea.SchoolPanel.Entities.csproj">
+      <Project>{1a283e58-8e4f-4866-b7d7-9c1fc4b23ad2}</Project>
+      <Name>Orkidea.SchoolPanel.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Orkidea.SchoolPanel.Utilities\Orkidea.SchoolPanel.Utilities.csproj">
+      <Project>{2f83eb7e-9192-45d7-8c07-c984e13cb1c9}</Project>
+      <Name>Orkidea.SchoolPanel.Utilities</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="App.config" />
+  </ItemGroup>
+  <ItemGroup>
+    <Service Include="{508349B6-6B84-4DF5-91F0-309BEEBAD82D}" />
+  </ItemGroup>
+  <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

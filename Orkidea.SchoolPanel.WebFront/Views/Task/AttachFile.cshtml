@@ -1,0 +1,50 @@
+﻿@model Orkidea.SchoolPanel.Entities.TaskAttachment
+
+@{
+    ViewBag.Title = "AttachFile";
+}
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+
+
+
+
+
+<h2>Adjuntar archivos a tareas</h2>
+
+<div class="row-fluid">
+    <div class="span6">
+        @using (Ajax.BeginForm("AttachFile", null, null, new AjaxOptions { UpdateTargetId = "divInvoiceList" }, new { id = "uploaded", @class = "form_validation_ttip", enctype = "multipart/form-data" }))
+        {
+        
+            
+            <div>
+                <label>Archivo de notas<span class="f_req">*</span></label>
+                <div data-fileupload="file" class="fileupload fileupload-new">
+                    <input type="hidden" value="" name="">
+                    <span class="btn btn-file btn-warning">
+                        <span class="fileupload-new">Seleccionar</span>
+                        <span class="fileupload-exists">Cambiar</span>
+                        <input type="file" name="file">
+                    </span>
+                    <span class="fileupload-preview"></span>
+                    <a style="float: none" data-dismiss="fileupload" class="close fileupload-exists" href="#">&times;</a>
+                </div>
+            </div>
+            <hr />
+            <div class="row-fluid">
+                <div class="span12">
+                    <input type="submit" value="Guardar" class="btn btn-info" /> | @Html.ActionLink("Volver al Home","Index", "Home")
+                </div>
+            </div>
+        
+        }
+    </div>
+
+    <div id="uploaded" class="span6">
+
+    </div>
+</div>
+

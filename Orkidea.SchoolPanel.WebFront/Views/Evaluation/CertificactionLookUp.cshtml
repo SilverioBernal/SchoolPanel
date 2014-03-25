@@ -1,0 +1,15 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmReporting
+
+@{
+    ViewBag.Title = "CertificactionLookUp";
+}
+
+<div class="row-fluid">
+    <h1>Certificaciones</h1>
+    <ul>
+        @foreach (var item in Model.lsCurso)
+        {                    
+            <li><a href="@Url.Action("CertificactionRep", "Evaluation", new { id = ViewBag.idEstudiante + "|"  + item.id.ToString()})" target="_blank"> @item.Descripcion - @item.ano</a> </li>                        
+        }
+    </ul>
+</div>

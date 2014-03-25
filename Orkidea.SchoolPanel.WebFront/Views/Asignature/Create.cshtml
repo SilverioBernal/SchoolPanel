@@ -1,0 +1,55 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmAsignature
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+
+<h2>Maestro de asignaturas</h2>
+<div class="row-fluid">
+    <div class="span12">
+        @using (Html.BeginForm("Create", null, FormMethod.Post, new { @class = "form_validation_ttip" }))
+        {
+    
+            <fieldset>
+                <legend>Nueva asignatura</legend>
+                <div class="row-fluid">
+                    <div class="span2">
+                        <label>Descripción<span class="f_req">*</span></label>
+                        @Html.TextBoxFor(model => model.Descripcion, new { @class = "required span12" })
+                    </div>
+                    <div class="span2">
+                        <label>Intensidad horaria<span class="f_req">*</span></label>
+                        @Html.TextBoxFor(model => model.intensidadHoraria, new { @class = "required span12" })
+                    </div>
+                    <div class="span3">
+                        <label>Grado<span class="f_req">*</span></label>
+                        @Html.DropDownListFor(c => c.idGrado, new SelectList(Model.lsGrade, "id", "NombreGrado", Model.idGrado), "-- Selecione un grado --", new { @class = "required span12" })
+                    </div>
+                    <div class="span3">
+                        <label>Área de conocimiento<span class="f_req">*</span></label>
+                        @Html.DropDownListFor(c => c.idAreaConocimiento, new SelectList(Model.lsKnowledgeArea, "id", "descripcion", Model.idAreaConocimiento), "-- Selecione un área de conocimiento --", new { @class = "required span12" })
+                    </div>
+                    <div class="span2">
+                        <label>Ignorar en promedio boletin<span class="f_req">*</span></label>
+                        @Html.CheckBoxFor(model => model.ignorarEnPromedio)
+                    </div>
+                </div>
+
+                <p>
+                    <input type="submit" value="Guardar" class="btn btn-info" />|
+                    @Html.ActionLink("Volver a la lista", "Index")
+                </p>
+            </fieldset>       
+        }
+    </div>
+</div>
+<script>
+    $(document).ready(function () {
+        $('#intensidadHoraria').val('');
+    })
+</script>

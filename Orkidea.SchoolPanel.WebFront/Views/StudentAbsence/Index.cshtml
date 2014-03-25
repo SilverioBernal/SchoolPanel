@@ -1,0 +1,110 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmStudentAbsence
+
+@{
+    ViewBag.Title = "Index";
+}
+
+
+@*@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")*@
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@*@Scripts.Render("~/Scripts/gebo_tables.js")*@
+
+<h2>Áreas de conocimiento</h2>
+
+<p>
+    @Html.ActionLink("Crear Nueva", "Create", null, new { @class = "btn btn-info" }) | @Html.ActionLink("Volver al home", "Index", "Home")
+</p>
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>
+                    <th>Área de conocimiento</th>
+                    <th>Fallas</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.lsStudentAbsence)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.estudiante)</td>
+                        <td>
+                            <ul>
+                                @foreach (var itemFallas in item.lsFallasEstudiante)
+                                {
+                                    <li>@itemFallas.fecha.ToString("yyyy-MM-dd")</li>
+                                }
+                            </ul>
+                        </td>
+                        <td>
+                            <a href="#confirmModal" data-toggle="modal" title="Registrar falla" class="eliminar"><i class="icon-edit"></i></a>
+
+                            @Html.HiddenFor(modelItem => item.idEstudiante, new { id = "idEstudiante" })
+                            @Html.HiddenFor(modelItem => Model.idAsignatura, new { id = "idAsignatura" })
+                            @Html.HiddenFor(modelItem => item.estudiante, new { id = "estudiante" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="confirmModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Registro de fallas</h3>
+        </div>
+        <div class="modal-body" id="mensaje">
+            <p>Ingrese los datos de la falla</p>
+            <div class="span6">                
+                <label>Periodo academico</label>
+                @Html.DropDownListFor(c => c.idPeriodoAcademico, new SelectList(Model.lsPeriodoAcademico, "id", "Descripcion", Model.idPeriodoAcademico), "-- Selecione un periodo --", new { @class = "span12", id= "periodoAcademico" })
+                <input id="txtId" class="hide" />
+            </div>
+            <div class="span6">                
+                <label></label>
+                <input type="date" id="fechaFalla" />                
+            </div>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+            <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" id="btnBorrar">Guardar</button>            
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#dt_gal').dataTable();
+
+    $('.eliminar').click(function () {
+        var reg = this.parentNode;
+        var idEstudiante = $(reg).find('#idEstudiante')[0].value;
+        var idAsignatura = $(reg).find('#idAsignatura')[0].value;
+        $('#txtId').val(idEstudiante + "|" + idAsignatura);
+    })
+
+    $('#btnBorrar').click(function () {
+        var code = $('#txtId').val() + "|" + $('#periodoAcademico').val() + "|" + $('#fechaFalla').val();
+
+
+        var link = '@Url.Action("Create", new { id = "-1" })';
+        link = link.replace("-1", code);
+        window.location.href = link;
+    });
+</script>
+
+

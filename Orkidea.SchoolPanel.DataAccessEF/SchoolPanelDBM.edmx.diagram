@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="utf-8"?>
+<edmx:Edmx Version="3.0" xmlns:edmx="http://schemas.microsoft.com/ado/2009/11/edmx">
+ <!-- EF Designer content (DO NOT EDIT MANUALLY BELOW HERE) -->
+  <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
+    <!-- Diagram content (shape and connector positions) -->
+    <edmx:Diagrams>
+      <Diagram DiagramId="a28fc091064c46c79ac61bd17ca2c54d" Name="Diagram2" ZoomLevel="75" >
+        <EntityTypeShape EntityType="SchoolPanelModel.AcademicPeriod" Width="1.5" PointX="3" PointY="12.75" />
+        <EntityTypeShape EntityType="SchoolPanelModel.CourseStudent" Width="1.5" PointX="13.5" PointY="20.5" />
+        <EntityTypeShape EntityType="SchoolPanelModel.Grade" Width="1.5" PointX="3" PointY="15.875" />
+        <EntityTypeShape EntityType="SchoolPanelModel.KnowledgeArea" Width="1.5" PointX="3" PointY="18.75" />
+        <EntityTypeShape EntityType="SchoolPanelModel.NewsAttachment" Width="1.5" PointX="5.25" PointY="26.625" />
+        <EntityTypeShape EntityType="SchoolPanelModel.NewsPaper" Width="1.5" PointX="3" PointY="26.375" />
+        <EntityTypeShape EntityType="SchoolPanelModel.PersonBitacore" Width="1.5" PointX="10.5" PointY="20.125" />
+        <EntityTypeShape EntityType="SchoolPanelModel.Place" Width="1.5" PointX="3" PointY="29.5" />
+        <EntityTypeShape EntityType="SchoolPanelModel.StudentAbsence" Width="1.5" PointX="5.25" PointY="12.625" />
+        <EntityTypeShape EntityType="SchoolPanelModel.TaskAttachment" Width="1.5" PointX="15" PointY="24.5" />
+        <AssociationConnector Association="SchoolPanelModel.FK_StudentAbsence_AcademicPeriod" />
+        <AssociationConnector Association="SchoolPanelModel.FK_StudentAbsence_CourseStudent" />
+        <AssociationConnector Association="SchoolPanelModel.FK_NewsAttachment_NewsPaper" />
+        <EntityTypeShape EntityType="SchoolPanelModel.CourseAsignature" Width="1.5" PointX="10.5" PointY="23" />
+        <AssociationConnector Association="SchoolPanelModel.FK_StudentAbsence_CourseAsignature" />
+        <EntityTypeShape EntityType="SchoolPanelModel.Course" Width="1.5" PointX="5.25" PointY="22" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Course_Grade" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Course_Place" />
+        <AssociationConnector Association="SchoolPanelModel.FK_CourseStudent_Course" />
+        <AssociationConnector Association="SchoolPanelModel.FK_CourseTeacher_Course" />
+        <EntityTypeShape EntityType="SchoolPanelModel.Task" Width="1.5" PointX="12.75" PointY="24.125" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Task_CourseAsignature" />
+        <AssociationConnector Association="SchoolPanelModel.FK_TaskAttachment_Task" />
+        <EntityTypeShape EntityType="SchoolPanelModel.Person" Width="1.5" PointX="8.25" PointY="17.625" />
+        <AssociationConnector Association="SchoolPanelModel.FK_CourseAsignature_Person" />
+        <AssociationConnector Association="SchoolPanelModel.FK_CourseStudent_Person" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Person_Place" />
+        <AssociationConnector Association="SchoolPanelModel.FK_PersonBitacore_Person" />
+        <EntityTypeShape EntityType="SchoolPanelModel.EvaluationNote" Width="1.5" PointX="3" PointY="40.75" />
+        <EntityTypeShape EntityType="SchoolPanelModel.ValuationLevel" Width="1.5" PointX="3" PointY="43.625" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Course_Person" />
+        <EntityTypeShape EntityType="SchoolPanelModel.Evaluation" Width="1.5" PointX="8.25" PointY="26" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Evaluation_AcademicPeriod" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Evaluation_CourseAsignature" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Evaluation_CourseStudent" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Evaluation_EvaluationNote" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Evaluation_EvaluationNote1" />
+        <EntityTypeShape EntityType="SchoolPanelModel.Asignature" Width="1.5" PointX="5.25" PointY="17" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Assingnature_Grade" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Assingnature_KnowledgeArea" />
+        <AssociationConnector Association="SchoolPanelModel.FK_CourseTeacher_Assingnature" />
+        <EntityTypeShape EntityType="SchoolPanelModel.School" Width="1.5" PointX="0.75" PointY="20.375" />
+        <AssociationConnector Association="SchoolPanelModel.FK_AcademicPeriod_School" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Course_School" />
+        <AssociationConnector Association="SchoolPanelModel.FK_EvaluationNote_School" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Grade_School" />
+        <AssociationConnector Association="SchoolPanelModel.FK_KnowledgeArea_School" />
+        <AssociationConnector Association="SchoolPanelModel.FK_NewsPaper_School" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Student_School" />
+        <AssociationConnector Association="SchoolPanelModel.FK_Place_School" />
+        <AssociationConnector Association="SchoolPanelModel.FK_ValuationLevel_School" />
+        </Diagram>
+    </edmx:Diagrams>
+  </edmx:Designer>
+</edmx:Edmx>

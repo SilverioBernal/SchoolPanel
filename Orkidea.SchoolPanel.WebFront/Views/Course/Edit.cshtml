@@ -1,0 +1,63 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmCourse
+
+@{
+    ViewBag.Title = "Edit";
+}
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+
+<h2>Maestro de cursos</h2>
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @class = "form_validation_ttip" }))
+{
+    @Html.ValidationSummary(true)
+
+    @Html.HiddenFor(model => model.idColegio)            
+    
+    <fieldset>
+        <legend>Editar curso</legend>
+
+        <div class="row-fluid">
+            <div class="span3">
+                <label>Sede<span class="f_req">*</span></label>
+                @Html.DropDownListFor(c => c.idSede, new SelectList(Model.lsPlace, "id", "descripcion", Model.idSede), "-- Selecione una sede --", new { @class = "required span12" })
+            </div>
+            <div class="span3">
+                <label>Jornada<span class="f_req">*</span></label>
+                @Html.DropDownListFor(c => c.idJornada, new SelectList(Model.lsJornada, "key", "value", Model.idJornada), "-- Selecione una jornada --", new { @class = "required span12" })
+            </div>
+            <div class="span2">
+                <label>Grado<span class="f_req">*</span></label>
+                @Html.DropDownListFor(c => c.idGrado, new SelectList(Model.lsGrade, "id", "NombreGrado", Model.idGrado), "-- Selecione un grado --", new { @class = "required span12" })
+            </div>
+            <div class="span3">
+                <label>Nombre curso<span class="f_req">*</span></label>
+                @Html.TextBoxFor(model => model.Descripcion, new { @class = "required span12", placeholder = "Ej. 101" })
+            </div>
+            <div class="span1">
+                <label>Año<span class="f_req">*</span></label>
+                @Html.TextBoxFor(model => model.ano, new { @class = "required span12" })
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div id="divTeacher" class="span3">
+                <label>Director de curso<span class="f_req">*</span></label>
+                @Html.DropDownListFor(c => c.idDirectorCurso, new SelectList(Model.lsTeacher, "id", "nombreCompleto", Model.idDirectorCurso), "-- Selecione un profesor --", new { @class = "required span12" })
+            </div>
+            <div class="span3">
+                <label>Curso finalizado</label>
+                @Html.CheckBoxFor(model => model.finalizado)
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3">
+                <p>
+                    <input type="submit" value="Guardar" class="btn btn-info" />|
+                    @Html.ActionLink("Volver a la lista", "Index")
+                </p>
+            </div>
+        </div>
+    </fieldset>
+}

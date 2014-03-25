@@ -1,0 +1,110 @@
+﻿@model IEnumerable<Orkidea.SchoolPanel.WebFront.Models.vmTask>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@*@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")*@
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@*@Scripts.Render("~/Scripts/gebo_tables.js")*@
+
+<h2>Registro de tareas</h2>
+
+<p>
+    @Html.ActionLink("Nueva tarea", "Create", new { id = ViewBag.id }, new { @class = "btn btn-info" }) | @Html.ActionLink("Volver al home", "Index", "Home")
+</p>
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>
+                    <th>Fecha creación</th>
+                    <th>Fecha limite</th>
+                    <th>Resumen</th>
+                    <th>Estado</th>
+                    <th>Adjuntos</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td><span>@item.fechaCreacion.ToString("yyyy-MM-dd")</span></td>
+                        <td><span>@item.fechaLimite.ToString("yyyy-MM-dd")</span></td>
+                        <td><span><b>@Html.DisplayFor(modelItem => item.titulo)</b></span>
+                            <br />@Html.DisplayFor(modelItem => item.descripcion)</td>
+                        <td>@Html.DisplayFor(modelItem => item.descActivo)</td>
+                        <td>
+                            <ul>
+                                @foreach (var itemAttach in item.lsTaskAttach)
+                                {
+                                    <li><a href="@Href("~/UploadedFiles/" + itemAttach.rutaAdjunto)" >Descargar</a> | <a href="@Url.Action("DetachFile", new { id = itemAttach.id })" class="sepV_a" title="Editar"><i class="icon-trash"></i></a></li>
+                                }
+                            </ul>
+                        </td>
+                        <td>
+                            <a href="@Url.Action("AttachFile", new { id = item.id })" class="sepV_a" title="Adjuntar archivos"><i class="icon-upload"></i></a>
+                            <span>|</span>
+                            <a href="@Url.Action("Edit", new { id = item.id })" class="sepV_a" title="Editar"><i class="icon-pencil"></i></a>
+                            <span>|</span>
+                            <a href="#confirmModal" data-toggle="modal" title="Eliminar" class="eliminar"><i class="icon-trash"></i></a>
+
+                            @Html.HiddenFor(modelItem => item.id, new { id = "idTareaActual" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="confirmModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Registro de tareas</h3>
+        </div>
+        <div class="modal-body" id="mensaje">
+            <input id="txtId" class="hide" />
+            <p>¿Está seguro de borrar este tarea?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+            <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" id="btnBorrar">Si</button>
+            @*<a href="@Url.Action("Delete", "School", new { id = item.id })" role="button" class="btn btn-primary" data-toggle="modal">Si</a>*@
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#dt_gal').dataTable();
+
+    $('.eliminar').click(function () {
+        var reg = this.parentNode;
+        var id = $(reg).find('#idTareaActual')[0].value;
+        $('#txtId').val(id);
+    })
+
+    $('#btnBorrar').click(function () {
+        var code = $('#txtId').val();
+
+
+        var link = '@Url.Action("Delete", new { id = "-1" })';
+        link = link.replace("-1", code);
+        window.location.href = link;
+    });
+</script>
+
+

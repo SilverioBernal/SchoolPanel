@@ -1,0 +1,128 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.LoginModel
+@{
+    ViewBag.Title = "Login";
+}
+<div class="login_page">
+    <div class="login_box">
+
+        <form method="post" id="login_form">
+            <div class="top_b">Ingreso a SchoolPanel</div>
+            <div class="alert alert-info alert-login">
+                Ingrese su usuario y contraseña para acceder al sistema
+            </div>
+            <div class="cnt_b">
+                <div class="formRow">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-user"></i></span>
+                        @Html.TextBoxFor(model => model.UserName, new { placeholder = "usuario@unagranempresa.com" })
+                    </div>
+                </div>
+                <div class="formRow">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-lock"></i></span>
+                        @Html.TextBoxFor(model => model.Password, new { id = "password", placeholder = "password", type = "password" })
+                    </div>
+                </div>
+            </div>
+            <div class="btm_b clearfix">
+                <button class="btn btn-inverse pull-right" type="submit">Ingresar</button>
+            </div>
+        </form>
+
+        <form action="Home" method="post" id="pass_form" style="display: none">
+            <div class="top_b">¿No recuerda su cave?</div>
+            <div class="alert alert-info alert-login">
+                Por favor ingrese su usuario. Su clave será reseteada a la inicial.
+            </div>
+            <div class="cnt_b">
+                <div class="formRow clearfix">
+                    <div class="input-prepend">
+                        <span class="add-on"><i class="icon-user"></i></span>
+                        <input type="text" placeholder="usuario" id="usrReset" />
+                    </div>
+                </div>
+            </div>
+            <div class="btm_b tac">
+                <button class="btn btn-inverse" type="button" id="btnReset">Resetear mi clave</button>
+            </div>
+        </form>
+    </div>    
+    <div class="links_b links_btm clearfix">
+        <span class="linkform"><a href="#pass_form">Olvidé mi clave <i class="icon-remove-sign"></i></a></span>
+        <span class="linkform" style="display: none">Olvidalo!, <a href="#login_form">Ya recordé la clave! devuelveme a la pantalla de inicio</a></span>
+    </div>
+
+    <div class="modal hide fade" id="myModal">
+        <div class="modal-header">
+            <button class="close" data-dismiss="modal">×</button>
+            <h3 id="msgHeader">Resetear clave</h3>
+        </div>
+        <div class="modal-body" id="msgBody">
+            <p></p>
+        </div>
+        <div class="modal-footer">
+            <a href="@Href("~")" class="btn btn-info" >Aceptar</a>
+        </div>
+    </div>
+
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/jquery.actual.min.js"></script>
+    <script src="~/lib/validation/jquery.validate.min.js"></script>
+    <script src="~/bootstrap/js/bootstrap.min.js"></script>
+    <script>
+        $(document).ready(function () {
+
+            //* boxes animation
+            form_wrapper = $('.login_box');
+            $('.linkform a,.link_reg a').on('click', function (e) {
+                var target = $(this).attr('href'),
+                    target_height = $(target).actual('height');
+                $(form_wrapper).css({
+                    'height': form_wrapper.height()
+                });
+                $(form_wrapper.find('form:visible')).fadeOut(400, function () {
+                    form_wrapper.stop().animate({
+                        height: target_height
+                    }, 500, function () {
+                        $(target).fadeIn(400);
+                        $('.links_btm .linkform').toggle();
+                        $(form_wrapper).css({
+                            'height': ''
+                        });
+                    });
+                });
+                e.preventDefault();
+            });
+
+            //* validation
+            $('#login_form').validate({
+                onkeyup: false,
+                errorClass: 'error',
+                validClass: 'valid',
+                rules: {
+                    user: { required: true, minlength: 3 },
+                    password: { required: true, minlength: 3 }
+                },
+                highlight: function (element) {
+                    $(element).closest('div').addClass("f_error");
+                },
+                unhighlight: function (element) {
+                    $(element).closest('div').removeClass("f_error");
+                },
+                errorPlacement: function (error, element) {
+                    $(element).closest('div').append(error);
+                }
+            });
+        });
+
+        $('#btnReset').click(function () {
+            var usuario = $('#usrReset').val();
+            $.getJSON("@Url.Action("ResetPassword","Security")", { usuario: usuario }, res);
+
+            function res(data) {
+                $('#msgBody').find('P')[0].textContent = data;
+                $('#myModal').modal('show');
+            }
+        });
+    </script>
+</div>

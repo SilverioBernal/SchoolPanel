@@ -1,0 +1,43 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmEvaluation
+
+@{
+    ViewBag.Title = "CreateUpload";
+}
+
+<h2>Carga de notas</h2>
+
+<div class="row-fluid">
+    <div class="span6">
+        <div id="divColegio">
+            <label>Colegio</label>
+            @Html.TextBoxFor(model => model.desColegio, new { @class = "span12" })
+        </div>
+        <div id="divAno">
+            <label>Año</label>
+            @Html.TextBoxFor(model => model.ano, new { @class = "span3" })
+        </div>
+        <div id="divCurso">
+            <label>Curso</label>
+            @Html.TextBoxFor(model => model.desCurso, new { @class = "span12" })
+        </div>
+        <div id="divPeriodo">
+            <label>Periodo academico</label>
+            @Html.TextBoxFor(model => model.desPeriodoAcademico, new { @class = "span12" })
+        </div>
+        <div id="divAsignatura">
+            <label>Asignatura</label>
+            @Html.TextBoxFor(model => model.desAsignatura, new { @class = "span12" })
+        </div>
+    </div>
+    <div class="span6">
+        <ul>
+            <li class="halfLi" style="width: 70%; float: left; line-height: 1.5em; border-bottom: 1px solid #ccc; list-style-type: none;"><span style="font-weight: bold;">Alumno</span></li>
+            <li class="halfLi" style="width: 30%; float: left; line-height: 1.5em; border-bottom: 1px solid #ccc; list-style-type: none;"><span style="font-weight: bold;">Nota</span></li>
+            @foreach (System.Collections.DictionaryEntry item in Model.lstNotas)
+            {
+                <li class="halfLi" style="width: 70%; float: left; line-height: 1.5em; border-bottom: 1px solid #ccc; list-style-type: none;">@Html.DisplayFor(modelItem => item.Key) </li>
+                <li class="halfLi" style="width: 30%; float: left; line-height: 1.5em; border-bottom: 1px solid #ccc; list-style-type: none;">@Html.DisplayFor(modelItem => item.Value) </li>                
+            }
+        </ul>
+    </div>
+</div>

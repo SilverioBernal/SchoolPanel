@@ -1,0 +1,137 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmUser
+
+@{
+    ViewBag.Title = "SchoolAdminUserIndex";
+}
+
+@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@Scripts.Render("~/Scripts/gebo_tables.js")
+
+<h2>Alumnos con usuario </h2>
+
+<p>
+    @Html.ActionLink("Alumnos sin usuario", "StudentNoUserIndex", null, new { @class = "btn btn-info" }) | @Html.ActionLink("Volver al home", "Index", "Home")
+</p>
+
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>
+                    <th>Usuario</th>
+                    <th>Id</th>
+                    <th>Nombre</th>
+                    <th>Activo</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.lstUser)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.usuario)
+                            @Html.HiddenFor(modelItem => item.contraseña)
+                            @Html.HiddenFor(modelItem => item.Rol)
+                        </td>
+                        <td>@Html.DisplayFor(modelItem => item.idTabla)</td>
+                        <td>@Html.DisplayFor(modelItem => item.nombre)</td>
+                        <td>@Html.DisplayFor(modelItem => item.activo)</td>
+                        <td>
+                            <a href="JavaScript:void(0);" class="btn btn-danger usuario">Borrar usuario</a>
+                        </td>
+                    </tr>
+                }
+
+            </tbody>
+        </table>
+
+    </div>
+</div>
+<!-- Modal -->
+<div id="modalUsr" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="myModalLabel">Asignacion de usuario</h3>
+    </div>
+    <div class="modal-body">
+        <label id="msg">Desea eliminar este usuario?</label>
+        <input type="text" id="txtUsuario" style="display: none" />
+        <input type="text" id="txtIdUsuario" style="display: none" />
+        <input type="text" id="txtContrasena" style="display: none" />
+        <input type="text" id="txtRol" style="display: none" />
+        <input type="text" id="txtActivo" style="display: none" />
+    </div>
+    <div class="modal-footer">
+        <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+        <button class="btn btn-primary" id="btnGuardaUser">Confirmar</button>
+    </div>
+</div>
+<script>
+    $('#dt_gal').dataTable();
+
+    $('div').click(function (e) {
+        var boton = e.target.classList.contains('usuario');
+
+        if (boton) {
+
+            var row = e.target.parentNode.parentNode;
+            var usuario = row.children[0].textContent.trim();
+            var id = row.children[1].innerText;
+            var pass = row.children[0].children[0].value;
+            var rol = 4;
+            var activo = row.children[3].childNodes[0].checked;
+
+            $('#txtUsuario')[0].value = usuario;
+            $('#txtIdUsuario')[0].value = id;
+            $('#txtContrasena')[0].value = pass;
+            $('#txtRol')[0].value = rol;
+            $('#txtActivo')[0].value = activo;
+
+            $('#modalUsr').modal('show');
+        }
+    });
+
+    $('#btnGuardaUser').click(function () {
+        var id = $('#txtIdUsuario')[0].value.trim();
+        var usuario = $('#txtUsuario')[0].value.trim();
+        var pass = $('#txtContrasena')[0].value.trim();
+        var activo = $('#txtActivo')[0].value;
+        var rol = $('#txtRol').val();
+
+        var datos = {
+            usuario: usuario,
+            contraseña: pass,
+            Rol: rol,
+            idTabla: id,
+            activo: activo
+        };
+
+        $.ajax({
+            url: '@Url.Action("DeleteUser")',
+                type: 'POST',
+                contentType: 'application/json',
+                data: JSON.stringify(datos),
+                success: function (result) {
+                    var link = '@Url.Action("StudentUserIndex", new { id = "-1" })';
+                    link = link.replace("-1", '@Model.idColegio');
+                    window.location.href = link;
+                }
+            });
+    });
+</script>
+

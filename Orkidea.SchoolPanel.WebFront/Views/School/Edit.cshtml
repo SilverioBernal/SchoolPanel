@@ -1,0 +1,88 @@
+﻿@model Orkidea.SchoolPanel.Entities.School
+
+@{
+    ViewBag.Title = "Edit";
+}
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+<h2>Maestro de colegios</h2>
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @class = "form_validation_ttip" }))
+{
+    @Html.ValidationSummary(true)
+
+    
+    <fieldset>
+        <legend>Editar colegio</legend>
+        <div class="row-fluid">
+            <div class="span6">
+                @Html.LabelFor(model => model.nombreColegio, "Nombre colegio")
+                @Html.TextBoxFor(model => model.nombreColegio, new { @class = "span12 required" })
+                @Html.ValidationMessageFor(model => model.nombreColegio)
+                @Html.HiddenFor(model => model.id)
+            </div>
+            <div class="span2">
+                @Html.LabelFor(model => model.nit, "Nit")
+                @Html.TextBoxFor(model => model.nit, new { @class = "span12 span12 required" })
+                @*@Html.ValidationMessageFor(model => model.nit)*@
+            </div>
+            <div class="span2">
+                @Html.LabelFor(model => model.especialidad, "Especialidad")
+                @Html.TextBoxFor(model => model.especialidad, new { @class = "span12" })
+                @Html.ValidationMessageFor(model => model.especialidad)
+            </div>
+            <div class="span2">
+                @Html.LabelFor(model => model.resolucion, "Resolución")
+                @Html.TextBoxFor(model => model.resolucion, new { @class = "span12" })
+
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span2">
+                @Html.LabelFor(model => model.registroEducativo, "Registro educativo")
+                @Html.TextBoxFor(model => model.registroEducativo, new { @class = "span12" })
+            </div>
+            <div class="span2">
+                @Html.LabelFor(model => model.registroDANE, "Registro DANE")
+                @Html.TextBoxFor(model => model.registroDANE, new { @class = "span12" })
+            </div>
+            <div class="span4">
+                @Html.LabelFor(model => model.direccion, "Dirección")
+                @Html.TextBoxFor(model => model.direccion, new { @class = "span12" })
+            </div>
+            <div class="span2">
+                @Html.LabelFor(model => model.telefono, "Teléfono")
+                @Html.TextBoxFor(model => model.telefono, new { @class = "span12" })
+            </div>
+            <div class="span2">
+                @Html.LabelFor(model => model.departamento, "Departamento")
+                @Html.TextBoxFor(model => model.departamento, new { @class = "span12" })
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span3">
+                @Html.LabelFor(model => model.nombreRector, "Rector")
+                @Html.TextBoxFor(model => model.nombreRector, new { @class = "span12" })
+            </div>
+            <div class="span3">
+                @Html.LabelFor(model => model.nombreSecretario, "Secretario")
+                @Html.TextBoxFor(model => model.nombreSecretario, new { @class = "span12" })
+            </div>
+        </div>
+        <div class="row-fluid">
+            <div class="span12">
+                @Html.LabelFor(model => model.textoCertificacion, "Texto certificación")
+                @Html.TextAreaFor(model => model.textoCertificacion, new { @class = "span12" })
+            </div>            
+        </div>
+        <p>
+            <input type="submit" value="Guardar" class="btn btn-primary" />|
+        @Html.ActionLink("Volver a la lista", "Index")
+        </p>
+    </fieldset>
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}

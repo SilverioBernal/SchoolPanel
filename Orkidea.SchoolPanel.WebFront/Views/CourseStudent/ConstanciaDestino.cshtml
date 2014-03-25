@@ -1,0 +1,35 @@
+﻿@{
+    ViewBag.Title = "ConstanciaDestino";
+}
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+<h2>Constancia para estudiantes activos</h2>
+
+<p>
+    @Html.ActionLink("Volver al home", "Index", "Home")
+</p>
+<span>Ingrese el destino de la certificación (si lo tiene)</span>
+<div class="row-fluid">
+    <div class="span4">
+        <input type="text" placeholder="Ej. Familias en acción" id="txtDestino" />
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span4">
+        <input type="button" value="Generar" id="btnGenerar" class="btn btn-info" />
+    </div>
+</div>
+<script>
+    $('#btnGenerar').click(function () {
+        var destino = $('#txtDestino').val();
+        var idEstudiante = '@ViewBag.id';
+
+        var link = '@Url.Action("ConstanciaRep", new { id = "-1" })';
+        link = link.replace("-1", idEstudiante + "|" + destino);
+        window.open(link, '_blank');
+    });
+</script>
+
+

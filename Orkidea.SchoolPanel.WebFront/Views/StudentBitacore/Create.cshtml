@@ -1,0 +1,29 @@
+﻿@model Orkidea.SchoolPanel.Entities.StudentBitacore
+
+@{
+    ViewBag.Title = "Create";
+}
+
+<h2>Nueva entrada en el observador</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+        <div class="editor-label">Ingrese su comentario</div>
+        <div class="editor-field">
+            @Html.TextAreaFor(model => model.observaciones, new{ @class="span12", cols=1, rows=4})
+            @Html.ValidationMessageFor(model => model.observaciones)
+            @Html.HiddenFor(model => model.idEstudiante)
+        </div>
+
+        <div class="editor-label">
+            
+        </div>
+        <div class="editor-field">
+            
+        </div>
+
+        <p>
+            <input type="submit" value="Guardar" class="btn btn-info" /> | @Html.ActionLink("Volver a la lista", "Index")
+        </p>
+}
+

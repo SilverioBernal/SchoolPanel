@@ -1,0 +1,33 @@
+﻿@model Orkidea.SchoolPanel.Entities.Grade
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+<h2>Maestro de grados</h2>
+
+@using (Html.BeginForm()) {
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Editar grado</legend>
+
+        @Html.HiddenFor(model => model.id)
+
+        <div class="editor-label">
+            @Html.LabelFor(model => model.NombreGrado, "Nombre grado")
+        </div>
+        <div class="editor-field">
+            @Html.EditorFor(model => model.NombreGrado)
+            @Html.ValidationMessageFor(model => model.NombreGrado)
+        </div>
+
+        <p>
+            <input type="submit" value="Guardar" class="btn btn-info"/>|
+        @Html.ActionLink("Volver a la lista", "Index")
+        </p>
+    </fieldset>
+}
+@*@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}*@

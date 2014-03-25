@@ -1,0 +1,111 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmCourseStudentSearchFilter
+
+@{
+    ViewBag.Title = "SearchForStudents";
+}
+
+
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+
+<h2>Asignación de cursos</h2>
+@using (Html.BeginForm("SearchForStudents", null, FormMethod.Post, new { @class = "form_validation_ttip" }))
+{
+    <div class="row-fluid">
+        <div class="span12">
+            <fieldset>
+                <legend>Búsqueda de estudiantes</legend>
+                <div class="row-fluid">
+                    <div class="span4">
+                        <label>Sede</label>
+                        @Html.DropDownListFor(c => c.idSede, new SelectList(Model.lsSede, "id", "descripcion", Model.idSede), "-- Sede --", new { @class = "required span12" })
+                    </div>
+                    <div class="span2">
+                        <label>Jornada</label>
+                        @Html.DropDownListFor(c => c.idJornada, new SelectList(Model.lsJornada, "key", "value", Model.idSede), "-- Jornada --", new { @class = "required span12" })
+                    </div>
+                    <div class="span2">
+                        <label>Año<span class="f_req">*</span></label>
+                        @Html.DropDownListFor(c => c.ano, new SelectList(Model.lsAnos, "key", "value", Model.idSede), "-- Año --", new { @class = "required span12" })
+                    </div>
+                    <div class="span2">
+                        <label>Grado<span class="f_req">*</span></label>
+                        @Html.DropDownListFor(c => c.idGrado, new SelectList(Model.lsGrado, "id", "NombreGrado", Model.idSede), "-- Grado --", new { @class = "required span12" })
+                    </div>
+                    <div class="span2">
+                        <label>Curso<span class="f_req">*</span></label>
+                        <select name="idCurso" id="idCurso" data-placeholder="" class="required span12">
+                            <option value="">-- Curso --</option>
+                        </select>
+                    </div>
+                </div>
+
+                <p>
+                    <input type="button" value="Buscar" class="btn btn-info" id="btnBuscar" />|
+                    @Html.ActionLink("Volver a la lista", "IndexAllSchoolStudent")
+                </p>
+            </fieldset>
+        </div>
+    </div>
+}
+
+<script>
+    $('#idSede').click(function () {
+        $('#idJornada').val('');
+        $('#ano').val('');
+        $('#idGrado').val('');
+        $('#idCurso').empty();
+    });
+
+    $('#idJornada').click(function () {
+        $('#ano').val('');
+        $('#idGrado').val('');
+        $('#idCurso').val('');
+    });
+
+    $('#ano').click(function () {        
+        $('#idGrado').val('');
+        $('#idCurso').empty();
+    });
+
+    $('#idGrado').click(function () {
+        var sede = $('#idSede').val();
+        var jornada = $('#idJornada').val();
+        var ano = $('#ano').val();
+        var grado = $('#idGrado').val();
+
+        var cursoSelect = $('#idCurso');
+        cursoSelect.empty();
+
+        if (sede != "" && jornada != "" && ano != "" && grado != "") {            
+            var id = sede + "|" + jornada + "|" + ano + "|" + grado;
+
+            $.getJSON('@Url.Action("CourseByFilters")', { filters: id }, function (Data) {
+
+                cursoSelect.append($('<option/>', {
+                    value: "0",
+                    text: ""
+                }));
+
+                $.each(Data, function (index, curso) {
+                    cursoSelect.append($('<option/>', {
+                        value: curso.id,
+                        text: curso.Descripcion
+                    }));
+                });
+            });
+        }                
+    });
+
+    $('#btnBuscar').click(function () {
+        if ($('#idCurso').val() != "") {
+            var id = @ViewBag.id  + '|' + $('#idCurso').val();
+            
+            var link = '@Url.Action("AddOlderStudents", new { id = "-1" })';
+            link = link.replace("-1", id);
+            window.location.href = link;
+        }
+    });
+</script>

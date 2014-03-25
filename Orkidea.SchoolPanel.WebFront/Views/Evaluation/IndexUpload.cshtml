@@ -1,0 +1,243 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmEvaluation
+
+@{
+    ViewBag.Title = "Evaluation upload";
+}
+
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+
+
+
+
+
+<h2>Carga de notas</h2>
+
+<div class="row-fluid">
+    <div class="span6">
+        @*@using (Ajax.BeginForm("CreateUpload", null, null, new AjaxOptions { UpdateTargetId = "divInvoiceList" }, new { id = "uploaded", @class = "form_validation_ttip", enctype = "multipart/form-data" }))*@
+
+        @using (Html.BeginForm())
+        {
+            <div id="divColegio">
+                <label>Colegio<span class="f_req">*</span></label>
+                @Html.DropDownList("lstColegio", new SelectList(Model.lstColegio, "id", "NombreColegio"),
+                            new { @class = "required span10" })@Html.TextBoxFor(model => model.idColegio, new { @class = "required", style = "visibility:hidden; width:0;" })
+            </div>
+            <div id="divAno">
+                <label>Año<span class="f_req">*</span></label>
+                <select name="lstAno" id="lstAno" data-placeholder="Seleccione" class="span3">
+                    <option value=""></option>
+                </select>@Html.TextBoxFor(model => model.ano, new { @class = "required", style = "visibility:hidden; width:0;" })
+            </div>
+            <div id="divCurso">
+                <label>Curso<span class="f_req">*</span></label>
+                <select name="lstCurso" id="lstCurso" data-placeholder="Seleccione una opcion" class="span10">
+                    <option value=""></option>
+                </select>@Html.TextBoxFor(model => model.idCurso, new { @class = "required", style = "visibility:hidden; width:0;" })
+            </div>
+            <div id="divPeriodo">
+                <label>Periodo academico<span class="f_req">*</span></label>
+                <select name="lstPeriodo" id="lstPeriodo" data-placeholder="Seleccione una opcion" class="span10">
+                    <option value=""></option>
+                </select>@Html.TextBoxFor(model => model.idPeriodoAcademico, new { @class = "required", style = "visibility:hidden; width:0;" })
+            </div>
+            <div id="divAsignatura">
+                <label>Asignatura<span class="f_req">*</span></label>
+                <select name="lstAsignatura" id="lstAsignatura" data-placeholder="Seleccione una opcion" class="span10">
+                    <option value=""></option>
+                </select>@Html.TextBoxFor(model => model.idAsignatura, new { @class = "required", style = "visibility:hidden; width:0;" })
+            </div>
+
+@*<div>
+                <label>Archivo de notas<span class="f_req">*</span></label>
+                <div data-fileupload="file" class="fileupload fileupload-new">
+                    <input type="hidden" value="" name="">
+                    <span class="btn btn-file btn-warning">
+                        <span class="fileupload-new">Seleccionar</span>
+                        <span class="fileupload-exists">Cambiar</span>
+                        <input type="file" name="file" accept=".csv">
+                    </span>
+                    <span class="fileupload-preview"></span>
+                    <a style="float: none" data-dismiss="fileupload" class="close fileupload-exists" href="#">&times;</a>
+                </div>
+            </div>*@
+            @*<hr />*@
+            <div class="row-fluid">
+                <div class="span12">
+                    @*<input type="submit" value="Guardar" class="btn btn-info" />
+                    | @Html.ActionLink("Volver al Home", "Index", "Home")*@
+
+
+                </div>
+            </div>
+        
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="row-fluid">
+                        <input type="button" class="btn btn-warning" value="Ingresar notas" id="btnBajar" /> | @Html.ActionLink("Volver al Home", "Index", "Home")
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div id="uploaded" class="span6">
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        $("#lstColegio").prepend("<option value='0'></option>")
+        $("#lstColegio").val("0");
+    });
+
+    $('#btnBajar').click(function () {
+        var selectCurso = $('#lstCurso').val();
+        var selectPeriodo = $('#lstPeriodo').val();
+        var asignaturaSelect = $('#lstAsignatura').val();
+
+        var select = selectCurso + "|" + asignaturaSelect;
+
+        $.getJSON('@Url.Action("GetCourseAsignatureID")', { courseAsignature: select }, function (data) {
+
+            if (data != "0" && data != "" && selectPeriodo != "0" && selectPeriodo != "") {
+                var id = data + "|" + selectPeriodo;
+
+                var link = '@Url.Action("EnterResult", "Evaluation", new { id = "-1" })';
+                link = link.replace("-1", id);
+                window.location.href = link;
+            }
+            
+        });
+
+        //var courseAsignature;
+    });
+
+    $('#divColegio').click(function () {
+        var select = $('#lstColegio')[0].value;
+
+        var anosSelect = $('#lstAno');
+        anosSelect.empty();
+
+        if (select != '' && select != 0) {
+            $('#idColegio')[0].value = select;
+
+
+            $.getJSON('@Url.Action("YearsBySchool")', { idColegio: select }, function (Anos) {
+
+                anosSelect.append($('<option/>', {
+                    value: "0",
+                    text: ""
+                }));
+
+                $.each(Anos, function (index, ano) {
+                    anosSelect.append($('<option/>', {
+                        value: ano,
+                        text: ano
+                    }));
+                });
+            });
+        }
+    });
+
+    $('#divAno').click(function () {
+        var selectColegio = $('#lstColegio')[0].value;
+        var selectAno = $('#lstAno')[0].value;
+
+        var cursoSelect = $('#lstCurso');
+        cursoSelect.empty();
+
+        if (selectAno != '' && selectAno != 0) {
+            $('#ano')[0].value = selectAno;
+
+
+            $.getJSON('@Url.Action("CourseByYear")', { idColegio: selectColegio, ano: selectAno }, function (Data) {
+
+                cursoSelect.append($('<option/>', {
+                    value: "0",
+                    text: ""
+                }));
+
+                $.each(Data, function (index, curso) {
+                    cursoSelect.append($('<option/>', {
+                        value: curso.id,
+                        text: curso.Descripcion
+                    }));
+                });
+            });
+        }
+    });
+
+
+    $('#divCurso').click(function () {
+        var selectColegio = $('#lstColegio')[0].value;
+        var selectCurso = $('#lstCurso')[0].value;
+
+        var periodoSelect = $('#lstPeriodo');
+        periodoSelect.empty();
+
+        if (selectCurso != '' && selectCurso != 0) {
+            $('#idCurso')[0].value = selectCurso;
+
+
+            $.getJSON('@Url.Action("AcademicPeriodBySchool")', { idColegio: selectColegio }, function (Data) {
+
+                periodoSelect.append($('<option/>', {
+                    value: "0",
+                    text: ""
+                }));
+
+                $.each(Data, function (index, periodo) {
+                    periodoSelect.append($('<option/>', {
+                        value: periodo.id,
+                        text: periodo.Descripcion
+                    }));
+                });
+            });
+        }
+    });
+
+    $('#divPeriodo').click(function () {
+        var selectColegio = $('#lstColegio')[0].value;
+        var selectCurso = $('#lstCurso')[0].value;
+        var selectPeriodo = $('#lstPeriodo')[0].value;
+
+        var asignaturaSelect = $('#lstAsignatura');
+        asignaturaSelect.empty();
+
+        if (selectPeriodo != '' && selectPeriodo != 0) {
+            $('#idPeriodoAcademico')[0].value = selectPeriodo;
+
+
+            $.getJSON('@Url.Action("AsignatureByCourse")', { idCurso: selectCurso }, function (Data) {
+
+                    asignaturaSelect.append($('<option/>', {
+                        value: "0",
+                        text: ""
+                    }));
+
+                    $.each(Data, function (index, assignatura) {
+                        asignaturaSelect.append($('<option/>', {
+                            value: assignatura.id,
+                            text: assignatura.Descripcion
+                        }));
+                    });
+                });
+            }
+        });
+
+        $('#divAsignatura').click(function () {
+
+            var select = $('#lstAsignatura')[0].value;
+
+            if (select != '' && select != 0) {
+                $('#idAsignatura')[0].value = select;
+            }
+        });
+
+</script>

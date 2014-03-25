@@ -1,0 +1,107 @@
+﻿@model IEnumerable<Orkidea.SchoolPanel.WebFront.Models.vmCourseStudent>
+
+@{
+    ViewBag.Title = "CourseByStudentIndex";
+}
+
+
+@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@Scripts.Render("~/Scripts/gebo_tables.js")
+
+<h2>Cursos asignados</h2>
+
+<p>
+    @Html.ActionLink("Volver al home", "Index", "Home")
+</p>
+
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>                    
+                    <th>Año</th>
+                    <th>Curso</th>                    
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>                       
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ano)
+                            @Html.HiddenFor(modelItem => item.idCurso)                                            
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.desCurso)
+                        </td>                        
+                        <td>
+                            <input type="button" class="btn btn-info Notas" value="Ver notas" />
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<script>
+    $('#dt_gal').dataTable();
+
+    $('.Notas').click(function () {
+        var idCurso, idEstudiante;
+
+        idEstudiante = '@ViewBag.idEstudiante';
+        idCurso = this.parentElement.parentElement.childNodes[1].childNodes[1].value;
+
+        //var link = '../../Reporting/boletin.aspx?Curso='+ idCurso +'&Estudiante=' + idEstudiante        
+        //var link = '../../Evaluation/ShowResults/' + idCurso 
+        var link = '@Url.Action("ShowResults","Evaluation", new { curso = "-1" })';
+        link = link.replace("-1", idCurso);
+        window.location.href = link;
+
+    });
+
+    @*$('.Notas').click(function () {
+        var btn = this;
+
+        var idCurso, idPeriodoAcademico;
+
+        idCurso = btn.parentElement.children[1].value;        
+        idPeriodoAcademico = btn.parentElement.children[2].value;
+
+        var parametro = idCurso + "-" + idPeriodoAcademico;
+
+        var link = '@Url.Action("ShowResultsPdf","Evaluation", new { id = "-1" })';
+        link = link.replace("-1", parametro);
+        window.location.href = link;
+     });*@
+</script>
+
+@*<table>
+                                <tr>
+                                    @foreach (var itemAP in item.lstAcademicPeriod)
+                                    {
+                                        <td>
+                                            <input type="button" class="btn btn-info Notas" value="Notas @itemAP.Descripcion" />
+                                            @Html.HiddenFor(modelItem => item.idCurso)                                            
+                                            @Html.HiddenFor(modelItem => itemAP.id)                                            
+                                        </td>                                                                            
+                                    }
+                                </tr>
+                            </table>*@

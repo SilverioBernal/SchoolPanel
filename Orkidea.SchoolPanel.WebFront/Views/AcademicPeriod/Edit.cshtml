@@ -1,0 +1,39 @@
+﻿@model Orkidea.SchoolPanel.Entities.AcademicPeriod
+
+@{
+    ViewBag.Title = "Edit";
+}
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+
+<h2>Maestro de periodos academicos</h2>
+
+@using (Html.BeginForm("Create", null, FormMethod.Post, new { @class = "form_validation_ttip" }))
+{
+    @Html.ValidationSummary(true)
+
+    <fieldset>
+        <legend>Editar periodo academico</legend>
+        @Html.HiddenFor(model => model.id)
+        @Html.HiddenFor(model => model.idColegio)
+        <div class="editor-field">
+            <label>Descripción<span class="f_req">*</span></label>
+            @Html.TextBoxFor(model => model.Descripcion, new { @class = "required" })
+        </div>
+        <div class="editor-field">
+            <label>Valor porcentual<span class="f_req">*</span></label>
+            @Html.TextBoxFor(model => model.valorPorcentual, new { @class = "required" })            
+        </div>
+        <p>
+            <input type="submit" value="Guardar" class="btn btn-info" />|
+            @Html.ActionLink("Volver a la lista", "Index")
+        </p>
+    </fieldset>
+}
+
+
+@*@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}*@

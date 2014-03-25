@@ -1,0 +1,110 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmCourse
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@Scripts.Render("~/Scripts/gebo_tables.js")
+
+<h2>Alumnos por curso</h2>
+
+<p>
+    @Html.ActionLink("Incluir estudiante", "Create", new { id = Model.id }, new { @class = "btn btn-info" }) |
+    <input type="button" class="btn btn-warning" value="Promover curso" id="btnPromover" />
+    | @Html.ActionLink("Volver a la lista", "Index", "Course")
+</p>
+
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>
+                    <th>Id estudiante</th>
+                    <th>Nombre</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model.lstCourseStudents)
+                {
+                    <tr>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.idEstudiante)
+                            @Html.HiddenFor(modelItem => item.idColegio)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.desEstudiante)
+                        </td>
+                        <td>
+                            <a href="@Url.Action("Delete", "CourseStudent", new { idCourse = Model.id, idStudent = item.idEstudiante })" title="Borrar" class="btn btn-info">Borrar</a>
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+<div class="modal hide" id="promotionModal">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>Seleccione el curso a promover</h3>
+    </div>
+    <div class="modal-body">
+        <table class="table table-bordered table-striped table_vam" id="dt_preCourses">
+            <thead>
+                <tr>                    
+                    <th>Grado</th>
+                    <th>Año</th>
+                    <th>Nombre curso</th>                    
+                    <th></th>
+                </tr>
+            </thead>
+             <tbody>
+                @foreach (var item in Model.lstPreviusCourses)
+                {
+                    <tr>            
+                        <td>
+                            @Html.DisplayFor(modelItem => item.desGrado)                            
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.ano)
+                        </td>
+                        <td>
+                            @Html.DisplayFor(modelItem => item.Descripcion)
+                        </td>                        
+                        <td>
+                            @Html.ActionLink("Promover", "coursePromotion", new {idCourseFrom = item.id, idCourseTo = Model.id }, new { @class = "btn btn-info" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Close</a>
+    </div>
+</div>
+<script>
+    $('#dt_gal').dataTable();
+    $('#dt_preCourses').dataTable();
+    $('#btnPromover').click(function () {
+        $('#promotionModal').modal('show');
+    });
+    
+</script>

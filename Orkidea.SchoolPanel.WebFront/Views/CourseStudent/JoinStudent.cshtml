@@ -1,0 +1,103 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmCourseStudent
+
+@{
+    ViewBag.Title = "JoinStudent";
+}
+
+
+
+@*@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")*@
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@*@Scripts.Render("~/Scripts/gebo_tables.js")*@
+<h2>Añadir estudiantes a curso @ViewBag.nombreCurso</h2>
+<p>
+    @Html.ActionLink("Volver al listado de estudiantes del curso", "IndexCourseStudent", "CourseStudent", new { id = Model.idCurso}, null)
+</p>
+
+@using (Html.BeginForm("JoinStudent", null, FormMethod.Post, new { id = "frmJoin" }))
+{
+    <input type="text" id="alumnos" style="display:none;" />
+    
+    <div class="row-fluid tablaIndex">
+        <div class="span12">
+            @Html.HiddenFor(model => model.estudiante)
+            <table class="table table-bordered table-striped table_vam" id="dt_gal">
+                <thead>
+                    <tr>
+                        <th>Codigo</th>
+                        <th>Documento</th>
+                        <th>Estudiante</th>
+                        <th>Seleccionar</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach (var item in Model.lsVmStudent)
+                    {
+                        <tr>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.idEstudiante )
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.documento )
+                            </td>
+                            <td>
+                                @Html.DisplayFor(modelItem => item.estudiante)
+                            </td>
+                            <td>
+                                <input type="checkbox" class="alumnoSeleccionado" />
+                                @Html.HiddenFor(modelItem => item.idEstudiante, new { id = "estudiante", @class="checkEstudiante"})
+                            </td>
+                        </tr>
+                    }
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <div class="row-fluid">
+        <input type="submit" class="btn btn-info" value="Añadir estudiantes al curso" id="submit" />
+    </div>
+}
+<script>
+    $('#dt_gal').dataTable();
+
+    $('.tablaIndex').click(function (e) {
+        var reg = e.target.parentNode.parentNode
+        var id = $(reg).find('#estudiante')[0].value;
+        var alumnos = $('#alumnos').val();
+
+        if (e.target.checked)
+            alumnos += id + "|";
+        else 
+            alumnos = alumnos.replace(id + "|", "");
+        
+        $('#alumnos').val(alumnos);        
+    })
+
+
+    $('#submit').click(function () {
+        var alumnosSeleccionados = $('#alumnos').val();
+
+        $('#estudiante').val(alumnosSeleccionados);
+
+        if ($('#estudiante').val() != "")
+            $('#frmJoin').submit();
+        else
+            alert("Seleccione uno o mas estudiantes para añadirlos al curso");
+        return false;
+    })
+</script>
+

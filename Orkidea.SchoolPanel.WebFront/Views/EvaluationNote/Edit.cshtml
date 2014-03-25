@@ -1,0 +1,36 @@
+﻿@model Orkidea.SchoolPanel.Entities.EvaluationNote
+
+@{
+    ViewBag.Title = "Edit";
+}
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+<h2>Maestro comentarios de boletines</h2>
+
+@using (Html.BeginForm("Edit", null, FormMethod.Post, new { @class = "form_validation_ttip" }))
+{
+    @Html.ValidationSummary(true)
+
+    
+    <fieldset>
+        <legend>Editar comentario</legend>        
+        <div class="row-fluid">
+            <div class="span6">
+                @Html.LabelFor(model => model.Comentario, "Comentario")
+                @Html.TextAreaFor(model => model.Comentario, new { @class = "span12 required", rows = 4 })                
+                @Html.HiddenFor(model => model.idColegio)
+            </div>
+        </div>
+        <p>
+            <input type="submit" value="Guardar" class="btn btn-primary" />|
+        @Html.ActionLink("Volver a la lista", "Index")
+        </p>
+    </fieldset>  
+}
+
+@section Scripts {
+    @Scripts.Render("~/bundles/jqueryval")
+}
+

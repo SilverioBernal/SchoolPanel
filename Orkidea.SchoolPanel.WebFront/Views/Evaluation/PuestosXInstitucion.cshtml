@@ -1,0 +1,57 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmReporting
+@{
+    ViewBag.Title = "PuestosXInstitucion";
+}
+
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+
+
+
+
+
+<h2>Puestos por institución</h2>
+
+<div class="row-fluid">
+    <div class="span6">
+        @using (Ajax.BeginForm("CreateUpload", null, null, new AjaxOptions { UpdateTargetId = "divInvoiceList" }, new { id = "uploaded", @class = "form_validation_ttip", enctype = "multipart/form-data" }))
+        {                   
+            <div id="divAno">
+                <label>Año<span class="f_req">*</span></label>
+                @Html.DropDownListFor(c => c.año, new SelectList(Model.lsAño, "key", "value", Model.año), "-- Selecione un año --", new { @class = "required span12" })
+            </div>            
+            <div id="divPeriodo">
+                <label>Periodo academico<span class="f_req">*</span></label>
+                @Html.DropDownListFor(c => c.idPeriodoAcademico, new SelectList(Model.lsAdademicPeriod, "id", "descripcion", Model.idPeriodoAcademico), "-- Selecione un Periodo --", new { @class = "required span12" })
+            </div>            
+            <hr />
+            <div class="row-fluid">
+                <div class="span12">
+                    <input type="button" value="Generar" class="btn btn-info" id="btnGenerar"/>
+                    | @Html.ActionLink("Volver al Home", "Index", "Home")
+                </div>
+            </div>        
+        }
+    </div>
+</div>
+
+
+
+<script>
+
+    $('#btnGenerar').click(function () {
+
+        var año = $('#a_o').val();
+        var periodo = $('#idPeriodoAcademico').val();
+
+        if (año != '' && periodo != '') {
+            var link = '@Url.Action("PuestosXInstitucionRep", new { id = "-1" })';
+            link = link.replace("-1", año + "|" + periodo);
+            window.open(link,'_blank');
+        }
+    });
+
+</script>
+

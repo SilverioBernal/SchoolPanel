@@ -1,0 +1,192 @@
+﻿@model IEnumerable<Orkidea.SchoolPanel.WebFront.Models.vmEvaluation>
+
+@{
+    ViewBag.Title = "EnterResult";
+}
+
+@*@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")*@
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@*@Scripts.Render("~/Scripts/gebo_tables.js")*@
+
+<h2>Ingreso de notas</h2>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="row-fluid">
+            <input type="button" class="btn btn-warning" value="Bajar plantilla" id="btnBajar" />
+            |
+            @Html.ActionLink("Subir planilla", "UploadNotes", "Evaluation", new { id = ViewBag.id}, new { @class = "btn btn-success" })
+        </div>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>
+                    <th>Nombre estudiante
+                    </th>
+                    <th>Nota
+                    </th>
+                    <th>Comentario 1
+                    </th>
+                    <th>Comentario 2
+                    </th>
+                    <th>Observaciones
+                    </th>
+                    <th>Fallas
+                    </th>
+                    @*<th></th>*@
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="evaluationRow">
+                        <td>
+                            @item.desEstudiante.Trim()
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(modelItem => item.Nota, new { @class = "txtNota", style = "width:30px" })
+                            @Html.HiddenFor(modelItem => item.idAsignatura, new { @class = "txtAsignatura" })
+                            @Html.HiddenFor(modelItem => item.idEstudiante, new { @class = "txtEstudiante" })
+                            @Html.HiddenFor(modelItem => item.idPeriodoAcademico, new { @class = "txtPeriodoAcademico" })
+                            @*<input type="number" class="txtNota" step="0.01" value="@item.Nota.ToString()" style = "width:40px"/>*@
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(modelItem => item.comentario1, new SelectList(item.lsEvaluationNotes, "id", "Comentario", item.comentario1), "-- Comentario --", new { style = "width:150px", @class = "comment1" })
+                        </td>
+                        <td>
+                            @Html.DropDownListFor(modelItem => item.comentario2, new SelectList(item.lsEvaluationNotes, "id", "Comentario", item.comentario2), "-- Comentario --", new { style = "width:150px", @class = "comment2" })
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(modelItem => item.observaciones, new { style = "width:350px", @class = "observations" })
+                        </td>
+                        <td>
+                            @Html.TextBoxFor(modelItem => item.numeroFallas, new { @class = "txtFalla", style = "width:30px" })
+                            @*<input type="number" class="txtFalla" step="1"/>*@
+                        </td>
+                        @*<td>
+                            <span class="spanReturn"></span>
+                        </td>*@
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <input type="button" class="btn btn-info" value="Guardar" id="btnGuardar" />
+    | @Html.ActionLink("Volver a cursos asignados", "Index", "CourseTeacher")
+</div>
+<div class="modal hide" id="myModal1">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3>Modal header</h3>
+    </div>
+    <div class="modal-body">
+        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque non elit tellus, eleifend varius erat. Lorem ipsum dolor sit amet, consectetur adipiscing elit. In bibendum laoreet ante sodales elementum. Nullam varius interdum est, at ornare quam aliquam eu. Nulla ultricies commodo leo sit amet vulputate.
+    </div>
+    <div class="modal-footer">
+        <a href="#" class="btn" data-dismiss="modal">Cerrar</a>
+    </div>
+</div>
+<div class="modal hide fade" id="myModal">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3 id="msgHeader"></h3>
+    </div>
+    <div class="modal-body" id="msgBody">
+    </div>
+    <div class="modal-footer">
+        <input type="button" class="btn btn-info" value="Aceptar" id="btnSuccess" />
+        <a href="#" class="btn btn-danger" data-dismiss="modal" id="btnFail">Revisar</a>
+    </div>
+</div>
+<script>
+    //$('#dt_gal').dataTable();
+
+    $('#btnGuardar').click(function () {
+        var filas = $('.evaluationRow');
+        var error = 0;
+
+        $(filas).each(function () {
+            var registro = this;
+
+            var periodoAcademico = $($(registro).find('.txtPeriodoAcademico')).val();
+            var asignatura = $($(registro).find('.txtAsignatura')).val();
+            var estudiante = $($(registro).find('.txtEstudiante')).val();
+            var nota = $($(registro).find('.txtNota')).val().replace(",", ".");
+            var comment1 = $($(registro).find('.comment1')).val();
+            var comment2 = $($(registro).find('.comment2')).val();
+            var observations = $($(registro).find('.observations')).val();
+            var fallas = $($(registro).find('.txtFalla')).val();
+            var span = $(registro).find('.spanReturn')[0];
+
+            var datos = {
+                idPeriodoAcademico: periodoAcademico,
+                idEstudiante: estudiante,
+                idAsignatura: asignatura,
+                Nota: nota,
+                comentario1: comment1,
+                comentario2: comment2,
+                observaciones: observations,
+                numeroFallas: fallas
+            };
+
+            $.getJSON("@Url.Action("saveEvaluationResult")", datos, res);
+
+            function res(data) {
+                if (data == "OK") {
+                    $(span).removeClass('text-error').addClass('text-success');
+                }
+                else {
+                    $(span).removeClass('tex-success').addClass('text-error');
+                    error = 1;
+                }
+
+                span.innerText = data;
+            }
+        });
+
+        if (error == 0) {
+            $('#msgHeader')[0].innerText = 'Registro de notas';
+            $('#msgBody')[0].innerText = 'Registro de notas exitoso';
+            $('#btnSuccess').css("display", "inline");
+            $('#btnFail').css("display", "none");
+        }
+        else {
+            $('#msgHeader')[0].innerText = 'Error - Registro de notas';
+            $('#msgBody')[0].innerText = 'Al intentar guardar las notas, algunos registros presentaron inconsistencias. Por favor verifique.';
+            $('#btnSuccess').css("display", "none");
+            $('#btnFail').css("display", "inline");
+        }
+
+        $('#myModal').modal('show');
+    });
+
+    $('#btnSuccess').click(function () {
+        var link = '@Url.Action("Index", "courseTeacher")';
+        window.location.href = link;
+    });
+
+    $('#btnBajar').click(function () {
+        @*var link = '@Url.Action("downloadExcel", "Evaluation", new { id = ViewBag.id})';*@
+        var link = '@Url.Action("DownloadNotasExcelRep", "Evaluation", new { id = ViewBag.id})';
+        window.location.href = link;
+    });
+</script>

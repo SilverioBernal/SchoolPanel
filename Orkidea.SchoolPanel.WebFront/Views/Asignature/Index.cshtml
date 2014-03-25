@@ -1,0 +1,122 @@
+﻿@model IEnumerable<Orkidea.SchoolPanel.WebFront.Models.vmAsignature>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@*@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")*@
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@*@Scripts.Render("~/Scripts/gebo_tables.js")*@
+
+<h2>Maestro de asignaturas</h2>
+
+<p>
+    @Html.ActionLink("Crear Nueva", "Create", null, new { @class = "btn btn-info" }) | @Html.ActionLink("Volver al home", "Index", "Home")
+</p>
+<div class="row-fluid tablaIndex">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>
+                    <th>Asignatura</th>
+                    <th>Grado</th>
+                    <th>Intensidad horaria</th>
+                    <th>Área de conocimiento</th>
+                    <th></th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr>
+                        <td>@Html.DisplayFor(modelItem => item.Descripcion)</td>
+                        <td>@Html.DisplayFor(modelItem => item.desGrado)</td>
+                        <td>@Html.DisplayFor(modelItem => item.intensidadHoraria)</td>
+                        <td>@Html.DisplayFor(modelItem => item.desAreaConocimiento)</td>
+                        <td>
+                            <a href="@Url.Action("Edit", "Asignature", new { id = item.id })" class="sepV_a" title="Editar"><i class="icon-pencil"></i></a>
+                            <span>|</span>
+                            <a href="#" title="Eliminar" class="eliminar"><i class="icon-trash"></i></a>
+
+                            @Html.HiddenFor(modelItem => item.id, new { id = "idAsignatura" })
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+    <div id="confirmModal" class="modal hide fade" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+            <h3 id="myModalLabel">Maestro de asignaturas</h3>
+        </div>
+        <div class="modal-body" id="mensaje">
+            <input id="txtId" class="hide" />
+            <p>¿Está seguro de borrar esta asignatura?</p>
+        </div>
+        <div class="modal-footer">
+            <button class="btn" data-dismiss="modal" aria-hidden="true">No</button>
+            <button class="btn btn-danger" data-dismiss="modal" aria-hidden="true" id="btnBorrar">Si</button>
+            @*<a href="@Url.Action("Delete", "School", new { id = item.id })" role="button" class="btn btn-primary" data-toggle="modal">Si</a>*@
+        </div>
+    </div>
+    <div class="modal hide fade" id="myModal">
+        <div class="modal-header">
+            <button class="close" data-dismiss="modal">X</button>
+            <h3 id="msgHeader">Maestro de asignaturas</h3>
+        </div>
+        <div class="modal-body" id="msgBody">
+        </div>
+        <div class="modal-footer">
+            <a href="#" class="btn btn-danger" data-dismiss="modal" id="btnFail">Aceptar</a>
+        </div>
+    </div>
+</div>
+
+<script>
+    $('#dt_gal').dataTable();
+
+    $('.tablaIndex').click(function (e) {
+        if (e.target.tagName == "I") {
+            var reg = e.target.parentNode.parentNode
+            var id = $(reg).find('#idAsignatura')[0].value;
+            $('#txtId').val(id);
+
+            $('#confirmModal').modal('show');
+        }
+    })
+
+    $('#btnBorrar').click(function () {
+        var code = $('#txtId').val();
+
+        $.getJSON("@Url.Action("Delete")", { id: code }, res);
+
+        function res(data) {
+            if (data != "OK") {
+                $('#msgBody')[0].innerText = data;
+
+                $('#myModal').modal('show');
+            }
+            else {
+                var link = '@Url.Action("Index")';
+            window.location.href = link;
+        }
+    }
+    });
+</script>
+
+

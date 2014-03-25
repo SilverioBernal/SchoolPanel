@@ -1,0 +1,13 @@
+﻿@model Orkidea.SchoolPanel.Entities.CourseStudent
+
+@{
+    ViewBag.Title = "ShowResults";
+}
+
+<h2>Boletin de notas</h2>
+<p>
+    @Html.ActionLink("Volver a la lista", "CourseByStudentIndex", "CourseStudent")
+</p>
+<span>@ViewBag.error</span>
+<embed src="@Url.Action("getEvaluationResults", "Evaluation", new { curso = Model.idCurso })" width="100%" height="500" id="pdfDoc" />
+
