@@ -84,16 +84,27 @@ namespace Orkidea.SchoolPanel.Business
                     else
                     {
                         // else create
+                        PersonBiz personBiz = new PersonBiz();
+
 
                         Cryptography cryptography = new Cryptography();
 
                         List<Person> admin = new List<Person>();
 
+                        string userName = schoolTarget.nit.Replace(".", "").Replace("-", "").Replace(" ", "");
+
+                        List<Person> usuarios = personBiz.GetPersonList().Where(x => x.usuario.Length >= userName.Length).ToList();                                                
+
+                        int usuariosNit = usuarios.Where(x => x.usuario.Substring(0, userName.Length) == userName).Count();
+
+                        if (usuariosNit > 0)
+                            userName = userName + "_" + usuariosNit;
+                        
                         admin.Add(new Person()
                         {
                             idJornada = 1,
                             idRol = 2,
-                            usuario = schoolTarget.nit.Replace(".", "").Replace("-","").Replace(" ",""), 
+                            usuario = userName,
                             password = cryptography.Encrypt(schoolTarget.telefono.Replace(".", "").Replace("-","").Replace(" ","")),
                             usuarioActivo = true,
                             primerNombre = "Default",
