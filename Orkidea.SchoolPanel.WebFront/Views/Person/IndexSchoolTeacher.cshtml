@@ -108,8 +108,8 @@
 
     $('#btnBorrar').click(function () {
         var code = $('#txtId').val();
-
-        $.getJSON("/Person/DeleteTeacher", { id: code }, res);
+        
+        $.getJSON('@Url.Action("DeleteTeacher", "Person")', { id: code }, res);
 
         function res(data) {
             if (data != "OK") {

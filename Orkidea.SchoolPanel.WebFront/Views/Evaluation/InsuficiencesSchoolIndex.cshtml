@@ -1,0 +1,202 @@
+﻿@model Orkidea.SchoolPanel.WebFront.Models.vmEvaluation
+
+@{
+    ViewBag.Title = "Reportes resumen";
+}
+
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+@Scripts.Render("~/lib/validation/jquery.validate.min.js")
+@Scripts.Render("~/js/gebo_validation.js")
+
+
+
+
+
+<h2>Reportes de resumen</h2>
+
+<div class="row-fluid">
+    <div class="span6">
+        @*@using (Ajax.BeginForm("CreateUpload", null, null, new AjaxOptions { UpdateTargetId = "divInvoiceList" }, new { id = "uploaded", @class = "form_validation_ttip", enctype = "multipart/form-data" }))*@
+
+        @using (Html.BeginForm())
+        {            
+            <div id="divAno">
+                <label>Año<span class="f_req">*</span></label>
+                <select name="lstAno" id="lstAno" data-placeholder="Seleccione" class="span3">
+                    <option value=""></option>
+                </select>@Html.TextBoxFor(model => model.ano, new { @class = "required", style = "visibility:hidden; width:0;" })
+            </div>
+            <div id="divCurso">
+                <label>Curso<span class="f_req">*</span></label>
+                <select name="lstCurso" id="lstCurso" data-placeholder="Seleccione una opcion" class="span10">
+                    <option value=""></option>
+                </select>@Html.TextBoxFor(model => model.idCurso, new { @class = "required", style = "visibility:hidden; width:0;" })
+            </div>
+            <div id="divPeriodo">
+                <label>Periodo academico<span class="f_req">*</span></label>
+                <select name="lstPeriodo" id="lstPeriodo" data-placeholder="Seleccione una opcion" class="span10">
+                    <option value=""></option>
+                </select>@Html.TextBoxFor(model => model.idPeriodoAcademico, new { @class = "required", style = "visibility:hidden; width:0;" })
+            </div>
+            <div class="row-fluid">
+                <label>Tipo de reporte<span class="f_req">*</span></label>
+                <div class="span12">
+                    <label class="radio">
+                        <input type="radio" name="optionsRadios" id="optionsRadios1" value="1">
+                        Resumen de calificaciones por grupo
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="optionsRadios" id="optionsRadios2" value="2">
+                        Resumen final de insuficiencias por grupo
+                    </label>
+                    <label class="radio">
+                        <input type="radio" name="optionsRadios" id="optionsRadios3" value="3">
+                        Resumen de insuficiencias por grupo por periodo
+                    </label>
+                </div>
+            </div>
+            <div class="row-fluid">
+                <div class="span12">
+                    <div class="row-fluid">
+                        <input type="button" class="btn btn-warning" value="Generar" id="btnGenerar" />
+                        | @Html.ActionLink("Volver al Home", "Index", "Home")
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+
+    <div id="uploaded" class="span6">
+    </div>
+</div>
+
+
+
+<script>
+    $(document).ready(function () {
+        var select = '@ViewBag.idColegio';
+
+        var anosSelect = $('#lstAno');
+        anosSelect.empty();
+
+        if (select != '' && select != 0) {
+            //$('#idColegio')[0].value = select;
+
+
+            $.getJSON('@Url.Action("YearsBySchool")', { idColegio: select }, function (Anos) {
+
+                anosSelect.append($('<option/>', {
+                    value: "0",
+                    text: ""
+                }));
+
+                $.each(Anos, function (index, ano) {
+                    anosSelect.append($('<option/>', {
+                        value: ano,
+                        text: ano
+                    }));
+                });
+            });
+        }
+    });
+
+    $('#btnGenerar').click(function () {
+        var selectCurso = $('#lstCurso').val();
+        var selectPeriodo = $('#lstPeriodo').val();
+        var reporte = $("input:radio:checked").val();
+
+        if (selectPeriodo != '0' && selectCurso != '0' && reporte != null) {
+            var id = selectCurso + "|" + selectPeriodo + "|" + reporte;
+
+            var link = '@Url.Action("InsuficiencesRep", "Evaluation", new { id = "-1" })';
+            link = link.replace("-1", id);
+            window.open(link, '_blank');
+        }
+    });
+
+    $('#divColegio').click(function () {
+        var select = $('#lstColegio')[0].value;
+
+        var anosSelect = $('#lstAno');
+        anosSelect.empty();
+
+        if (select != '' && select != 0) {
+            $('#idColegio')[0].value = select;
+
+
+            $.getJSON('@Url.Action("YearsBySchool")', { idColegio: select }, function (Anos) {
+
+                anosSelect.append($('<option/>', {
+                    value: "0",
+                    text: ""
+                }));
+
+                $.each(Anos, function (index, ano) {
+                    anosSelect.append($('<option/>', {
+                        value: ano,
+                        text: ano
+                    }));
+                });
+            });
+        }
+    });
+
+    $('#divAno').click(function () {
+        var selectColegio = '@ViewBag.idColegio' ; //$('#lstColegio')[0].value;
+        var selectAno = $('#lstAno')[0].value;
+
+        var cursoSelect = $('#lstCurso');
+        cursoSelect.empty();
+
+        if (selectAno != '' && selectAno != 0) {
+            $('#ano')[0].value = selectAno;
+
+
+            $.getJSON('@Url.Action("CourseByYear")', { idColegio: selectColegio, ano: selectAno }, function (Data) {
+
+                cursoSelect.append($('<option/>', {
+                    value: "0",
+                    text: ""
+                }));
+
+                $.each(Data, function (index, curso) {
+                    cursoSelect.append($('<option/>', {
+                        value: curso.id,
+                        text: curso.Descripcion
+                    }));
+                });
+            });
+        }
+    });
+
+
+    $('#divCurso').click(function () {
+        var selectColegio = '@ViewBag.idColegio';//$('#lstColegio')[0].value;
+        var selectCurso = $('#lstCurso')[0].value;
+
+        var periodoSelect = $('#lstPeriodo');
+        periodoSelect.empty();
+
+        if (selectCurso != '' && selectCurso != 0) {
+            $('#idCurso')[0].value = selectCurso;
+
+
+            $.getJSON('@Url.Action("AcademicPeriodBySchool")', { idColegio: selectColegio }, function (Data) {
+
+                periodoSelect.append($('<option/>', {
+                    value: "0",
+                    text: ""
+                }));
+
+                $.each(Data, function (index, periodo) {
+                    periodoSelect.append($('<option/>', {
+                        value: periodo.id,
+                        text: periodo.Descripcion
+                    }));
+                });
+            });
+        }
+    });
+
+</script>

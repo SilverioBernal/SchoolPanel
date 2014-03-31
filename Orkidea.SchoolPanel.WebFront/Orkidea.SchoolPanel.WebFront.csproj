@@ -2407,6 +2407,7 @@
     <Content Include="Views\Evaluation\Certificaction.cshtml" />
     <Content Include="Views\Evaluation\CertificactionLookUp.cshtml" />
     <Content Include="Views\Evaluation\InsuficiencesAdminIndex.cshtml" />
+    <Content Include="Views\Evaluation\InsuficiencesSchoolIndex.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />

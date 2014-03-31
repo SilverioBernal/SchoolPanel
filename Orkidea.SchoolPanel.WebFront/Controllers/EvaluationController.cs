@@ -1525,6 +1525,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             }
         }
 
+        [Authorize]
         public ActionResult InsuficiencesAdminIndex()
         {
             SchoolBiz schoolBiz = new SchoolBiz();
@@ -1535,6 +1536,32 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             return View(oEvaluation);
         }
 
+        [Authorize]
+        public ActionResult InsuficiencesSchoolIndex()
+        {
+            #region School identification
+            System.Security.Principal.IIdentity context = HttpContext.User.Identity;
+            int idColegio = 0;
+            int usuario = 0;
+
+            if (context.IsAuthenticated)
+            {
+                System.Web.Security.FormsIdentity ci = (System.Web.Security.FormsIdentity)HttpContext.User.Identity;
+                string[] userRole = ci.Ticket.UserData.Split('|');
+                usuario = int.Parse(userRole[0]);
+                idColegio = int.Parse(userRole[2]);
+            }
+
+            School school = new School() { id = idColegio };
+            #endregion
+
+            ViewBag.idColegio = school.id;
+            vmEvaluation oEvaluation = new vmEvaluation();
+           
+            return View(oEvaluation);
+        }
+
+        [Authorize]
         public ActionResult InsuficiencesRep(string id)
         {
             DsCrossReports ds = calculoReporteInsuficiencias(id);

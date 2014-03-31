@@ -106,7 +106,7 @@
     $('#btnBorrar').click(function () {
         var code = $('#txtId').val();
 
-        $.getJSON("/Person/DeleteStudent", { id: code }, res);
+        $.getJSON('@Url.Action("DeleteStudent", "Person")', { id: code }, res);
 
         function res(data) {
             if (data != "OK") {
