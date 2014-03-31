@@ -218,6 +218,15 @@
                                             <li class="dropdown">
                                                 <a data-toggle="dropdown" class="dropdown-toggle" href="#"><i class="icon-list-alt icon-white"></i>Reportes <b class="caret"></b></a>
                                                 <ul class="dropdown-menu">
+                                                    @if (rol == 1)
+                                                    { 
+                                                        <li class="dropdown">
+                                                            <a href="#">Notas<b class="caret-right"></b></a>
+                                                            <ul class="dropdown-menu">
+                                                                <li>@Html.ActionLink("Reportes resumen", "InsuficiencesAdminIndex", "Evaluation")</li>                                                                
+                                                            </ul>
+                                                        </li>
+                                                    }
                                                     @if (rol == 2)
                                                     {
                                                         <li class="dropdown">
