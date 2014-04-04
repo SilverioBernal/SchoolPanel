@@ -98,6 +98,26 @@ namespace Orkidea.SchoolPanel.Business
             catch (Exception ex) { throw ex; }
         }
 
+        public List<Evaluation> GetEvaluationList(Course course)
+        {
+            List<Evaluation> lsEvaluation = new List<Evaluation>();
+
+            try
+            {
+                CourseAsignatureBiz courseAsignatureBiz = new CourseAsignatureBiz();
+
+                List<CourseAsignature> lsCA = courseAsignatureBiz.GetCourseAsignatureList(course);
+
+                foreach (CourseAsignature item in lsCA)
+                {
+                    lsEvaluation.AddRange(GetEvaluationList(item));
+                }
+
+                return lsEvaluation;
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
         //public List<Evaluation> GetEvaluationbyCourseEstudent(CourseStudent courseStudentTarget)
         //{
         //    List<Evaluation> lstEvaluation = new List<Evaluation>();
