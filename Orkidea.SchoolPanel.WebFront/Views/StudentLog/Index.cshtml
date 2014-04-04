@@ -1,0 +1,77 @@
+﻿@model IEnumerable<Orkidea.SchoolPanel.Entities.StudentLog>
+
+@{
+    ViewBag.Title = "Index";
+}
+
+@*@Styles.Render("~/Scripts/datatables/css/demo_page.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table.css")
+@Styles.Render("~/Scripts/datatables/css/demo_table_jui.css")*@
+@Styles.Render("~/Content/themes/base/jquery-ui.css")
+@Styles.Render("~/lib/jquery-ui/css/smoothness/jquery-ui-1.8.20.custom.css")
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+<!-- Gebo common -->
+@Scripts.Render("~/Scripts/gebo_common.js")
+<!-- datatable -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.js")
+@Scripts.Render("~/Scripts/datatables/DT_bootstrap.js")
+
+<!-- additional sorting for datatables -->
+@Scripts.Render("~/Scripts/datatables/jquery.dataTables.sorting.js")
+<!-- tables functions -->
+@*@Scripts.Render("~/Scripts/gebo_tables.js")*@
+
+
+    @{
+        System.Security.Principal.IIdentity context = Context.User.Identity;
+        int user = 0;
+        int rol = 99;
+        int idColegio = 0;
+        string userName = "";
+
+        if (context.IsAuthenticated)
+        {
+            System.Web.Security.FormsIdentity ci = (System.Web.Security.FormsIdentity)Context.User.Identity;
+            string[] userRole = ci.Ticket.UserData.Split('|');
+            user = int.Parse(userRole[0]);
+            rol = int.Parse(userRole[1]);
+            idColegio = int.Parse(userRole[2]);
+            userName = ci.Name;
+        }
+    }
+
+<h2>Observador del alumno</h2>
+@if(rol== 2)
+{
+<p>@Html.ActionLink("Crear Nuevo", "Create", new { id = ViewBag.id }, new { @class = "btn btn-info" }) | @Html.ActionLink("Volver al home", "Index", "Home")</p>
+}
+
+<div class="row-fluid tablaIndex">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>                    
+                    <th>Observacion</th>                                        
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    var fecha = String.Format("{0: dd/MM/yyyy}", item.fecha);
+                    <tr>                                   
+                        <td> <strong>@fecha</strong> - @Html.DisplayFor(modelItem => item.observacion)</td>                        
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+
+<script>
+    $('#dt_gal').dataTable();
+</script>
+
+
+ 

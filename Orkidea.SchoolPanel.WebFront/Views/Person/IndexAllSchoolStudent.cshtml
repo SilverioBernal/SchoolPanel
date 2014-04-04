@@ -55,7 +55,8 @@
                             <a href="@Url.Action("EditStudent", "Person", new { id = item.id })" class="sepV_a" title="Editar"><i class="icon-pencil"></i></a>
                             <span>|</span>
                             <a href="#" title="Eliminar" class="eliminar"><i class="icon-trash"></i></a>
-
+                             - 
+                            <a href="@Url.Action("Index", "StudentLog", new { id = item.id })" class="sepV_a" title="Editar"><i class="icon-list"></i></a>
                             @Html.HiddenFor(modelItem => item.id, new { id = "idPersonaActual" })
                         </td>
                     </tr>

@@ -212,6 +212,7 @@
     <Compile Include="Controllers\SecurityController.cs" />
     <Compile Include="Controllers\StudentAbsenceController.cs" />
     <Compile Include="Controllers\StudentBitacoreController.cs" />
+    <Compile Include="Controllers\StudentLogController.cs" />
     <Compile Include="Controllers\TaskController.cs" />
     <Compile Include="Controllers\ValuationLevelController.cs" />
     <Compile Include="DsReporting\DsCrossReports.Designer.cs">
@@ -2408,6 +2409,8 @@
     <Content Include="Views\Evaluation\CertificactionLookUp.cshtml" />
     <Content Include="Views\Evaluation\InsuficiencesAdminIndex.cshtml" />
     <Content Include="Views\Evaluation\InsuficiencesSchoolIndex.cshtml" />
+    <Content Include="Views\StudentLog\Create.cshtml" />
+    <Content Include="Views\StudentLog\Index.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />

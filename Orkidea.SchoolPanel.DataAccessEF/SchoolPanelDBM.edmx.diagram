@@ -56,6 +56,9 @@
         <AssociationConnector Association="SchoolPanelModel.FK_Student_School" />
         <AssociationConnector Association="SchoolPanelModel.FK_Place_School" />
         <AssociationConnector Association="SchoolPanelModel.FK_ValuationLevel_School" />
+        <EntityTypeShape EntityType="SchoolPanelModel.StudentLog" Width="1.5" PointX="7.79017484178309" PointY="5.8311437544557938" />
+        <AssociationConnector Association="SchoolPanelModel.FK_StudentLog_Person" />
+        <AssociationConnector Association="SchoolPanelModel.FK_StudentLog_Person1" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

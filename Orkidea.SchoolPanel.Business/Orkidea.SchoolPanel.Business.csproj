@@ -66,6 +66,7 @@
     <Compile Include="SchoolBiz.cs" />
     <Compile Include="Obsolete_StudentBitacoreBiz.cs" />
     <Compile Include="StudentAbsenceBiz.cs" />
+    <Compile Include="StudentLogBiz.cs" />
     <Compile Include="TaskAttachmentBiz.cs" />
     <Compile Include="TaskBiz.cs" />
     <Compile Include="ValuationLevelBiz.cs" />

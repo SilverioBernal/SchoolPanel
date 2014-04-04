@@ -22,6 +22,7 @@
           <EntitySet Name="Place" EntityType="SchoolPanelModel.Store.Place" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="School" EntityType="SchoolPanelModel.Store.School" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="StudentAbsence" EntityType="SchoolPanelModel.Store.StudentAbsence" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="StudentLog" EntityType="SchoolPanelModel.Store.StudentLog" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Task" EntityType="SchoolPanelModel.Store.Task" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="TaskAttachment" EntityType="SchoolPanelModel.Store.TaskAttachment" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="ValuationLevel" EntityType="SchoolPanelModel.Store.ValuationLevel" store:Type="Tables" Schema="dbo" />
@@ -140,6 +141,14 @@
           <AssociationSet Name="FK_StudentAbsence_CourseStudent" Association="SchoolPanelModel.Store.FK_StudentAbsence_CourseStudent">
             <End Role="CourseStudent" EntitySet="CourseStudent" />
             <End Role="StudentAbsence" EntitySet="StudentAbsence" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentLog_Person" Association="SchoolPanelModel.Store.FK_StudentLog_Person">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="StudentLog" EntitySet="StudentLog" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentLog_Person1" Association="SchoolPanelModel.Store.FK_StudentLog_Person1">
+            <End Role="Person" EntitySet="Person" />
+            <End Role="StudentLog" EntitySet="StudentLog" />
           </AssociationSet>
           <AssociationSet Name="FK_Task_CourseAsignature" Association="SchoolPanelModel.Store.FK_Task_CourseAsignature">
             <End Role="CourseAsignature" EntitySet="CourseAsignature" />
@@ -342,6 +351,16 @@
           <Property Name="idAsignatura" Type="int" Nullable="false" />
           <Property Name="idPeriodoAcademico" Type="int" Nullable="false" />
           <Property Name="fecha" Type="date" Nullable="false" />
+        </EntityType>
+        <EntityType Name="StudentLog">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
+          <Property Name="fecha" Type="date" Nullable="false" />
+          <Property Name="idEstudiante" Type="int" Nullable="false" />
+          <Property Name="observacion" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="idFuncionario" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Task">
           <Key>
@@ -722,6 +741,30 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <Association Name="FK_StudentLog_Person">
+          <End Role="Person" Type="SchoolPanelModel.Store.Person" Multiplicity="1" />
+          <End Role="StudentLog" Type="SchoolPanelModel.Store.StudentLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StudentLog">
+              <PropertyRef Name="idEstudiante" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentLog_Person1">
+          <End Role="Person" Type="SchoolPanelModel.Store.Person" Multiplicity="1" />
+          <End Role="StudentLog" Type="SchoolPanelModel.Store.StudentLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StudentLog">
+              <PropertyRef Name="idFuncionario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         <Association Name="FK_Task_CourseAsignature">
           <End Role="CourseAsignature" Type="SchoolPanelModel.Store.CourseAsignature" Multiplicity="1" />
           <End Role="Task" Type="SchoolPanelModel.Store.Task" Multiplicity="*" />
@@ -909,6 +952,15 @@
           <AssociationSet Name="FK_ValuationLevel_School" Association="SchoolPanelModel.FK_ValuationLevel_School">
             <End Role="School" EntitySet="Schools" />
             <End Role="ValuationLevel" EntitySet="ValuationLevels" />
+          </AssociationSet>
+          <EntitySet Name="StudentLogs" EntityType="SchoolPanelModel.StudentLog" />
+          <AssociationSet Name="FK_StudentLog_Person" Association="SchoolPanelModel.FK_StudentLog_Person">
+            <End Role="Person" EntitySet="Persons" />
+            <End Role="StudentLog" EntitySet="StudentLogs" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentLog_Person1" Association="SchoolPanelModel.FK_StudentLog_Person1">
+            <End Role="Person" EntitySet="Persons" />
+            <End Role="StudentLog" EntitySet="StudentLogs" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="AcademicPeriod">
@@ -1229,6 +1281,8 @@
           <NavigationProperty Name="PersonBitacores" Relationship="SchoolPanelModel.FK_PersonBitacore_Person" FromRole="Person" ToRole="PersonBitacore" />
           <NavigationProperty Name="Courses" Relationship="SchoolPanelModel.FK_Course_Person" FromRole="Person" ToRole="Course" />
           <NavigationProperty Name="School" Relationship="SchoolPanelModel.FK_Student_School" FromRole="Person" ToRole="School" />
+          <NavigationProperty Name="StudentLogs" Relationship="SchoolPanelModel.FK_StudentLog_Person" FromRole="Person" ToRole="StudentLog" />
+          <NavigationProperty Name="StudentLogs1" Relationship="SchoolPanelModel.FK_StudentLog_Person1" FromRole="Person" ToRole="StudentLog" />
         </EntityType>
         <Association Name="FK_CourseAsignature_Person">
           <End Type="SchoolPanelModel.Person" Role="Person" Multiplicity="0..1" />
@@ -1579,6 +1633,42 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="StudentLog">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Type="DateTime" Name="fecha" Nullable="false" Precision="0" />
+          <Property Type="Int32" Name="idEstudiante" Nullable="false" />
+          <Property Type="String" Name="observacion" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="Int32" Name="idFuncionario" Nullable="false" />
+          <NavigationProperty Name="Person" Relationship="SchoolPanelModel.FK_StudentLog_Person" FromRole="StudentLog" ToRole="Person" />
+          <NavigationProperty Name="Person1" Relationship="SchoolPanelModel.FK_StudentLog_Person1" FromRole="StudentLog" ToRole="Person" />
+        </EntityType>
+        <Association Name="FK_StudentLog_Person">
+          <End Type="SchoolPanelModel.Person" Role="Person" Multiplicity="1" />
+          <End Type="SchoolPanelModel.StudentLog" Role="StudentLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StudentLog">
+              <PropertyRef Name="idEstudiante" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentLog_Person1">
+          <End Type="SchoolPanelModel.Person" Role="Person" Multiplicity="1" />
+          <End Type="SchoolPanelModel.StudentLog" Role="StudentLog" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StudentLog">
+              <PropertyRef Name="idFuncionario" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1818,6 +1908,17 @@
                 <ScalarProperty Name="especialidad" ColumnName="especialidad" />
                 <ScalarProperty Name="nit" ColumnName="nit" />
                 <ScalarProperty Name="nombreColegio" ColumnName="nombreColegio" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="StudentLogs">
+            <EntityTypeMapping TypeName="SchoolPanelModel.StudentLog">
+              <MappingFragment StoreEntitySet="StudentLog">
+                <ScalarProperty Name="idFuncionario" ColumnName="idFuncionario" />
+                <ScalarProperty Name="observacion" ColumnName="observacion" />
+                <ScalarProperty Name="idEstudiante" ColumnName="idEstudiante" />
+                <ScalarProperty Name="fecha" ColumnName="fecha" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

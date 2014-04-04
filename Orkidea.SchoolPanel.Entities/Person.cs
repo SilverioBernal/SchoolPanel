@@ -20,6 +20,8 @@ namespace Orkidea.SchoolPanel.Entities
             this.CourseStudents = new HashSet<CourseStudent>();
             this.PersonBitacores = new HashSet<PersonBitacore>();
             this.Courses = new HashSet<Course>();
+            this.StudentLogs = new HashSet<StudentLog>();
+            this.StudentLogs1 = new HashSet<StudentLog>();
         }
     
         public int id { get; set; }
@@ -55,5 +57,7 @@ namespace Orkidea.SchoolPanel.Entities
         public virtual ICollection<PersonBitacore> PersonBitacores { get; set; }
         public virtual ICollection<Course> Courses { get; set; }
         public virtual School School { get; set; }
+        public virtual ICollection<StudentLog> StudentLogs { get; set; }
+        public virtual ICollection<StudentLog> StudentLogs1 { get; set; }
     }
 }

@@ -99,6 +99,9 @@
     <Compile Include="StudentAbsence.cs">
       <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="StudentLog.cs">
+      <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Task.cs">
       <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
     </Compile>
