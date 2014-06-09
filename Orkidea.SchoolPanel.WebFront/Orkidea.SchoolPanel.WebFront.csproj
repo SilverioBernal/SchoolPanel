@@ -2405,8 +2405,8 @@
     <Content Include="Views\Evaluation\UploadNotes.cshtml" />
     <Content Include="Views\CourseStudent\AddOlderStudents.cshtml" />
     <Content Include="Views\Evaluation\NotasXCurso.cshtml" />
-    <Content Include="Views\Evaluation\Certificaction.cshtml" />
-    <Content Include="Views\Evaluation\CertificactionLookUp.cshtml" />
+    <Content Include="Views\Evaluation\Certification.cshtml" />
+    <Content Include="Views\Evaluation\CertificationLookUp.cshtml" />
     <Content Include="Views\Evaluation\InsuficiencesAdminIndex.cshtml" />
     <Content Include="Views\Evaluation\InsuficiencesSchoolIndex.cshtml" />
     <Content Include="Views\StudentLog\Create.cshtml" />

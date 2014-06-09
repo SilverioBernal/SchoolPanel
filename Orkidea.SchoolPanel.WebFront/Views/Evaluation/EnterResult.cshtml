@@ -28,7 +28,7 @@
         <div class="row-fluid">
             <input type="button" class="btn btn-warning" value="Bajar plantilla" id="btnBajar" />
             |
-            @Html.ActionLink("Subir planilla", "UploadNotes", "Evaluation", new { id = ViewBag.id}, new { @class = "btn btn-success" })
+            @Html.ActionLink("Subir planilla", "UploadNotes", "Evaluation", new { id = ViewBag.id }, new { @class = "btn btn-success" })
         </div>
     </div>
 </div>
@@ -119,6 +119,15 @@
 </div>
 <script>
     //$('#dt_gal').dataTable();
+    $(document).ready(function () {
+        var txtNota = $('.txtNota');
+
+        $(txtNota).each(function () {
+            if ($(this).val() == "0,00") {
+                $(this).val("");
+            }
+        });        
+    });
 
     $('#btnGuardar').click(function () {
         var filas = $('.evaluationRow');
@@ -150,43 +159,43 @@
 
             $.getJSON("@Url.Action("saveEvaluationResult")", datos, res);
 
-            function res(data) {
-                if (data == "OK") {
-                    $(span).removeClass('text-error').addClass('text-success');
+                    function res(data) {
+                        if (data == "OK") {
+                            $(span).removeClass('text-error').addClass('text-success');
+                        }
+                        else {
+                            $(span).removeClass('tex-success').addClass('text-error');
+                            error = 1;
+                        }
+
+                        span.innerText = data;
+                    }
+                });
+
+                if (error == 0) {
+                    $('#msgHeader')[0].innerText = 'Registro de notas';
+                    $('#msgBody')[0].innerText = 'Registro de notas exitoso';
+                    $('#btnSuccess').css("display", "inline");
+                    $('#btnFail').css("display", "none");
                 }
                 else {
-                    $(span).removeClass('tex-success').addClass('text-error');
-                    error = 1;
+                    $('#msgHeader')[0].innerText = 'Error - Registro de notas';
+                    $('#msgBody')[0].innerText = 'Al intentar guardar las notas, algunos registros presentaron inconsistencias. Por favor verifique.';
+                    $('#btnSuccess').css("display", "none");
+                    $('#btnFail').css("display", "inline");
                 }
 
-                span.innerText = data;
-            }
-        });
+                $('#myModal').modal('show');
+            });
 
-        if (error == 0) {
-            $('#msgHeader')[0].innerText = 'Registro de notas';
-            $('#msgBody')[0].innerText = 'Registro de notas exitoso';
-            $('#btnSuccess').css("display", "inline");
-            $('#btnFail').css("display", "none");
-        }
-        else {
-            $('#msgHeader')[0].innerText = 'Error - Registro de notas';
-            $('#msgBody')[0].innerText = 'Al intentar guardar las notas, algunos registros presentaron inconsistencias. Por favor verifique.';
-            $('#btnSuccess').css("display", "none");
-            $('#btnFail').css("display", "inline");
-        }
-
-        $('#myModal').modal('show');
-    });
-
-    $('#btnSuccess').click(function () {
-        var link = '@Url.Action("Index", "courseTeacher")';
+            $('#btnSuccess').click(function () {
+                var link = '@Url.Action("Index", "courseTeacher")';
         window.location.href = link;
     });
 
     $('#btnBajar').click(function () {
         @*var link = '@Url.Action("downloadExcel", "Evaluation", new { id = ViewBag.id})';*@
-        var link = '@Url.Action("DownloadNotasExcelRep", "Evaluation", new { id = ViewBag.id})';
+        var link = '@Url.Action("DownloadNotasExcelRep", "Evaluation", new { id = ViewBag.id })';
         window.location.href = link;
     });
 </script>

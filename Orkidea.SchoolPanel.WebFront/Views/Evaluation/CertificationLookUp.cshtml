@@ -4,9 +4,18 @@
     ViewBag.Title = "CertificactionLookUp";
 }
 
+@{
+    string texto = Model.lsCurso.Count > 0 ? "" : "El estudiante seleccionado no tiene cursos cerrados";        
+    }
+
 <div class="row-fluid">
     <h1>Certificaciones</h1>
     <ul>
+        @if (!string.IsNullOrEmpty(texto))
+        {
+            <h3>@texto</h3> 
+        }
+
         @foreach (var item in Model.lsCurso)
         {                    
             <li><a href="@Url.Action("CertificactionRep", "Evaluation", new { id = ViewBag.idEstudiante + "|"  + item.id.ToString()})" target="_blank"> @item.Descripcion - @item.ano</a> </li>                        

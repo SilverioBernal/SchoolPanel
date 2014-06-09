@@ -106,7 +106,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
         [Authorize]
         public ActionResult Logout()
         {
-            Session.Abandon();
+            //Session.Abandon();
             FormsAuthentication.SignOut();
 
             return RedirectToAction("Index", "Home");

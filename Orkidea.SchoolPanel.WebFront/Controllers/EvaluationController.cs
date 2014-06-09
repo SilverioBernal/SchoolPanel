@@ -1361,7 +1361,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
         }
 
         [Authorize]
-        public ActionResult Certificaction()
+        public ActionResult Certification()
         {
             #region School identification
             System.Security.Principal.IIdentity context = HttpContext.User.Identity;
@@ -1426,7 +1426,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
         }
 
         [Authorize]
-        public ActionResult CertificactionLookUp(int id)
+        public ActionResult CertificationLookUp(int id)
         {
             #region School identification
             System.Security.Principal.IIdentity context = HttpContext.User.Identity;
