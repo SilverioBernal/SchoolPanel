@@ -123,10 +123,10 @@
         var txtNota = $('.txtNota');
 
         $(txtNota).each(function () {
-            if ($(this).val() == "0,00") {
+            if ($(this).val() == "0,00" || $(this).val() == "0.00") {
                 $(this).val("");
             }
-        });        
+        });;
     });
 
     $('#btnGuardar').click(function () {
