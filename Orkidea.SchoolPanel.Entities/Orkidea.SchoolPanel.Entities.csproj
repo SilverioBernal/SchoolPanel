@@ -51,6 +51,9 @@
       <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Class1.cs" />
+    <Compile Include="ClosedAcademicPeriod.cs">
+      <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="Course.cs">
       <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
     </Compile>
@@ -58,6 +61,9 @@
       <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
     </Compile>
     <Compile Include="CourseStudent.cs">
+      <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
+    </Compile>
+    <Compile Include="DiciplineEvaluation.cs">
       <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
     </Compile>
     <Compile Include="Evaluation.cs">
@@ -96,6 +102,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
     </Compile>
+    <Compile Include="SchoolPanelEntityModel1.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
+    </Compile>
     <Compile Include="StudentAbsence.cs">
       <DependentUpon>SchoolPanelEntityModel.tt</DependentUpon>
     </Compile>
@@ -117,7 +128,7 @@
     <None Include="packages.config" />
     <None Include="SchoolPanelEntityModel.tt">
       <Generator>TextTemplatingFileGenerator</Generator>
-      <LastGenOutput>SchoolPanelEntityModel.cs</LastGenOutput>
+      <LastGenOutput>SchoolPanelEntityModel1.cs</LastGenOutput>
     </None>
   </ItemGroup>
   <ItemGroup>

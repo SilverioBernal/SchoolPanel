@@ -53,6 +53,11 @@
       <DesignTime>True</DesignTime>
       <DependentUpon>SchoolPanelDBM.edmx</DependentUpon>
     </Compile>
+    <Compile Include="SchoolPanelDBM1.Designer.cs">
+      <AutoGen>True</AutoGen>
+      <DesignTime>True</DesignTime>
+      <DependentUpon>SchoolPanelDBM.edmx</DependentUpon>
+    </Compile>
     <Compile Include="SchoolPanelEntityModel.Context.cs">
       <DependentUpon>SchoolPanelEntityModel.Context.tt</DependentUpon>
       <SubType>Code</SubType>
@@ -63,7 +68,7 @@
   <ItemGroup>
     <EntityDeploy Include="SchoolPanelDBM.edmx">
       <Generator>EntityModelCodeGenerator</Generator>
-      <LastGenOutput>SchoolPanelDBM.Designer.cs</LastGenOutput>
+      <LastGenOutput>SchoolPanelDBM1.Designer.cs</LastGenOutput>
     </EntityDeploy>
   </ItemGroup>
   <ItemGroup>

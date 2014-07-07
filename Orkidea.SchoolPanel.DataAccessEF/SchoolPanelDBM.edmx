@@ -8,9 +8,11 @@
         <EntityContainer Name="SchoolPanelModelStoreContainer">
           <EntitySet Name="AcademicPeriod" EntityType="SchoolPanelModel.Store.AcademicPeriod" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Asignature" EntityType="SchoolPanelModel.Store.Asignature" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="ClosedAcademicPeriod" EntityType="SchoolPanelModel.Store.ClosedAcademicPeriod" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Course" EntityType="SchoolPanelModel.Store.Course" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CourseAsignature" EntityType="SchoolPanelModel.Store.CourseAsignature" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="CourseStudent" EntityType="SchoolPanelModel.Store.CourseStudent" store:Type="Tables" Schema="dbo" />
+          <EntitySet Name="DiciplineEvaluation" EntityType="SchoolPanelModel.Store.DiciplineEvaluation" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Evaluation" EntityType="SchoolPanelModel.Store.Evaluation" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="EvaluationNote" EntityType="SchoolPanelModel.Store.EvaluationNote" store:Type="Tables" Schema="dbo" />
           <EntitySet Name="Grade" EntityType="SchoolPanelModel.Store.Grade" store:Type="Tables" Schema="dbo" />
@@ -183,6 +185,14 @@
           <Property Name="intensidadHoraria" Type="int" Nullable="false" />
           <Property Name="ignorarEnPromedio" Type="bit" />
         </EntityType>
+        <EntityType Name="ClosedAcademicPeriod">
+          <Key>
+            <PropertyRef Name="idPeriodoAcademico" />
+            <PropertyRef Name="ano" />
+          </Key>
+          <Property Name="idPeriodoAcademico" Type="int" Nullable="false" />
+          <Property Name="ano" Type="int" Nullable="false" />
+        </EntityType>
         <EntityType Name="Course">
           <Key>
             <PropertyRef Name="id" />
@@ -213,6 +223,17 @@
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="idCurso" Type="int" Nullable="false" />
           <Property Name="idEstudiante" Type="int" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DiciplineEvaluation">
+          <Key>
+            <PropertyRef Name="idPeriodoAcademico" />
+            <PropertyRef Name="idEstudiante" />
+            <PropertyRef Name="idAsignatura" />
+          </Key>
+          <Property Name="idPeriodoAcademico" Type="int" Nullable="false" />
+          <Property Name="idEstudiante" Type="int" Nullable="false" />
+          <Property Name="idAsignatura" Type="int" Nullable="false" />
+          <Property Name="Nota" Type="decimal" Nullable="false" Scale="2" />
         </EntityType>
         <EntityType Name="Evaluation">
           <Key>
@@ -359,7 +380,7 @@
           <Property Name="id" Type="int" Nullable="false" StoreGeneratedPattern="Identity" />
           <Property Name="fecha" Type="date" Nullable="false" />
           <Property Name="idEstudiante" Type="int" Nullable="false" />
-          <Property Name="observacion" Type="varchar" Nullable="false" MaxLength="50" />
+          <Property Name="observacion" Type="varchar" Nullable="false" MaxLength="5000" />
           <Property Name="idFuncionario" Type="int" Nullable="false" />
         </EntityType>
         <EntityType Name="Task">
@@ -962,6 +983,8 @@
             <End Role="Person" EntitySet="Persons" />
             <End Role="StudentLog" EntitySet="StudentLogs" />
           </AssociationSet>
+          <EntitySet Name="ClosedAcademicPeriods" EntityType="SchoolPanelModel.ClosedAcademicPeriod" />
+          <EntitySet Name="DiciplineEvaluations" EntityType="SchoolPanelModel.DiciplineEvaluation" />
           </EntityContainer>
         <EntityType Name="AcademicPeriod">
           <Key>
@@ -1640,7 +1663,7 @@
           <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
           <Property Type="DateTime" Name="fecha" Nullable="false" Precision="0" />
           <Property Type="Int32" Name="idEstudiante" Nullable="false" />
-          <Property Type="String" Name="observacion" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Type="String" Name="observacion" Nullable="false" MaxLength="5000" FixedLength="false" Unicode="false" />
           <Property Type="Int32" Name="idFuncionario" Nullable="false" />
           <NavigationProperty Name="Person" Relationship="SchoolPanelModel.FK_StudentLog_Person" FromRole="StudentLog" ToRole="Person" />
           <NavigationProperty Name="Person1" Relationship="SchoolPanelModel.FK_StudentLog_Person1" FromRole="StudentLog" ToRole="Person" />
@@ -1669,6 +1692,25 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ClosedAcademicPeriod">
+          <Key>
+            <PropertyRef Name="idPeriodoAcademico" />
+            <PropertyRef Name="ano" />
+          </Key>
+          <Property Type="Int32" Name="idPeriodoAcademico" Nullable="false" />
+          <Property Type="Int32" Name="ano" Nullable="false" />
+        </EntityType>
+        <EntityType Name="DiciplineEvaluation">
+          <Key>
+            <PropertyRef Name="idPeriodoAcademico" />
+            <PropertyRef Name="idEstudiante" />
+            <PropertyRef Name="idAsignatura" />
+          </Key>
+          <Property Type="Int32" Name="idPeriodoAcademico" Nullable="false" />
+          <Property Type="Int32" Name="idEstudiante" Nullable="false" />
+          <Property Type="Int32" Name="idAsignatura" Nullable="false" />
+          <Property Type="Decimal" Name="Nota" Nullable="false" Precision="18" Scale="2" />
+        </EntityType>
         </Schema>
     </edmx:ConceptualModels>
     <!-- C-S mapping content -->
@@ -1920,6 +1962,24 @@
                 <ScalarProperty Name="idEstudiante" ColumnName="idEstudiante" />
                 <ScalarProperty Name="fecha" ColumnName="fecha" />
                 <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ClosedAcademicPeriods">
+            <EntityTypeMapping TypeName="SchoolPanelModel.ClosedAcademicPeriod">
+              <MappingFragment StoreEntitySet="ClosedAcademicPeriod">
+                <ScalarProperty Name="ano" ColumnName="ano" />
+                <ScalarProperty Name="idPeriodoAcademico" ColumnName="idPeriodoAcademico" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="DiciplineEvaluations">
+            <EntityTypeMapping TypeName="SchoolPanelModel.DiciplineEvaluation">
+              <MappingFragment StoreEntitySet="DiciplineEvaluation">
+                <ScalarProperty Name="Nota" ColumnName="Nota" />
+                <ScalarProperty Name="idAsignatura" ColumnName="idAsignatura" />
+                <ScalarProperty Name="idEstudiante" ColumnName="idEstudiante" />
+                <ScalarProperty Name="idPeriodoAcademico" ColumnName="idPeriodoAcademico" />
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>

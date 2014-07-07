@@ -46,5 +46,7 @@ namespace Orkidea.SchoolPanel.DataAccessEF
         public DbSet<Asignature> Asignatures { get; set; }
         public DbSet<School> Schools { get; set; }
         public DbSet<StudentLog> StudentLogs { get; set; }
+        public DbSet<ClosedAcademicPeriod> ClosedAcademicPeriods { get; set; }
+        public DbSet<DiciplineEvaluation> DiciplineEvaluations { get; set; }
     }
 }

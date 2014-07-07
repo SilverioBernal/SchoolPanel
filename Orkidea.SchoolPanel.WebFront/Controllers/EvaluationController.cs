@@ -172,7 +172,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 //Create Connection to Excel work book
                 OleDbConnection excelConnection = new OleDbConnection(excelConnectionString);
                 //Create OleDbCommand to fetch data from Excel
-                OleDbCommand cmd = new OleDbCommand("Select [idEstudiante],[Nota],[comentario1],[comentario2],[numeroFallas],[observaciones] from [Sheet1$]", excelConnection);
+                OleDbCommand cmd = new OleDbCommand("Select [idEstudiante],[Nota1],[Nota2],[Nota3],[Nota4],[Comportamiento],[comentario1],[comentario2],[numeroFallas],[observaciones] from [Sheet1$]", excelConnection);
 
                 excelConnection.Open();
                 OleDbDataReader dReader;
@@ -184,7 +184,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
 
                 CourseAsignature courseAsignature = courseAsignatureBiz.GetCourseAsignatureByKey(new CourseAsignature() { id = asignaturaCurso });
                 List<CourseStudent> lsCourseStudent = courseStudentBiz.GetCourseStudentList(new Course() { id = courseAsignature.idCurso });
-                List<Person> lsPerson = personBiz.GetPersonList(new Course() { id = courseAsignature.idCurso }, 5);
+                //List<Person> lsPerson = personBiz.GetPersonList(new Course() { id = courseAsignature.idCurso }, 5);
 
                 #endregion
 
@@ -196,12 +196,19 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                     {
                         int estudianteCurso = lsCourseStudent.Where(x => x.idEstudiante.Equals(int.Parse(record["idEstudiante"].ToString()))).Select(x => x.id).FirstOrDefault();
 
+                        /*promedio de las 4 notas subidas */
+
+                        decimal parcial1 = string.IsNullOrEmpty(record["Nota1"].ToString()) ? 0 : decimal.Parse(record["Nota1"].ToString());
+                        decimal parcial2 = string.IsNullOrEmpty(record["Nota2"].ToString()) ? 0 : decimal.Parse(record["Nota2"].ToString());
+                        decimal parcial3 = string.IsNullOrEmpty(record["Nota3"].ToString()) ? 0 : decimal.Parse(record["Nota3"].ToString());
+                        decimal parcial4 = string.IsNullOrEmpty(record["Nota4"].ToString()) ? 0 : decimal.Parse(record["Nota4"].ToString());
+
                         Evaluation nota = new Evaluation()
                         {
                             idEstudiante = estudianteCurso,
                             idAsignatura = asignaturaCurso,
                             idPeriodoAcademico = periodo,
-                            Nota = string.IsNullOrEmpty(record["Nota"].ToString()) ? 0 : decimal.Parse(record["Nota"].ToString()),
+                            Nota = (parcial1 + parcial2 + parcial3 + parcial4) / 4,
                             numeroFallas = string.IsNullOrEmpty(record["numeroFallas"].ToString()) ? 0 : int.Parse(record["numeroFallas"].ToString()),
                             observaciones = record["observaciones"].ToString()
                         };
@@ -224,6 +231,17 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
 
                         evaluationBiz.SaveEvaluation(nota);
 
+                        /* evaluacion de diciplina */
+
+                        DiciplineEvaluation diciplineEvaluation = new DiciplineEvaluation()
+                        {
+                            idEstudiante = estudianteCurso,
+                            idAsignatura = asignaturaCurso,
+                            idPeriodoAcademico = periodo,
+                            Nota = string.IsNullOrEmpty(record["Comportamiento"].ToString()) ? 0 : decimal.Parse(record["Comportamiento"].ToString())
+                        };
+
+                        evaluationBiz.SaveDiciplineEvaluation(diciplineEvaluation);
                     }
                 }
                 #endregion
@@ -315,7 +333,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
 
                 res = ca.id.ToString();
             }
-            catch (Exception ex)
+            catch (Exception)
             {
                 res = "";
             }
@@ -448,8 +466,6 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             School school = new School() { id = idColegio };
             #endregion
 
-            ViewBag.id = id;
-
             string[] evaluationKey = id.Split('|');
 
             EvaluationNoteBiz evaluationNoteBiz = new EvaluationNoteBiz();
@@ -457,6 +473,9 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
 
             CourseAsignatureBiz courseAsignatureBiz = new CourseAsignatureBiz();
             CourseAsignature courseAsignature = courseAsignatureBiz.GetCourseAsignatureByKey(new CourseAsignature() { id = int.Parse(evaluationKey[0]) });
+
+            CourseBiz courseBiz = new CourseBiz();
+            Course course = courseBiz.GetCoursebyKey(new Course() { id = courseAsignature.idCurso });
 
             CourseStudentBiz courseStudentBiz = new CourseStudentBiz();
             List<CourseStudent> lsCourseStudent = courseStudentBiz.GetCourseStudentList(new Course() { id = courseAsignature.idCurso });
@@ -466,9 +485,15 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
 
             AcademicPeriodBiz academicPeriodBiz = new AcademicPeriodBiz();
             List<AcademicPeriod> lsAcademicPeriod = academicPeriodBiz.GetAcademicPeriodList(school);
+            AcademicPeriod academicPeriod = academicPeriodBiz.GetAcademicPeriodbyKey(new AcademicPeriod() { id = int.Parse(evaluationKey[1]) });
+
+            AsignatureBiz asignatureBiz = new AsignatureBiz();
+            Asignature asignature = asignatureBiz.GetAsignaturebyKey(new Asignature() { id = courseAsignature.idAsignatura });
 
             List<Evaluation> lsEvaluation = evaluationBiz.GetEvaluationList(new CourseAsignature() { id = int.Parse(evaluationKey[0]) });
 
+            ViewBag.id = id + "|CURSO_" + course.Descripcion + "_ANO_" + course.ano + "_PERIODO_" + academicPeriod.Descripcion + "_MATERIA_" + asignature.Descripcion;
+            ViewBag.idUpload = id;
             bool reevaluar = false;
 
             //ingreso de boletines en cero cuando el alumno no tenga registro en la tabla evaluation
@@ -1557,7 +1582,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
 
             ViewBag.idColegio = school.id;
             vmEvaluation oEvaluation = new vmEvaluation();
-           
+
             return View(oEvaluation);
         }
 
@@ -1583,7 +1608,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             rpt.Load(rutaRpt);
             rpt.SetDataSource(ds.Tables[0]);
 
-            
+
 
 
 
@@ -1660,7 +1685,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 titleRow.profesor = directorCurso;
                 titleRow.jornada = jornada;
                 titleRow.tipoReporte = idReporte.ToString();
-                
+
 
                 #region descripcion por materia
 
@@ -1914,7 +1939,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                             default:
                                 break;
                         }
-                        #endregion                        
+                        #endregion
                     }
 
                     int numMateriasActivas = lsCourseAsignatureCode.Count;
@@ -1994,7 +2019,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 dsCrossReports.RptTable.AddRptTableRow(insufCountRow);
                 dsCrossReports.RptTable.AddRptTableRow(teacherRow);
 
-                int y = 0;
+                //int y = 0;
 
                 return dsCrossReports;
             }

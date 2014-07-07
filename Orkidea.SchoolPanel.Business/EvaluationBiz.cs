@@ -118,75 +118,56 @@ namespace Orkidea.SchoolPanel.Business
             catch (Exception ex) { throw ex; }
         }
 
-        //public List<Evaluation> GetEvaluationbyCourseEstudent(CourseStudent courseStudentTarget)
-        //{
-        //    List<Evaluation> lstEvaluation = new List<Evaluation>();
+        /*Dicipline evaluation*/
 
-        //    try
-        //    {
-        //        using (var ctx = new SchoolPanelEntities())
-        //        {
-        //            ctx.Configuration.ProxyCreationEnabled = false;
-        //            lstEvaluation = (from x in ctx.Evaluations
-        //                             where
-        //                             (x.idColegio == courseStudentTarget.idColegio &&
-        //                             x.idCurso == courseStudentTarget.idCurso &&
-        //                             x.idEstudiante == courseStudentTarget.idEstudiante)
-        //                             select x).ToList();
-        //        }
+        public DiciplineEvaluation GetDiciplineEvaluationByKey(DiciplineEvaluation evaluationTarget)
+        {
+            DiciplineEvaluation evaluation = new DiciplineEvaluation();
 
-        //    }
-        //    catch (Exception ex) { throw ex; }
+            try
+            {
+                using (var ctx = new SchoolPanelEntities())
+                {
+                    ctx.Configuration.ProxyCreationEnabled = false;
+                    evaluation = ctx.DiciplineEvaluations.Where(x =>
+                        x.idEstudiante.Equals(evaluationTarget.idEstudiante) &&
+                        x.idAsignatura.Equals(evaluationTarget.idAsignatura) &&
+                        x.idPeriodoAcademico.Equals(evaluationTarget.idPeriodoAcademico)).FirstOrDefault();
+                }
 
-        //    return lstEvaluation;
-        //}
+                return evaluation;
+            }
+            catch (Exception ex) { throw ex; }
+        }
 
-        //public List<Evaluation> GetEvaluationResult(Evaluation evaluation)
-        //{
-        //    List<Evaluation> lstEvaluation = new List<Evaluation>();
+        public void SaveDiciplineEvaluation(DiciplineEvaluation evaluation)
+        {
 
-        //    try
-        //    {
-        //        using (var ctx = new SchoolPanelEntities())
-        //        {
-        //            ctx.Configuration.ProxyCreationEnabled = false;
-        //            lstEvaluation = (from x in ctx.Evaluations
-        //                             where
-        //                             (x.idColegio ==  evaluation.idColegio &&
-        //                             x.idCurso == evaluation.idCurso &&
-        //                             x.idEstudiante == evaluation.idEstudiante &&
-        //                             x.idPeriodoAcademico == evaluation.idPeriodoAcademico)
-        //                             select x).ToList();
-        //        }
-        //    }
-        //    catch (Exception ex) { throw ex; }
+            try
+            {
+                using (var ctx = new SchoolPanelEntities())
+                {
+                    //verify if the student exists
+                    DiciplineEvaluation oEvaluation = GetDiciplineEvaluationByKey(evaluation);
 
-        //    return lstEvaluation;
-        //}
+                    if (oEvaluation != null)
+                    {
+                        // if exists then edit 
+                        ctx.DiciplineEvaluations.Attach(oEvaluation);
+                        _GenericEntityValidation.EnumeratePropertyDifferences(oEvaluation, evaluation);
+                        ctx.SaveChanges();
+                    }
+                    else
+                    {
+                        // else create
+                        ctx.DiciplineEvaluations.Add(evaluation);
+                        ctx.SaveChanges();
+                    }
+                }
 
-        //public List<Evaluation> GetEvaluationbyCourseAssignature(Evaluation evaluationTarget)
-        //{
-        //    List<Evaluation> lstEvaluation = new List<Evaluation>();
-
-        //    try
-        //    {
-        //        using (var ctx = new SchoolPanelEntities())
-        //        {
-        //            ctx.Configuration.ProxyCreationEnabled = false;
-        //            lstEvaluation = (from x in ctx.Evaluations
-        //                             where
-        //                             (x.idColegio == evaluationTarget.idColegio &&
-        //                             x.idCurso == evaluationTarget.idCurso &&
-        //                             x.idAsignatura == evaluationTarget.idAsignatura &&
-        //                             x.idPeriodoAcademico == evaluationTarget.idPeriodoAcademico)
-        //                             select x).ToList();
-        //        }
-
-        //    }
-        //    catch (Exception ex) { throw ex; }
-
-        //    return lstEvaluation;
-        //}
+            }
+            catch (Exception ex) { throw ex; }
+        }
 
     }
 }
