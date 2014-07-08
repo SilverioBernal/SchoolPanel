@@ -1231,45 +1231,91 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 string oConnStr = ConfigurationManager.ConnectionStrings["SchoolPanelADO"].ToString();
                 string rutaRpt = Server.MapPath("~/Reporting/PlanillaNotasBaja.rpt");
 
-                ReportDocument rpt;
+
                 byte[] response = null;
 
-                System.Data.SqlClient.SqlConnectionStringBuilder oConnBuilder = new System.Data.SqlClient.SqlConnectionStringBuilder(oConnStr);
-
-                rpt = new ReportDocument();
-
-                rpt.Load(rutaRpt);
-
-                ParameterDiscreteValue idAsignaturaDiscreteValue = new ParameterDiscreteValue();
-                idAsignaturaDiscreteValue.Value = idAsignatura;
-                rpt.SetParameterValue("idAsignatura", idAsignaturaDiscreteValue);
-
-                CrystalDecisions.Shared.ConnectionInfo connectionInfo = new CrystalDecisions.Shared.ConnectionInfo();
-                connectionInfo.DatabaseName = oConnBuilder.InitialCatalog;
-                connectionInfo.UserID = oConnBuilder.UserID;
-                connectionInfo.Password = oConnBuilder.Password;
-                connectionInfo.ServerName = oConnBuilder.DataSource;
-
-                Tables tables = rpt.Database.Tables;
-                foreach (CrystalDecisions.CrystalReports.Engine.Table table in tables)
+                using (var rpt = new ReportDocument())
                 {
-                    CrystalDecisions.Shared.TableLogOnInfo tableLogonInfo = table.LogOnInfo;
-                    tableLogonInfo.ConnectionInfo = connectionInfo;
-                    table.ApplyLogOnInfo(tableLogonInfo);
+                    System.Data.SqlClient.SqlConnectionStringBuilder oConnBuilder = new System.Data.SqlClient.SqlConnectionStringBuilder(oConnStr);
+                    rpt.Load(rutaRpt);
+
+                    ParameterDiscreteValue idAsignaturaDiscreteValue = new ParameterDiscreteValue();
+                    idAsignaturaDiscreteValue.Value = idAsignatura;
+                    rpt.SetParameterValue("idAsignatura", idAsignaturaDiscreteValue);
+
+                    CrystalDecisions.Shared.ConnectionInfo connectionInfo = new CrystalDecisions.Shared.ConnectionInfo();
+                    connectionInfo.DatabaseName = oConnBuilder.InitialCatalog;
+                    connectionInfo.UserID = oConnBuilder.UserID;
+                    connectionInfo.Password = oConnBuilder.Password;
+                    connectionInfo.ServerName = oConnBuilder.DataSource;
+
+                    Tables tables = rpt.Database.Tables;
+                    foreach (CrystalDecisions.CrystalReports.Engine.Table table in tables)
+                    {
+                        CrystalDecisions.Shared.TableLogOnInfo tableLogonInfo = table.LogOnInfo;
+                        tableLogonInfo.ConnectionInfo = connectionInfo;
+                        table.ApplyLogOnInfo(tableLogonInfo);
+                    }
+
+                    for (int i = 0; i < rpt.DataSourceConnections.Count; i++)
+                    {
+                        rpt.DataSourceConnections[i].SetConnection(oConnBuilder.DataSource, oConnBuilder.InitialCatalog, oConnBuilder.UserID, oConnBuilder.Password);
+                    }
+
+                    rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
+
+
+                    using (var strMemory = (MemoryStream)rpt.ExportToStream(ExportFormatType.Excel))
+                    {
+                        response = new byte[strMemory.Length];
+
+                        strMemory.Read(response, 0, (int)strMemory.Length);
+                    }
+                    
                 }
 
-                for (int i = 0; i < rpt.DataSourceConnections.Count; i++)
-                {
-                    rpt.DataSourceConnections[i].SetConnection(oConnBuilder.DataSource, oConnBuilder.InitialCatalog, oConnBuilder.UserID, oConnBuilder.Password);
-                }
+                #region old report
+                //ReportDocument rpt;
 
-                rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
+                //System.Data.SqlClient.SqlConnectionStringBuilder oConnBuilder = new System.Data.SqlClient.SqlConnectionStringBuilder(oConnStr);
+
+                //rpt = new ReportDocument();
+
+                //rpt.Load(rutaRpt);
+
+                //ParameterDiscreteValue idAsignaturaDiscreteValue = new ParameterDiscreteValue();
+                //idAsignaturaDiscreteValue.Value = idAsignatura;
+                //rpt.SetParameterValue("idAsignatura", idAsignaturaDiscreteValue);
+
+                //CrystalDecisions.Shared.ConnectionInfo connectionInfo = new CrystalDecisions.Shared.ConnectionInfo();
+                //connectionInfo.DatabaseName = oConnBuilder.InitialCatalog;
+                //connectionInfo.UserID = oConnBuilder.UserID;
+                //connectionInfo.Password = oConnBuilder.Password;
+                //connectionInfo.ServerName = oConnBuilder.DataSource;
+
+                //Tables tables = rpt.Database.Tables;
+                //foreach (CrystalDecisions.CrystalReports.Engine.Table table in tables)
+                //{
+                //    CrystalDecisions.Shared.TableLogOnInfo tableLogonInfo = table.LogOnInfo;
+                //    tableLogonInfo.ConnectionInfo = connectionInfo;
+                //    table.ApplyLogOnInfo(tableLogonInfo);
+                //}
+
+                //for (int i = 0; i < rpt.DataSourceConnections.Count; i++)
+                //{
+                //    rpt.DataSourceConnections[i].SetConnection(oConnBuilder.DataSource, oConnBuilder.InitialCatalog, oConnBuilder.UserID, oConnBuilder.Password);
+                //}
+
+                //rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.Excel);
-                response = new byte[strMemory.Length];
+                //System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.Excel);
+                //response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                //strMemory.Read(response, 0, (int)strMemory.Length);
+                #endregion
+
+                GC.Collect();
 
                 return new FileContentResult(response, "application/vnd.ms-excel");
             }
@@ -1281,7 +1327,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 byte[] response = codificador.GetBytes(error);
 
                 return new FileContentResult(response, "text/plain");
-            }
+            }            
         }
 
 
