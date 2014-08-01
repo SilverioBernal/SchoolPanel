@@ -133,6 +133,8 @@
         var filas = $('.evaluationRow');
         var error = 0;
 
+        var lsEvaluation = [];
+
         $(filas).each(function () {
             var registro = this;
 
@@ -146,7 +148,7 @@
             var fallas = $($(registro).find('.txtFalla')).val();
             var span = $(registro).find('.spanReturn')[0];
 
-            var datos = {
+            lsEvaluation.push({
                 idPeriodoAcademico: periodoAcademico,
                 idEstudiante: estudiante,
                 idAsignatura: asignatura,
@@ -155,47 +157,67 @@
                 comentario2: comment2,
                 observaciones: observations,
                 numeroFallas: fallas
-            };
-
-            $.getJSON("@Url.Action("saveEvaluationResult")", datos, res);
-
-                    function res(data) {
-                        if (data == "OK") {
-                            $(span).removeClass('text-error').addClass('text-success');
-                        }
-                        else {
-                            $(span).removeClass('tex-success').addClass('text-error');
-                            error = 1;
-                        }
-
-                        span.innerText = data;
-                    }
-                });
-
-                if (error == 0) {
-                    $('#msgHeader')[0].innerText = 'Registro de notas';
-                    $('#msgBody')[0].innerText = 'Registro de notas exitoso';
-                    $('#btnSuccess').css("display", "inline");
-                    $('#btnFail').css("display", "none");
-                }
-                else {
-                    $('#msgHeader')[0].innerText = 'Error - Registro de notas';
-                    $('#msgBody')[0].innerText = 'Al intentar guardar las notas, algunos registros presentaron inconsistencias. Por favor verifique.';
-                    $('#btnSuccess').css("display", "none");
-                    $('#btnFail').css("display", "inline");
-                }
-
-                $('#myModal').modal('show');
             });
 
-            $('#btnSuccess').click(function () {
-                var link = '@Url.Action("Index", "courseTeacher")';
-        window.location.href = link;
+            @*$.getJSON("@Url.Action("saveEvaluationResult")", datos, res);
+
+            function res(data) {
+                if (data == "OK") {
+                    $(span).removeClass('text-error').addClass('text-success');
+                }
+                else {
+                    $(span).removeClass('tex-success').addClass('text-error');
+                    error = 1;
+                }
+                span.innerText = data;
+            }*@
+        });
+
+        $.ajax({
+            url: '@Url.Action("saveBulkEvaluation")',
+            data: JSON.stringify(lsEvaluation),
+            success: res,
+            error: error,
+            type: 'POST',
+            contentType: 'application/json, charset=utf-8',
+            dataType: 'json'
+        });
+        
+        function res(data) {
+            if (data == "OK") {
+                $(span).removeClass('text-error').addClass('text-success');
+            }
+            else {
+                $(span).removeClass('tex-success').addClass('text-error');
+                error = 1;
+            }
+            span.innerText = data;
+        }
+
+        if (error == 0) {
+            $('#msgHeader')[0].innerText = 'Registro de notas';
+            $('#msgBody')[0].innerText = 'Registro de notas exitoso';
+            $('#btnSuccess').css("display", "inline");
+            $('#btnFail').css("display", "none");
+        }
+        else {
+            $('#msgHeader')[0].innerText = 'Error - Registro de notas';
+            $('#msgBody')[0].innerText = 'Al intentar guardar las notas, algunos registros presentaron inconsistencias. Por favor verifique.';
+            $('#btnSuccess').css("display", "none");
+            $('#btnFail').css("display", "inline");
+        }
+
+        $('#myModal').modal('show');
     });
 
-    $('#btnBajar').click(function () {
+    $('#btnSuccess').click(function () {
+        var link = '@Url.Action("Index", "courseTeacher")';
+            window.location.href = link;
+        });
+
+        $('#btnBajar').click(function () {
         @*var link = '@Url.Action("downloadExcel", "Evaluation", new { id = ViewBag.id})';*@
-        var link = '@Url.Action("DownloadNotasExcelRep", "Evaluation", new { id = ViewBag.id })';
-        window.location.href = link;
-    });
+            var link = '@Url.Action("DownloadNotasExcelRep", "Evaluation", new { id = ViewBag.id })';
+            window.location.href = link;
+        });
 </script>

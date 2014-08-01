@@ -254,8 +254,6 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             while (reader.Read()) yield return reader;
         }
 
-
-
         /****** Entrada Masiva Admin ********/
         [Authorize]
         public ActionResult IndexUpload()
@@ -341,111 +339,6 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
-        //[Authorize]
-        //[HttpPost]
-        //[AcceptVerbs(HttpVerbs.Post)]
-        //public ActionResult CreateUpload(vmEvaluation evaluation, HttpPostedFileBase uploadFile)
-        //{
-        //    EvaluationBiz evaluationBiz = new EvaluationBiz();
-
-        //    SchoolBiz schoolBiz = new SchoolBiz();
-        //    School school = schoolBiz.GetSchoolbyKey(new School() { id = int.Parse(evaluation.idColegio) });
-
-        //    CourseBiz courseBiz = new CourseBiz();
-        //    Course course = courseBiz.GetCoursebyKey(new Course() { id = int.Parse(evaluation.idCurso) });
-
-        //    PersonBiz personBiz = new PersonBiz();
-        //    List<Person> lsStudent = personBiz.GetPersonList(course, 5);
-
-        //    AcademicPeriodBiz academicPeriodBiz = new AcademicPeriodBiz();
-        //    AcademicPeriod academicPeriod = academicPeriodBiz.GetAcademicPeriodbyKey(new AcademicPeriod() { id = evaluation.idPeriodoAcademico });
-
-        //    AsignatureBiz asignatureBiz = new AsignatureBiz();
-        //    Asignature asignature = asignatureBiz.GetAsignaturebyKey(new Asignature() { id = evaluation.idAsignatura });
-
-        //    CourseAsignatureBiz courseAsignatureBiz = new CourseAsignatureBiz();
-        //    CourseAsignature courseAsignature = courseAsignatureBiz.GetCourseAsignatureByOthers(new CourseAsignature() { idAsignatura = evaluation.idAsignatura, idCurso = int.Parse(evaluation.idCurso) });
-
-        //    CourseStudentBiz courseStudentBiz = new CourseStudentBiz();
-        //    List<CourseStudent> lsCourseStudent = courseStudentBiz.GetCourseStudentList(course);
-
-
-
-        //    evaluation.desColegio = school.nombreColegio;
-        //    evaluation.desCurso = course.Descripcion;
-        //    evaluation.ano = course.ano.ToString();
-        //    evaluation.desPeriodoAcademico = academicPeriod.Descripcion;
-
-        //    int files = Request.Files.Count;
-
-        //    if (files > 0)
-        //    {
-        //        string physicalPath = HttpContext.Server.MapPath("~") + "UploadedFiles" + "\\";
-        //        string fileName = Guid.NewGuid().ToString() + ".csv";
-
-        //        Request.Files[0].SaveAs(physicalPath + fileName);
-
-        //        StreamReader reader = new StreamReader(physicalPath + fileName);
-
-        //        while (reader.Peek() >= 0)
-        //        {
-        //            string[] lineaNotas = reader.ReadLine().Split(',');
-        //            CourseStudent courseStudent = new CourseStudent();
-        //            Person student = new Person();
-        //            string estudiante = "";
-
-        //            try
-        //            {
-        //                courseStudent = lsCourseStudent.Where(x => x.idEstudiante.Equals(int.Parse(lineaNotas[0]))).FirstOrDefault();
-        //                student = lsStudent.Where(x => x.id.Equals(courseStudent.idEstudiante)).FirstOrDefault();
-        //            }
-        //            catch (Exception)
-        //            {
-        //                student.id = int.Parse(lineaNotas[0]);
-        //                student.primerNombre = "No";
-        //                student.primerApellido = "Existe";
-        //            }
-
-        //            try
-        //            {
-        //                evaluationBiz.SaveEvaluation(new Evaluation()
-        //                {
-        //                    idPeriodoAcademico = academicPeriod.id,
-        //                    idAsignatura = courseAsignature.id,
-        //                    idEstudiante = courseStudent.id,
-        //                    Nota = decimal.Parse(lineaNotas[1]),
-        //                    comentario1 = int.Parse(lineaNotas[2]),
-        //                    comentario2 = int.Parse(lineaNotas[3]),
-        //                    observaciones = lineaNotas[4],
-        //                    numeroFallas = int.Parse(lineaNotas[5])
-        //                });
-
-        //                estudiante = student.primerNombre + " " + (string.IsNullOrEmpty(student.segundoNombre) ? "" : (student.segundoNombre + " ")) +
-        //                    student.primerApellido + (string.IsNullOrEmpty(student.segundoApellido) ? "" : (" " + student.segundoApellido));
-
-        //                evaluation.lstNotas.Add(lineaNotas[0] + " - " + estudiante, lineaNotas[1]);
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                evaluation.lstNotas.Add("*** " + lineaNotas[0] + " - " + estudiante, lineaNotas[1] + "Error: " + ex.Message);
-        //            }
-        //        }
-
-
-        //        reader.Close();
-
-        //        try
-        //        {
-        //            if (System.IO.File.Exists(physicalPath + fileName))
-        //                System.IO.File.Delete(physicalPath + fileName);
-        //        }
-        //        catch (Exception) { }
-        //    }
-
-        //    return View(evaluation);
-        //}
-
-
         /****** Entrada Manual ********/
         [Authorize]
         public ActionResult EnterResult(string id)
@@ -484,15 +377,15 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             List<Person> lsPerson = personBiz.GetPersonList(new Course() { id = courseAsignature.idCurso }, 5);
 
             AcademicPeriodBiz academicPeriodBiz = new AcademicPeriodBiz();
-            List<AcademicPeriod> lsAcademicPeriod = academicPeriodBiz.GetAcademicPeriodList(school);
+            List<AcademicPeriod> lsAcademicPeriod = academicPeriodBiz.GetAcademicPeriodList(new School() { id = course.idColegio });
             AcademicPeriod academicPeriod = academicPeriodBiz.GetAcademicPeriodbyKey(new AcademicPeriod() { id = int.Parse(evaluationKey[1]) });
 
             AsignatureBiz asignatureBiz = new AsignatureBiz();
             Asignature asignature = asignatureBiz.GetAsignaturebyKey(new Asignature() { id = courseAsignature.idAsignatura });
 
+            //List<Evaluation> lsEvaluation = evaluationBiz.GetEvaluationList(new CourseAsignature() { id = int.Parse(evaluationKey[0]) }, new AcademicPeriod() { id = int.Parse(evaluationKey[1]) });
             List<Evaluation> lsEvaluation = evaluationBiz.GetEvaluationList(new CourseAsignature() { id = int.Parse(evaluationKey[0]) });
-
-            ViewBag.id = id + "|CURSO_" + course.Descripcion + "_ANO_" + course.ano + "_PERIODO_" + academicPeriod.Descripcion + "_MATERIA_" + asignature.Descripcion;
+            ViewBag.id = id + "|CURSO_" + course.Descripcion.Replace(' ', '_').Replace(".", "") + "_ANO_" + course.ano + "_PERIODO_" + academicPeriod.Descripcion.Replace(' ', '_').Replace(".", "") + "_MATERIA_" + asignature.Descripcion.Replace(' ', '_').Replace(".", "");
             ViewBag.idUpload = id;
             bool reevaluar = false;
 
@@ -569,6 +462,28 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             }
 
 
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+
+
+        [Authorize]
+        public JsonResult saveBulkEvaluation(List<Evaluation> lsEvaluation)
+        {
+            string res = "";
+
+            try
+            {
+                foreach (Evaluation item in lsEvaluation)
+                {
+                    evaluationBiz.SaveEvaluation(item);    
+                }                
+
+                res = "OK";
+            }
+            catch (Exception)
+            {
+                res = "Error, verificar informacion";
+            }
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
@@ -1271,7 +1186,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
 
                         strMemory.Read(response, 0, (int)strMemory.Length);
                     }
-                    
+
                 }
 
                 #region old report
@@ -1327,9 +1242,8 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 byte[] response = codificador.GetBytes(error);
 
                 return new FileContentResult(response, "text/plain");
-            }            
+            }
         }
-
 
         [Authorize]
         public ActionResult NotasXCurso()
@@ -1699,6 +1613,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                         dirCurso.primerApellido + (string.IsNullOrEmpty(dirCurso.segundoApellido) ? "" : " " + dirCurso.segundoApellido);
 
                 List<Evaluation> lsEvaluation = new List<Evaluation>();
+                List<DiciplineEvaluation> lsDiciplineEvaluation = new List<DiciplineEvaluation>();
                 List<Asignature> lsAsignature = asignatureBiz.GetAsignatureList(school);
                 List<CourseAsignature> lsCourseAsignature = courseAsignatureBiz.GetCourseAsignatureList(course);
 
@@ -1707,6 +1622,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 List<ValuationLevel> lsValuationLevel = valuationLevelBiz.GetValuationLevelList(school);
 
                 lsEvaluation = evaluationBiz.GetEvaluationList(course).Where(x => x.idPeriodoAcademico.Equals(idPeriodo)).ToList();
+                lsDiciplineEvaluation = evaluationBiz.GetDiciplineEvaluationList(course).Where(x => x.idPeriodoAcademico.Equals(idPeriodo)).ToList();
 
                 List<int> lsCourseAsignatureCode = lsEvaluation.Select(x => x.idAsignatura).Distinct().ToList();
                 List<int> lsCourseStudentCode = new List<int>();//lsEvaluation.Select(x => x.idEstudiante).Distinct().ToList();
@@ -1732,6 +1648,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 titleRow.jornada = jornada;
                 titleRow.tipoReporte = idReporte.ToString();
 
+                int materiaDisciplina = 99;
 
                 #region descripcion por materia
 
@@ -1739,6 +1656,9 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 {
                     CourseAsignature courseAsignature = lsCourseAsignature.Where(x => x.id.Equals(lsCourseAsignatureCode[i])).FirstOrDefault();
                     Asignature asignature = asignatureBiz.GetAsignaturebyKey(new Asignature() { id = courseAsignature.idAsignatura });
+
+                    if (asignature.ignorarEnPromedio == true)
+                        materiaDisciplina = i;
 
                     Person person = personBiz.GetPersonByKey(new Person() { id = (int)courseAsignature.idProfesor });
                     string profesor =
@@ -1868,29 +1788,54 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                     {
                         #region Valor de nota segun reporte
                         Evaluation evaluation = lsEvaluation.Where(x => x.idAsignatura.Equals(lsCourseAsignatureCode[i]) && x.idEstudiante.Equals(item)).FirstOrDefault();
+
+                        if (i == materiaDisciplina)
+                        {
+                            List<DiciplineEvaluation> lsDe = lsDiciplineEvaluation.Where(x => x.idEstudiante.Equals(item)).ToList();
+
+                            int numProfesores = lsDe.Count();
+
+                            decimal notaDiciplina = 0;
+
+                            if (numProfesores > 0)
+                            {
+                                foreach (DiciplineEvaluation de in lsDe)
+                                {
+                                    notaDiciplina += de.Nota;
+                                }
+
+                                notaDiciplina = notaDiciplina / numProfesores;
+                            }
+
+                            evaluation = new Evaluation() { Nota = Math.Round(notaDiciplina, 1) };
+                        }
+
+                        if (evaluation == null)
+                            evaluation = new Evaluation() { Nota = 0 };
+
                         string nota = "";
 
                         bool pierde = false;
 
                         if (idReporte == 1)
                         {
-                            pierde = lsValuationLevel.Where(x => evaluation.Nota >= x.minimo && evaluation.Nota <= x.maximo).Select(x => x.noSupera).FirstOrDefault();
+                            pierde = lsValuationLevel.Where(x => Math.Round(evaluation.Nota, 1) >= x.minimo && Math.Round(evaluation.Nota, 1) <= x.maximo).Select(x => x.noSupera).FirstOrDefault();
 
                             if (pierde)
                             {
-                                nota = "[" + evaluation.Nota.ToString() + "]";
+                                nota = "[" + Math.Round(evaluation.Nota, 1).ToString("0.00") + "]";
                                 TAP++;
                             }
                             else
-                                nota = evaluation.Nota != null ? evaluation.Nota.ToString() : "[  ]";
+                                nota = evaluation.Nota != null ? Math.Round(evaluation.Nota, 1).ToString("0.00") : "[  ]";
                         }
                         else if (idReporte > 1)
                         {
-                            pierde = lsValuationLevel.Where(x => evaluation.Nota >= x.minimo && evaluation.Nota <= x.maximo).Select(x => x.noSupera).FirstOrDefault();
+                            pierde = lsValuationLevel.Where(x => Math.Round(evaluation.Nota, 1) >= x.minimo && Math.Round(evaluation.Nota, 1) <= x.maximo).Select(x => x.noSupera).FirstOrDefault();
 
                             if (pierde)
                             {
-                                nota = evaluation.Nota.ToString();
+                                nota = Math.Round(evaluation.Nota, 1).ToString("0.00");
                                 TAP++;
                             }
                             else
@@ -2074,236 +2019,5 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 throw ex;
             }
         }
-
-
-        //        [Authorize]
-        //        public ReportResult ShowResultsPdf(string id)
-        //        {
-        //            #region School identification
-        //            System.Security.Principal.IIdentity context = HttpContext.User.Identity;
-        //            int idColegio = 0;
-        //            int usuario = 0;
-
-        //            if (context.IsAuthenticated)
-        //            {
-        //                System.Web.Security.FormsIdentity ci = (System.Web.Security.FormsIdentity)HttpContext.User.Identity;
-        //                string[] userRole = ci.Ticket.UserData.Split('|');
-        //                usuario = int.Parse(userRole[0]);
-        //                idColegio = int.Parse(userRole[2]);
-        //            }
-
-        //            School school = new School() { id = idColegio };
-        //            #endregion
-
-        //            EvaluationBiz evaluationBiz = new EvaluationBiz();
-        //            AcademicPeriodBiz academicPeriodBiz = new AcademicPeriodBiz();
-        //            StudentBiz studentBiz = new StudentBiz();
-        //            TeacherBiz teacherBiz = new TeacherBiz();
-        //            AssingatureBiz assignatureBiz = new AssingatureBiz();
-        //            CourseBiz courseBiz = new CourseBiz();
-        //            SchoolBiz schoolBiz = new SchoolBiz();
-
-        //            string[] parametros = id.Split('-');
-
-        //            int idCurso = int.Parse(parametros[0]);
-        //            int idPeriodoAcademico = int.Parse(parametros[1]);
-
-        //            List<vmEvaluation> lsEvaluationResult = new List<vmEvaluation>();
-
-        //            Course course = courseBiz.GetCoursebyKey(new Course() { id = idCurso });
-        //            AcademicPeriod AcademicPeriod = academicPeriodBiz.GetAcademicPeriodbyKey(new AcademicPeriod() { idColegio = school.id, id = idPeriodoAcademico });
-        //            Student student = studentBiz.GetStudentbyKey(new Student() { idColegio = school.id, id = usuario });
-        //            Teacher teacher = teacherBiz.GetTeacherbyKey(new Teacher() { id = course.idDirectorCurso, idColegio = school.id });
-        //            school = schoolBiz.GetSchoolbyKey(school);
-
-        //            Evaluation evaluation = new Evaluation()
-        //            {
-        //                idColegio = school.id,
-        //                idCurso = course.id,
-        //                idPeriodoAcademico = idPeriodoAcademico,
-        //                idEstudiante = usuario
-        //            };
-
-        //            List<Evaluation> lsEvaluation = evaluationBiz.GetEvaluationResult(evaluation);
-
-        //            foreach (Evaluation item in lsEvaluation)
-        //            {
-        //                Assingnature assignature = assignatureBiz.GetAssingnaturebyKey(new Assingnature()
-        //                {
-        //                    id = item.idAsignatura,
-        //                    idColegio = school.id,
-        //                    idGrado = course.idGrado
-        //                });
-
-        //                lsEvaluationResult.Add(new vmEvaluation()
-        //                {
-        //                    desAsignatura = assignature.Descripcion,
-        //                    Nota = item.Nota
-        //                });
-        //            }
-
-        //            student.primerNombre = student.primerNombre + " " + (string.IsNullOrEmpty(student.segundoNombre) ? "" : (student.segundoNombre + " ")) +
-        //                                student.primerApellido + (string.IsNullOrEmpty(student.segundoApellido) ? "" : (" " + student.segundoApellido));
-
-        //            teacher.primerNombre = teacher.primerNombre + " " + (string.IsNullOrEmpty(teacher.segundoNombre) ? "" : (teacher.segundoNombre + " ")) +
-        //                                teacher.primerApellido + (string.IsNullOrEmpty(teacher.segundoApellido) ? "" : (" " + teacher.segundoApellido));
-
-        //            var report = new Report(lsEvaluationResult.ToReportSource());
-
-        //            report.TextFields.Title = school.NombreColegio.ToUpper();
-        //            report.TextFields.SubTitle = "BOLETÍN DE NOTAS";
-
-
-        //            report.TextFields.Header = string.Format(@"
-        //________________________________________________________________________________________
-        //
-        //Periodo: {0}
-        //Curso: {1}
-        //Director de grupo: {2}
-        //Alumno: {3:c}
-        //________________________________________________________________________________________"
-        //                , AcademicPeriod.Descripcion.ToUpper(), course.Descripcion, teacher.primerNombre, student.primerNombre);
-
-        //            report.RenderHints.BooleanCheckboxes = true;
-
-        //            report.DataFields["idColegio"].Hidden = true;
-        //            report.DataFields["desColegio"].Hidden = true;
-        //            report.DataFields["idCurso"].Hidden = true;
-        //            report.DataFields["desCurso"].Hidden = true;
-        //            report.DataFields["idGrado"].Hidden = true;
-        //            report.DataFields["idEstudiante"].Hidden = true;
-        //            report.DataFields["desEstudiante"].Hidden = true;
-        //            report.DataFields["idProfesor"].Hidden = true;
-        //            report.DataFields["idAsignatura"].Hidden = true;
-        //            report.DataFields["idPeriodoAcademico"].Hidden = true;
-        //            report.DataFields["desPeriodoAcademico"].Hidden = true;
-        //            report.DataFields["lstColegio"].Hidden = true;
-        //            report.DataFields["lstProfesor"].Hidden = true;
-        //            report.DataFields["ano"].Hidden = true;
-        //            report.DataFields["lstCurso"].Hidden = true;
-        //            report.DataFields["lstAsignatura"].Hidden = true;
-        //            report.DataFields["lstNotas"].Hidden = true;
-        //            report.DataFields["desAsignatura"].HeaderText = "Asignatrura";
-
-        //            return new ReportResult(report);
-        //        }
-
-        //        [Authorize]
-        //        public ActionResult ShowResults(int curso)
-        //        {
-        //            #region School identification
-        //            System.Security.Principal.IIdentity context = HttpContext.User.Identity;
-        //            int idColegio = 0;
-        //            int usuario = 0;
-
-        //            if (context.IsAuthenticated)
-        //            {
-        //                System.Web.Security.FormsIdentity ci = (System.Web.Security.FormsIdentity)HttpContext.User.Identity;
-        //                string[] userRole = ci.Ticket.UserData.Split('|');
-        //                usuario = int.Parse(userRole[0]);
-        //                idColegio = int.Parse(userRole[2]);
-        //            }
-
-        //            School school = new School() { id = idColegio };
-        //            #endregion
-
-        //            CourseStudent courseStudent = new CourseStudent() { idColegio = idColegio, idCurso = curso, idEstudiante = usuario };
-
-        //            return View(courseStudent);
-        //        }
-
-        //        [Authorize]
-        //        public FileContentResult getEvaluationResults(int curso)
-        //        {
-
-        //            #region School identification
-        //            System.Security.Principal.IIdentity context = HttpContext.User.Identity;
-        //            int idColegio = 0;
-        //            int usuario = 0;
-
-        //            if (context.IsAuthenticated)
-        //            {
-        //                System.Web.Security.FormsIdentity ci = (System.Web.Security.FormsIdentity)HttpContext.User.Identity;
-        //                string[] userRole = ci.Ticket.UserData.Split('|');
-        //                usuario = int.Parse(userRole[0]);
-        //                idColegio = int.Parse(userRole[2]);
-        //            }
-
-        //            School school = new School() { id = idColegio };
-        //            #endregion
-
-        //            EvaluationBiz evaluationBiz = new EvaluationBiz();
-
-        //            string oConnStr = ConfigurationManager.ConnectionStrings["SchoolPanelADO"].ToString();
-        //            try
-        //            {
-        //                byte[] response = boletin(curso, usuario, Server.MapPath("~/Reporting/Evaluation.rpt"), oConnStr);
-        //                return new FileContentResult(response, "application/pdf");
-        //            }
-        //            catch (Exception ex)
-        //            {
-        //                string error = ex.Message + " :::---::: " + oConnStr + " :::---::: " + ex.StackTrace;
-
-        //                System.Text.ASCIIEncoding codificador = new System.Text.ASCIIEncoding();
-        //                byte[] response = codificador.GetBytes(error);
-
-        //                return new FileContentResult(response, "text/plain");
-        //            }
-
-
-        //        }
-
-
-        //        public byte[] boletin(int curso, int estudiante, string rutaRpt, string oConnStr)
-        //        {
-        //            ReportDocument rpt;
-        //            byte[] response = null;
-
-        //            System.Data.SqlClient.SqlConnectionStringBuilder oConnBuilder = new System.Data.SqlClient.SqlConnectionStringBuilder(oConnStr);
-
-        //            rpt = new ReportDocument();
-
-        //            rpt.Load(rutaRpt);
-
-        //            //rpt.SetParameterValue("curso", curso);
-        //            //rpt.SetParameterValue("estudiante", estudiante);
-
-        //            ParameterDiscreteValue cursoDiscreteValue = new ParameterDiscreteValue();
-        //            cursoDiscreteValue.Value = curso;
-        //            rpt.SetParameterValue("curso", cursoDiscreteValue);
-
-        //            ParameterDiscreteValue estudianteDiscreteValue = new ParameterDiscreteValue();
-        //            estudianteDiscreteValue.Value = estudiante;
-        //            rpt.SetParameterValue("estudiante", estudianteDiscreteValue);
-
-
-        //            CrystalDecisions.Shared.ConnectionInfo connectionInfo = new CrystalDecisions.Shared.ConnectionInfo();
-        //            connectionInfo.DatabaseName = oConnBuilder.InitialCatalog;
-        //            connectionInfo.UserID = oConnBuilder.UserID;
-        //            connectionInfo.Password = oConnBuilder.Password;
-        //            connectionInfo.ServerName = oConnBuilder.DataSource;
-
-        //            Tables tables = rpt.Database.Tables;
-        //            foreach (CrystalDecisions.CrystalReports.Engine.Table table in tables)
-        //            {
-        //                CrystalDecisions.Shared.TableLogOnInfo tableLogonInfo = table.LogOnInfo;
-        //                tableLogonInfo.ConnectionInfo = connectionInfo;
-        //                table.ApplyLogOnInfo(tableLogonInfo);
-        //            }
-
-        //            for (int i = 0; i < rpt.DataSourceConnections.Count; i++)
-        //            {
-        //                rpt.DataSourceConnections[i].SetConnection(oConnBuilder.DataSource, oConnBuilder.InitialCatalog, oConnBuilder.UserID, oConnBuilder.Password);
-        //            }
-
-        //            rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
-
-
-        //            System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat); 
-        //            response = new byte[strMemory.Length];
-
-        //            strMemory.Read(response, 0, (int)strMemory.Length);
-        //            return response;
-        //        }
     }
 }

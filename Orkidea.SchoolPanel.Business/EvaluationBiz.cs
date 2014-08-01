@@ -118,6 +118,23 @@ namespace Orkidea.SchoolPanel.Business
             catch (Exception ex) { throw ex; }
         }
 
+        public List<Evaluation> GetEvaluationList(CourseAsignature courseAsignature, AcademicPeriod academicPeriod)
+        {
+            List<Evaluation> lsEvaluation = new List<Evaluation>();
+
+            try
+            {
+                using (var ctx = new SchoolPanelEntities())
+                {
+                    ctx.Configuration.ProxyCreationEnabled = false;
+                    lsEvaluation = ctx.Evaluations.Where(x => x.idAsignatura.Equals(courseAsignature.id) && x.AcademicPeriod.id.Equals(academicPeriod.id)).ToList();
+                }
+
+                return lsEvaluation;
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
         /*Dicipline evaluation*/
 
         public DiciplineEvaluation GetDiciplineEvaluationByKey(DiciplineEvaluation evaluationTarget)
@@ -136,6 +153,43 @@ namespace Orkidea.SchoolPanel.Business
                 }
 
                 return evaluation;
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public List<DiciplineEvaluation> GetDiciplineEvaluationList(Course course)
+        {
+            List<DiciplineEvaluation> lsDiciplineEvaluation = new List<DiciplineEvaluation>();
+
+            try
+            {
+                CourseAsignatureBiz courseAsignatureBiz = new CourseAsignatureBiz();
+
+                List<CourseAsignature> lsCA = courseAsignatureBiz.GetCourseAsignatureList(course);
+
+                foreach (CourseAsignature item in lsCA)
+                {
+                    lsDiciplineEvaluation.AddRange(GetDiciplineEvaluationList(item));
+                }
+
+                return lsDiciplineEvaluation;
+            }
+            catch (Exception ex) { throw ex; }
+        }
+
+        public List<DiciplineEvaluation> GetDiciplineEvaluationList(CourseAsignature courseAsignature)
+        {
+            List<DiciplineEvaluation> lsDiciplineEvaluation = new List<DiciplineEvaluation>();
+
+            try
+            {
+                using (var ctx = new SchoolPanelEntities())
+                {
+                    ctx.Configuration.ProxyCreationEnabled = false;
+                    lsDiciplineEvaluation = ctx.DiciplineEvaluations.Where(x => x.idAsignatura.Equals(courseAsignature.id)).ToList();
+                }
+
+                return lsDiciplineEvaluation;
             }
             catch (Exception ex) { throw ex; }
         }
