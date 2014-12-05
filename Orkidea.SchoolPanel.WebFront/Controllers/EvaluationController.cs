@@ -2344,8 +2344,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                         }
                         catch (Exception)
                         {
-                            com
-
+                            comportamiento = 0;
                         }
                             
 
