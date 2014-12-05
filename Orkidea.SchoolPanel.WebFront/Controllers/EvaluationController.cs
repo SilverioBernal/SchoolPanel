@@ -475,8 +475,8 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             {
                 foreach (Evaluation item in lsEvaluation)
                 {
-                    evaluationBiz.SaveEvaluation(item);    
-                }                
+                    evaluationBiz.SaveEvaluation(item);
+                }
 
                 res = "OK";
             }
@@ -1268,7 +1268,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             AcademicPeriodBiz academicPeriodBiz = new AcademicPeriodBiz();
 
             vmReporting reporting = new vmReporting();
-            reporting.lsCurso = courseBiz.GetCourseList(school).Where(x => !x.finalizado).ToList();
+            reporting.lsCurso = courseBiz.GetCourseList(school).Where(x => !x.finalizado).OrderBy(x => x.Descripcion).ToList();
 
             reporting.lsAdademicPeriod = academicPeriodBiz.GetAcademicPeriodList(school);
 
@@ -1287,6 +1287,106 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
 
                 string oConnStr = ConfigurationManager.ConnectionStrings["SchoolPanelADO"].ToString();
                 string rutaRpt = Server.MapPath("~/Reporting/GlobalEvaluation.rpt");
+
+                ReportDocument rpt;
+                byte[] response = null;
+
+                System.Data.SqlClient.SqlConnectionStringBuilder oConnBuilder = new System.Data.SqlClient.SqlConnectionStringBuilder(oConnStr);
+
+                rpt = new ReportDocument();
+
+                rpt.Load(rutaRpt);
+
+                ParameterDiscreteValue cursoDiscreteValue = new ParameterDiscreteValue();
+                cursoDiscreteValue.Value = curso;
+                rpt.SetParameterValue("curso", cursoDiscreteValue);
+
+                ParameterDiscreteValue peirodoDiscreteValue = new ParameterDiscreteValue();
+                peirodoDiscreteValue.Value = idPeriodo;
+                rpt.SetParameterValue("periodo", peirodoDiscreteValue);
+
+                CrystalDecisions.Shared.ConnectionInfo connectionInfo = new CrystalDecisions.Shared.ConnectionInfo();
+                connectionInfo.DatabaseName = oConnBuilder.InitialCatalog;
+                connectionInfo.UserID = oConnBuilder.UserID;
+                connectionInfo.Password = oConnBuilder.Password;
+                connectionInfo.ServerName = oConnBuilder.DataSource;
+
+                Tables tables = rpt.Database.Tables;
+                foreach (CrystalDecisions.CrystalReports.Engine.Table table in tables)
+                {
+                    CrystalDecisions.Shared.TableLogOnInfo tableLogonInfo = table.LogOnInfo;
+                    tableLogonInfo.ConnectionInfo = connectionInfo;
+                    table.ApplyLogOnInfo(tableLogonInfo);
+                }
+
+                for (int i = 0; i < rpt.DataSourceConnections.Count; i++)
+                {
+                    rpt.DataSourceConnections[i].SetConnection(oConnBuilder.DataSource, oConnBuilder.InitialCatalog, oConnBuilder.UserID, oConnBuilder.Password);
+                }
+
+                rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
+
+
+                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
+                response = new byte[strMemory.Length];
+
+                strMemory.Read(response, 0, (int)strMemory.Length);
+
+                return new FileContentResult(response, "application/pdf");
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message + " :::---::: " + ex.StackTrace;
+
+                System.Text.ASCIIEncoding codificador = new System.Text.ASCIIEncoding();
+                byte[] response = codificador.GetBytes(error);
+
+                return new FileContentResult(response, "text/plain");
+            }
+        }
+
+        [Authorize]
+        public ActionResult ReporteFinal()
+        {
+            #region School identification
+            System.Security.Principal.IIdentity context = HttpContext.User.Identity;
+            int idColegio = 0;
+            int usuario = 0;
+
+            if (context.IsAuthenticated)
+            {
+                System.Web.Security.FormsIdentity ci = (System.Web.Security.FormsIdentity)HttpContext.User.Identity;
+                string[] userRole = ci.Ticket.UserData.Split('|');
+                usuario = int.Parse(userRole[0]);
+                idColegio = int.Parse(userRole[2]);
+            }
+
+            School school = new School() { id = idColegio };
+            #endregion
+
+            CourseBiz courseBiz = new CourseBiz();
+            AcademicPeriodBiz academicPeriodBiz = new AcademicPeriodBiz();
+
+            vmReporting reporting = new vmReporting();
+            reporting.lsCurso = courseBiz.GetCourseList(school).Where(x => !x.finalizado).OrderBy(x => x.Descripcion).ToList();
+
+            reporting.lsAdademicPeriod = academicPeriodBiz.GetAcademicPeriodList(school);
+
+            return View(reporting);
+        }
+
+        [Authorize]
+        public FileContentResult ReporteFinalRep(string id)
+        {
+            try
+            {
+                string[] parametros = id.Split('|');
+
+                int curso = int.Parse(parametros[0]);
+                int idPeriodo = int.Parse(parametros[1]);
+
+                string oConnStr = ConfigurationManager.ConnectionStrings["SchoolPanelADO"].ToString();
+                string rutaRpt = Server.MapPath("~/Reporting/InformeValorativo.rpt");
 
                 ReportDocument rpt;
                 byte[] response = null;
@@ -1551,26 +1651,15 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
         {
             DsCrossReports ds = calculoReporteInsuficiencias(id);
 
-            //string[] parametros = id.Split('|');
-
-            //int idEstudiante = int.Parse(parametros[0]);
-            //int idCurso = int.Parse(parametros[1]);
-
-            //string oConnStr = ConfigurationManager.ConnectionStrings["SchoolPanelADO"].ToString();
             string rutaRpt = Server.MapPath("~/Reporting/Insuficiencias.rpt");
 
             ReportDocument rpt;
 
             byte[] response = null;
 
-
             rpt = new ReportDocument();
             rpt.Load(rutaRpt);
             rpt.SetDataSource(ds.Tables[0]);
-
-
-
-
 
             System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
             response = new byte[strMemory.Length];
@@ -1580,9 +1669,34 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             return new FileContentResult(response, "application/pdf");
         }
 
+        [Authorize]
+        public ActionResult BoletinResumenRep(string id)
+        {
+            DsCrossReports ds = calculoBoletinResumenGrupo(id);
+
+            string rutaRpt = Server.MapPath("~/Reporting/EvaluationGroupSummary.rpt");
+
+            ReportDocument rpt;
+
+            byte[] response = null;
+
+            rpt = new ReportDocument();
+            rpt.Load(rutaRpt);
+            rpt.SetDataSource(ds.Tables[0]);
+
+            System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
+            response = new byte[strMemory.Length];
+
+            strMemory.Read(response, 0, (int)strMemory.Length);
+
+            return new FileContentResult(response, "application/pdf");
+        }
+
+
         private DsCrossReports calculoReporteInsuficiencias(string id)
         {
 
+            #region Instancias de negocio
             CourseAsignatureBiz courseAsignatureBiz = new CourseAsignatureBiz();
             ValuationLevelBiz valuationLevelBiz = new ValuationLevelBiz();
             AcademicPeriodBiz academicPeriodBiz = new AcademicPeriodBiz();
@@ -1592,6 +1706,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             PersonBiz personBiz = new PersonBiz();
             SchoolBiz schoolBiz = new SchoolBiz();
             PlaceBiz placeBiz = new PlaceBiz();
+            #endregion
 
             try
             {
@@ -2016,6 +2131,350 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             }
             catch (Exception ex)
             {
+                throw ex;
+            }
+        }
+
+        private DsCrossReports calculoBoletinResumenGrupo(string id)
+        {
+            DsCrossReports dsCrossReports = new DsCrossReports();
+
+            try
+            {
+                string[] entrada = id.Split('|');
+                int idCurso = int.Parse(entrada[0]);
+                int idPeriodo = int.Parse(entrada[1]);
+
+                #region Instancias de negocio
+                CourseAsignatureBiz courseAsignatureBiz = new CourseAsignatureBiz();
+                ValuationLevelBiz valuationLevelBiz = new ValuationLevelBiz();
+                AcademicPeriodBiz academicPeriodBiz = new AcademicPeriodBiz();
+                CourseStudentBiz courseStudentBiz = new CourseStudentBiz();
+                KnowledgeAreaBiz knowledgeAreaBiz = new KnowledgeAreaBiz();
+                AsignatureBiz asignatureBiz = new AsignatureBiz();
+                CourseBiz courseBiz = new CourseBiz();
+                PersonBiz personBiz = new PersonBiz();
+                SchoolBiz schoolBiz = new SchoolBiz();
+                PlaceBiz placeBiz = new PlaceBiz();
+                #endregion
+
+                #region Colegio, curso, sede, jornada, niveles de valoracion
+                Course course = courseBiz.GetCoursebyKey(new Course() { id = idCurso });
+                School school = schoolBiz.GetSchoolbyKey(new School() { id = course.idColegio });
+                Place place = placeBiz.GetPlaceByKey(new Place() { id = course.idSede });
+                string jornada = course.idJornada == 1 ? "Mañana" : (course.idJornada == 2 ? "Tarde" : (course.idJornada == 3 ? "Noche" : (course.idJornada == 4 ? "Única" : "mañana")));
+                List<ValuationLevel> lsValuationLevel = valuationLevelBiz.GetValuationLevelList(school);
+                #endregion
+
+                #region Numero de periodos a promediar
+                int numPeriodosPromediar = 0;
+                List<AcademicPeriod> lsAcademicPeriod = academicPeriodBiz.GetAcademicPeriodList(school).OrderBy(x => x.id).ToList();
+                numPeriodosPromediar = lsAcademicPeriod.Where(x => x.id <= idPeriodo).Count();
+                #endregion
+
+                #region Director de curso
+                Person dirCurso = personBiz.GetPersonByKey(new Person() { id = course.idDirectorCurso });
+
+                string directorCurso =
+                        dirCurso.primerNombre + " " + (string.IsNullOrEmpty(dirCurso.segundoNombre) ? "" : dirCurso.segundoNombre + " ") +
+                        dirCurso.primerApellido + (string.IsNullOrEmpty(dirCurso.segundoApellido) ? "" : " " + dirCurso.segundoApellido);
+                #endregion
+
+                #region Alumnos del curso
+                List<Person> lsStudents = personBiz.GetPersonList(course, 5).OrderBy(x => x.primerApellido).ThenBy(x => x.segundoApellido).ToList();
+                List<CourseStudent> lsCourseSTudent = courseStudentBiz.GetCourseStudentList(course);
+
+                List<int> lsCourseStudentCode = new List<int>();
+
+                foreach (Person item in lsStudents)
+                    lsCourseStudentCode.Add(lsCourseSTudent.Where(x => x.idEstudiante.Equals(item.id)).Select(x => x.id).FirstOrDefault());
+                #endregion
+
+                #region Asignaturas/Areas de conocimiento del curso
+                List<Asignature> lsAsignature = asignatureBiz.GetAsignatureList(school);
+                List<CourseAsignature> lsCourseAsignature = courseAsignatureBiz.GetCourseAsignatureList(course).Where(x => x.idProfesor!=null).ToList();
+                List<int> lsCourseAsignatureCode = lsCourseAsignature.Select(x => x.id).Distinct().ToList();
+
+                List<KnowledgeArea> lsKnowledgeArea = knowledgeAreaBiz.GetKnowledgeAreaList(school);
+                List<KnowledgeArea> lsCourseKnowledgeArea = new List<KnowledgeArea>();
+
+                foreach (CourseAsignature item in lsCourseAsignature)
+                {
+                    Asignature asignature = lsAsignature.Where(x => x.id.Equals(item.idAsignatura)).FirstOrDefault();
+
+                    KnowledgeArea knowledgeArea = new KnowledgeArea();
+
+                    knowledgeArea = lsKnowledgeArea.Where(x => x.id.Equals(asignature.idAreaConocimiento)).FirstOrDefault();
+
+                    if (lsCourseKnowledgeArea.Where(x => x.id.Equals(knowledgeArea.id)).Count() == 0)
+                        lsCourseKnowledgeArea.Add(knowledgeArea);
+                }
+
+                List<int> lsKnowledgeAreaCode = lsCourseKnowledgeArea.OrderBy(x => x.posicionBoletin).Select(x => x.id).Distinct().ToList();
+
+                #endregion
+
+                #region Notas del curso de todos los periodos
+                List<Evaluation> lsEvaluation = evaluationBiz.GetEvaluationList(course);
+                List<DiciplineEvaluation> lsDiciplineEvaluation = evaluationBiz.GetDiciplineEvaluationList(course);
+                #endregion
+
+                //******** Titulos *********
+
+                DsCrossReports.RptTableRow titleRow = dsCrossReports.RptTable.NewRptTableRow();
+
+                #region Titulos estaticos
+                titleRow.num = "Num";
+                titleRow.alumno = "Alumno";
+                titleRow.total = "TAP";
+                titleRow.colegio = school.nombreColegio;
+                titleRow.sede = place.descripcion;
+                titleRow.periodo = "Periodo academico";
+                titleRow.curso = course.Descripcion + " - " + course.ano;
+                titleRow.profesor = directorCurso;
+                titleRow.jornada = jornada;
+                #endregion
+
+                #region Titulos por Area de conocimiento
+                for (int i = 0; i < lsCourseKnowledgeArea.Count(); i++)
+                {
+                    switch (i)
+                    {
+                        case 0:
+                            titleRow.mat1 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 1:
+                            titleRow.mat2 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 2:
+                            titleRow.mat3 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 3:
+                            titleRow.mat4 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 4:
+                            titleRow.mat5 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 5:
+                            titleRow.mat6 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 6:
+                            titleRow.mat7 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 7:
+                            titleRow.mat8 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 8:
+                            titleRow.mat9 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 9:
+                            titleRow.mat10 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 10:
+                            titleRow.mat11 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 11:
+                            titleRow.mat12 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 12:
+                            titleRow.mat13 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 13:
+                            titleRow.mat14 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 14:
+                            titleRow.mat15 = (lsCourseKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault()).descripcion;
+                            break;
+                        case 15:
+                            titleRow.mat16 = " ";
+                            break;
+                        case 16:
+                            titleRow.mat17 = " ";
+                            break;
+                        case 17:
+                            titleRow.mat18 = " ";
+                            break;
+                        case 18:
+                            titleRow.mat19 = " ";
+                            break;
+                        case 19:
+                            titleRow.mat20 = " ";
+                            break;
+                        default:
+                            break;
+                    }
+                }
+                #endregion
+
+                dsCrossReports.RptTable.AddRptTableRow(titleRow);
+                //******** Fin Titulos ******
+
+                //********* Detalle *********     
+
+                int numEstudianteActual = 1;
+
+                foreach (int item in lsCourseStudentCode)
+                {
+                    CourseStudent courseStudent = lsCourseSTudent.Where(x => x.id.Equals(item)).FirstOrDefault();
+                    Person student = lsStudents.Where(x => x.id.Equals(courseStudent.idEstudiante)).FirstOrDefault();                    
+
+                    foreach (AcademicPeriod academicPeriod in lsAcademicPeriod)
+                    {
+                        DsCrossReports.RptTableRow detailRow = dsCrossReports.RptTable.NewRptTableRow();
+
+                        #region Datos estaticos
+                        detailRow.alumno =
+                                        student.primerApellido + (string.IsNullOrEmpty(student.segundoApellido) ? "" : " " + student.segundoApellido) +
+                                        student.primerNombre + " " + (string.IsNullOrEmpty(student.segundoNombre) ? "" : student.segundoNombre + " ");
+
+                        detailRow.colegio = school.nombreColegio;
+                        detailRow.sede = place.descripcion;
+                        detailRow.curso = course.Descripcion;
+                        detailRow.profesor = directorCurso;
+                        detailRow.jornada = jornada;
+                        #endregion
+
+                        int TAP = 0;
+
+                        List<Evaluation> lsStudenEvaluation = lsEvaluation.Where(x => x.idEstudiante.Equals(courseStudent.id) && x.idPeriodoAcademico.Equals(academicPeriod.id)).ToList();
+                        decimal comportamiento = 0;
+                        try
+                        {
+                            comportamiento = lsDiciplineEvaluation.Where(x => x.idEstudiante.Equals(courseStudent.id) && x.idPeriodoAcademico.Equals(academicPeriod.id)).Average(x => x.Nota);
+                        }
+                        catch (Exception)
+                        {
+                            com
+
+                        }
+                            
+
+                        for (int i = 0; i < lsCourseKnowledgeArea.Count(); i++)
+                        {
+                            #region Calculo nota para el area actual
+                            KnowledgeArea knowledgeArea = lsKnowledgeArea.Where(x => x.id.Equals(lsKnowledgeAreaCode[i])).FirstOrDefault();
+                            List<Asignature> lsAsignatureArea = lsAsignature.Where(x => x.idAreaConocimiento.Equals(knowledgeArea.id)).Distinct().ToList();
+                            List<CourseAsignature> lsCourseAsignatureArea = new List<CourseAsignature>();
+
+                            decimal valNota = 0;
+                            string nota = "";
+                            decimal subtotalNota = 0;
+                            int numMateriasPromedio = 0;
+
+                            foreach (Asignature asignatura in lsAsignatureArea)
+                            {
+                                if (lsCourseAsignature.Where(x => x.idAsignatura.Equals(asignatura.id)).Count() != 0)
+                                {
+                                    CourseAsignature courseAsignatureArea = lsCourseAsignature.Where(x => x.idAsignatura.Equals(asignatura.id)).FirstOrDefault();
+
+                                    if (asignatura.ignorarEnPromedio == false)                                    
+                                        subtotalNota += lsStudenEvaluation.Where(x => x.idAsignatura.Equals(courseAsignatureArea.id)).Select(x => x.Nota).FirstOrDefault();                                        
+                                    
+                                    else
+                                        subtotalNota = comportamiento;
+
+                                    numMateriasPromedio++;
+                                }
+
+                            }
+
+                            valNota = Math.Round((subtotalNota / numMateriasPromedio), 1);
+
+                            bool pierde = lsValuationLevel.Where(x => valNota >= x.minimo && valNota <= x.maximo).Select(x => x.noSupera).FirstOrDefault();
+
+                            if (pierde)
+                            {
+                                nota = "[" + valNota.ToString("0.00") + "]";
+                                TAP++;
+                            }
+                            else
+                                nota = valNota.ToString("0.00");
+                            #endregion
+
+                            #region registro de nota
+                            switch (i)
+                            {
+                                case 0:
+                                    detailRow.mat1 = nota;
+                                    break;
+                                case 1:
+                                    detailRow.mat2 = nota;
+                                    break;
+                                case 2:
+                                    detailRow.mat3 = nota;
+                                    break;
+                                case 3:
+                                    detailRow.mat4 = nota;
+                                    break;
+                                case 4:
+                                    detailRow.mat5 = nota;
+                                    break;
+                                case 5:
+                                    detailRow.mat6 = nota;
+                                    break;
+                                case 6:
+                                    detailRow.mat7 = nota;
+                                    break;
+                                case 7:
+                                    detailRow.mat8 = nota;
+                                    break;
+                                case 8:
+                                    detailRow.mat9 = nota;
+                                    break;
+                                case 9:
+                                    detailRow.mat10 = nota;
+                                    break;
+                                case 10:
+                                    detailRow.mat11 = nota;
+                                    break;
+                                case 11:
+                                    detailRow.mat12 = nota;
+                                    break;
+                                case 12:
+                                    detailRow.mat13 = nota;
+                                    break;
+                                case 13:
+                                    detailRow.mat14 = nota;
+                                    break;
+                                case 14:
+                                    detailRow.mat15 = nota;
+                                    break;
+                                case 15:
+                                    detailRow.mat16 = " ";
+                                    break;
+                                case 16:
+                                    detailRow.mat17 = " ";
+                                    break;
+                                case 17:
+                                    detailRow.mat18 = " ";
+                                    break;
+                                case 18:
+                                    detailRow.mat19 = " ";
+                                    break;
+                                case 19:
+                                    detailRow.mat20 = " ";
+                                    break;
+                                default:
+                                    break;
+                            }
+                            #endregion
+                        }
+
+                        detailRow.num = numEstudianteActual.ToString();
+                        detailRow.total = TAP.ToString();
+                        detailRow.periodo = academicPeriod.Descripcion;
+
+                        dsCrossReports.RptTable.AddRptTableRow(detailRow);                         
+                    }
+                    numEstudianteActual++;
+                }
+                //********* Fin Detalle *****
+
+                return dsCrossReports;
+            }
+            catch (Exception ex)
+            {
+
                 throw ex;
             }
         }

@@ -16,14 +16,14 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class PlanillaResumen : ReportClass {
+    public class EvaluationGroupSummary : ReportClass {
         
-        public PlanillaResumen() {
+        public EvaluationGroupSummary() {
         }
         
         public override string ResourceName {
             get {
-                return "PlanillaResumen.rpt";
+                return "EvaluationGroupSummary.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
         
         public override string FullResourceName {
             get {
-                return "Orkidea.SchoolPanel.WebFront.Reporting.PlanillaResumen.rpt";
+                return "Orkidea.SchoolPanel.WebFront.Reporting.EvaluationGroupSummary.rpt";
             }
             set {
                 // Do nothing
@@ -66,7 +66,7 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupHeaderSection1 {
             get {
                 return this.ReportDefinition.Sections[2];
             }
@@ -74,7 +74,7 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
+        public CrystalDecisions.CrystalReports.Engine.Section Section3 {
             get {
                 return this.ReportDefinition.Sections[3];
             }
@@ -82,7 +82,7 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+        public CrystalDecisions.CrystalReports.Engine.Section GroupFooterSection1 {
             get {
                 return this.ReportDefinition.Sections[4];
             }
@@ -90,17 +90,25 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_idAsignaturaCurso {
+        public CrystalDecisions.CrystalReports.Engine.Section Section4 {
             get {
-                return this.DataDefinition.ParameterFields[0];
+                return this.ReportDefinition.Sections[5];
+            }
+        }
+        
+        [Browsable(false)]
+        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
+        public CrystalDecisions.CrystalReports.Engine.Section Section5 {
+            get {
+                return this.ReportDefinition.Sections[6];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedPlanillaResumen : Component, ICachedReport {
+    public class CachedEvaluationGroupSummary : Component, ICachedReport {
         
-        public CachedPlanillaResumen() {
+        public CachedEvaluationGroupSummary() {
         }
         
         [Browsable(false)]
@@ -137,7 +145,7 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            PlanillaResumen rpt = new PlanillaResumen();
+            EvaluationGroupSummary rpt = new EvaluationGroupSummary();
             rpt.Site = this.Site;
             return rpt;
         }

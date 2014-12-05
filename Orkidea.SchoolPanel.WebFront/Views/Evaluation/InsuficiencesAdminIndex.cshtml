@@ -59,6 +59,10 @@
                         <input type="radio" name="optionsRadios" id="optionsRadios3" value="3">
                         Resumen de insuficiencias por grupo por periodo
                     </label>
+                    <label class="radio">
+                        <input type="radio" name="optionsRadios" id="optionsRadios4" value="4">
+                        Boletin de resumen por grupo con promedio
+                    </label>
                 </div>
             </div>
             <div class="row-fluid">
@@ -90,9 +94,18 @@
         var reporte = $("input:radio:checked").val();
 
         if (selectPeriodo != '0' && selectCurso != '0' && reporte != null) {
-            var id = selectCurso + "|" + selectPeriodo + "|" + reporte;
+            var id=  '';//= selectCurso + "|" + selectPeriodo + "|" + reporte;
+            var link = '';
 
-            var link = '@Url.Action("InsuficiencesRep", "Evaluation", new { id = "-1" })';
+            if (reporte == '4') {
+                id = selectCurso + "|" + selectPeriodo;
+                link = '@Url.Action("BoletinResumenRep", "Evaluation", new { id = "-1" })';
+            }
+            else {
+                id = selectCurso + "|" + selectPeriodo + "|" + reporte;
+                link = '@Url.Action("InsuficiencesRep", "Evaluation", new { id = "-1" })';
+            }
+
             link = link.replace("-1", id);
             window.open(link, '_blank');
         }
