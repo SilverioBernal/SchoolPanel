@@ -1692,6 +1692,75 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             return new FileContentResult(response, "application/pdf");
         }
 
+        [Authorize]
+        public FileContentResult ReporteValorativoRep(string id)
+        {
+            try
+            {
+                string[] parametros = id.Split('|');
+
+                int curso = int.Parse(parametros[0]);
+                int idPeriodo = int.Parse(parametros[1]);
+
+                string oConnStr = ConfigurationManager.ConnectionStrings["SchoolPanelADO"].ToString();
+                string rutaRpt = Server.MapPath("~/Reporting/StudentValoration.rpt");
+
+                ReportDocument rpt;
+                byte[] response = null;
+
+                System.Data.SqlClient.SqlConnectionStringBuilder oConnBuilder = new System.Data.SqlClient.SqlConnectionStringBuilder(oConnStr);
+
+                rpt = new ReportDocument();
+
+                rpt.Load(rutaRpt);
+
+                ParameterDiscreteValue cursoDiscreteValue = new ParameterDiscreteValue();
+                cursoDiscreteValue.Value = curso;
+                rpt.SetParameterValue("curso", cursoDiscreteValue);
+
+                ParameterDiscreteValue peirodoDiscreteValue = new ParameterDiscreteValue();
+                peirodoDiscreteValue.Value = idPeriodo;
+                rpt.SetParameterValue("periodo", peirodoDiscreteValue);
+
+                CrystalDecisions.Shared.ConnectionInfo connectionInfo = new CrystalDecisions.Shared.ConnectionInfo();
+                connectionInfo.DatabaseName = oConnBuilder.InitialCatalog;
+                connectionInfo.UserID = oConnBuilder.UserID;
+                connectionInfo.Password = oConnBuilder.Password;
+                connectionInfo.ServerName = oConnBuilder.DataSource;
+
+                Tables tables = rpt.Database.Tables;
+                foreach (CrystalDecisions.CrystalReports.Engine.Table table in tables)
+                {
+                    CrystalDecisions.Shared.TableLogOnInfo tableLogonInfo = table.LogOnInfo;
+                    tableLogonInfo.ConnectionInfo = connectionInfo;
+                    table.ApplyLogOnInfo(tableLogonInfo);
+                }
+
+                for (int i = 0; i < rpt.DataSourceConnections.Count; i++)
+                {
+                    rpt.DataSourceConnections[i].SetConnection(oConnBuilder.DataSource, oConnBuilder.InitialCatalog, oConnBuilder.UserID, oConnBuilder.Password);
+                }
+
+                rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
+
+
+                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
+                response = new byte[strMemory.Length];
+
+                strMemory.Read(response, 0, (int)strMemory.Length);
+
+                return new FileContentResult(response, "application/pdf");
+            }
+            catch (Exception ex)
+            {
+                string error = ex.Message + " :::---::: " + ex.StackTrace;
+
+                System.Text.ASCIIEncoding codificador = new System.Text.ASCIIEncoding();
+                byte[] response = codificador.GetBytes(error);
+
+                return new FileContentResult(response, "text/plain");
+            }
+        }
 
         private DsCrossReports calculoReporteInsuficiencias(string id)
         {

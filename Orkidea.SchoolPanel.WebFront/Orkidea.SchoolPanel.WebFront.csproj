@@ -260,6 +260,12 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Reporting\StudentValoration.cs">
+      <DependentUpon>StudentValoration.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Reporting\EvaluationGroupSummary.cs">
       <DependentUpon>EvaluationGroupSummary.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -2465,6 +2471,10 @@
     <EmbeddedResource Include="Reporting\Certificacion.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Certificacion.cs</LastGenOutput>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Reporting\StudentValoration.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>StudentValoration.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reporting\EvaluationGroupSummary.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
