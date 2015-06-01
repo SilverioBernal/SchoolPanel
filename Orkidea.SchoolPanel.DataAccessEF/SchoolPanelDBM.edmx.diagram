@@ -4,7 +4,7 @@
   <edmx:Designer xmlns="http://schemas.microsoft.com/ado/2009/11/edmx">
     <!-- Diagram content (shape and connector positions) -->
     <edmx:Diagrams>
-      <Diagram DiagramId="a28fc091064c46c79ac61bd17ca2c54d" Name="Diagram2" ZoomLevel="89" >
+      <Diagram DiagramId="a28fc091064c46c79ac61bd17ca2c54d" Name="Diagram2" ZoomLevel="66" >
         <EntityTypeShape EntityType="SchoolPanelModel.AcademicPeriod" Width="1.5" PointX="3" PointY="13" />
         <EntityTypeShape EntityType="SchoolPanelModel.CourseStudent" Width="1.5" PointX="13.5" PointY="30.625" />
         <EntityTypeShape EntityType="SchoolPanelModel.Grade" Width="1.5" PointX="3" PointY="16" />
@@ -34,7 +34,6 @@
         <AssociationConnector Association="SchoolPanelModel.FK_Person_Place" />
         <AssociationConnector Association="SchoolPanelModel.FK_PersonBitacore_Person" />
         <EntityTypeShape EntityType="SchoolPanelModel.EvaluationNote" Width="1.5" PointX="3" PointY="41.25" />
-        <EntityTypeShape EntityType="SchoolPanelModel.ValuationLevel" Width="1.5" PointX="3" PointY="44.25" />
         <AssociationConnector Association="SchoolPanelModel.FK_Course_Person" />
         <EntityTypeShape EntityType="SchoolPanelModel.Evaluation" Width="1.5" PointX="5.25" PointY="26.5" />
         <AssociationConnector Association="SchoolPanelModel.FK_Evaluation_AcademicPeriod" />
@@ -42,11 +41,17 @@
         <AssociationConnector Association="SchoolPanelModel.FK_Evaluation_CourseStudent" />
         <AssociationConnector Association="SchoolPanelModel.FK_Evaluation_EvaluationNote" />
         <AssociationConnector Association="SchoolPanelModel.FK_Evaluation_EvaluationNote1" />
-        <EntityTypeShape EntityType="SchoolPanelModel.Asignature" Width="1.5" PointX="5.25" PointY="17.25" />
+        <EntityTypeShape EntityType="SchoolPanelModel.StudentLog" Width="1.5" PointX="10.5" PointY="31.875" />
+        <AssociationConnector Association="SchoolPanelModel.FK_StudentLog_Person" />
+        <AssociationConnector Association="SchoolPanelModel.FK_StudentLog_Person1" />
+        <EntityTypeShape EntityType="SchoolPanelModel.ClosedAcademicPeriod" Width="1.5" PointX="0.75" PointY="0.75" />
+        <EntityTypeShape EntityType="SchoolPanelModel.DiciplineEvaluation" Width="1.5" PointX="2.75" PointY="0.75" />
+        <EntityTypeShape EntityType="SchoolPanelModel.Asignature" Width="1.5" PointX="5.25" PointY="17" />
         <AssociationConnector Association="SchoolPanelModel.FK_Assingnature_Grade" />
         <AssociationConnector Association="SchoolPanelModel.FK_Assingnature_KnowledgeArea" />
         <AssociationConnector Association="SchoolPanelModel.FK_CourseTeacher_Assingnature" />
-        <EntityTypeShape EntityType="SchoolPanelModel.School" Width="1.5" PointX="0.75" PointY="20.5" />
+        <EntityTypeShape EntityType="SchoolPanelModel.ValuationLevel" Width="1.5" PointX="3" PointY="26.875" />
+        <EntityTypeShape EntityType="SchoolPanelModel.School" Width="1.5" PointX="0.75" PointY="25.25" />
         <AssociationConnector Association="SchoolPanelModel.FK_AcademicPeriod_School" />
         <AssociationConnector Association="SchoolPanelModel.FK_Course_School" />
         <AssociationConnector Association="SchoolPanelModel.FK_EvaluationNote_School" />
@@ -56,11 +61,6 @@
         <AssociationConnector Association="SchoolPanelModel.FK_Student_School" />
         <AssociationConnector Association="SchoolPanelModel.FK_Place_School" />
         <AssociationConnector Association="SchoolPanelModel.FK_ValuationLevel_School" />
-        <EntityTypeShape EntityType="SchoolPanelModel.StudentLog" Width="1.5" PointX="10.5" PointY="31.875" />
-        <AssociationConnector Association="SchoolPanelModel.FK_StudentLog_Person" />
-        <AssociationConnector Association="SchoolPanelModel.FK_StudentLog_Person1" />
-        <EntityTypeShape EntityType="SchoolPanelModel.ClosedAcademicPeriod" Width="1.5" PointX="0.75" PointY="0.75" />
-        <EntityTypeShape EntityType="SchoolPanelModel.DiciplineEvaluation" Width="1.5" PointX="2.75" PointY="0.75" />
         </Diagram>
     </edmx:Diagrams>
   </edmx:Designer>

@@ -3,6 +3,7 @@
 @{
     ViewBag.Title = "Create";
 }
+
 @Scripts.Render("~/Scripts/jquery.min.js")
 @Scripts.Render("~/lib/validation/jquery.validate.min.js")
 @Scripts.Render("~/js/gebo_validation.js")
@@ -12,7 +13,7 @@
 {
     @Html.ValidationSummary(true)
 
-    
+
     <fieldset>
         <legend>Crear nível de evaluación</legend>
         <div class="row-fluid">
@@ -24,20 +25,26 @@
         <div class="row-fluid">
             <div class="span1">
                 @Html.LabelFor(model => model.minimo, "Desde")
-                @Html.TextBoxFor(model => model.minimo, new { @class = "span12 required" })                
+                @Html.TextBoxFor(model => model.minimo, new { @class = "span12 required" })
             </div>
             <div class="span1">
                 @Html.LabelFor(model => model.maximo, "Hasta")
-                @Html.TextBoxFor(model => model.maximo, new { @class = "span12 required" })                
+                @Html.TextBoxFor(model => model.maximo, new { @class = "span12 required" })
             </div>
             <div class="span1">
                 @Html.LabelFor(model => model.noSupera, "No supera")
-                @Html.CheckBoxFor(model => model.noSupera)                
+                @Html.CheckBoxFor(model => model.noSupera)
             </div>
         </div>
-   <p>
+        <div class="row-fluid">
+            <div class="span3">
+                @Html.LabelFor(model => model.valorLetra, "Equivalente en letras")
+                @Html.TextBoxFor(model => model.valorLetra, new { @class = "span2" })
+            </div>
+        </div>
+        <p>
             <input type="submit" value="Guardar" class="btn btn-primary" /> |
-        @Html.ActionLink("Volver a la lista", "Index")
+            @Html.ActionLink("Volver a la lista", "Index")
         </p>
     </fieldset>
     <script>

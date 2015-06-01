@@ -136,7 +136,8 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 idGrado = asignature.idGrado,
                 intensidadHoraria = asignature.intensidadHoraria,
                 Descripcion = asignature.Descripcion,
-                ignorarEnPromedio = asignature.ignorarEnPromedio == null ? false : (bool)asignature.ignorarEnPromedio
+                ignorarEnPromedio = asignature.ignorarEnPromedio == null ? false : (bool)asignature.ignorarEnPromedio,
+                pesoPorcentualAreaConocimiento = asignature.pesoPorcentualAreaConocimiento
             };
 
             currentVmAsignature.lsGrade = gradeBiz.GetGradeList(school);
@@ -180,7 +181,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             {
                 Res = ex.Message;
             }
-            
+
             return Json(Res, JsonRequestBehavior.AllowGet);
         }
 

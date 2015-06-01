@@ -41,12 +41,12 @@ namespace Orkidea.SchoolPanel.DataAccessEF
         public DbSet<Task> Tasks { get; set; }
         public DbSet<Person> Persons { get; set; }
         public DbSet<EvaluationNote> EvaluationNotes { get; set; }
-        public DbSet<ValuationLevel> ValuationLevels { get; set; }
         public DbSet<Evaluation> Evaluations { get; set; }
-        public DbSet<Asignature> Asignatures { get; set; }
-        public DbSet<School> Schools { get; set; }
         public DbSet<StudentLog> StudentLogs { get; set; }
         public DbSet<ClosedAcademicPeriod> ClosedAcademicPeriods { get; set; }
         public DbSet<DiciplineEvaluation> DiciplineEvaluations { get; set; }
+        public DbSet<Asignature> Asignatures { get; set; }
+        public DbSet<ValuationLevel> ValuationLevels { get; set; }
+        public DbSet<School> Schools { get; set; }
     }
 }

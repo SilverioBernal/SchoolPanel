@@ -574,10 +574,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-                response = new byte[strMemory.Length];
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                {
+                    response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                    strMemory.Read(response, 0, (int)strMemory.Length);
+                }
 
                 return new FileContentResult(response, "application/pdf");
             }
@@ -674,10 +676,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-                response = new byte[strMemory.Length];
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                {
+                    response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                    strMemory.Read(response, 0, (int)strMemory.Length);
+                }
 
                 return new FileContentResult(response, "application/pdf");
             }
@@ -777,10 +781,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-                response = new byte[strMemory.Length];
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                {
+                    response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                    strMemory.Read(response, 0, (int)strMemory.Length);
+                }
 
                 return new FileContentResult(response, "application/pdf");
             }
@@ -889,10 +895,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-                response = new byte[strMemory.Length];
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                {
+                    response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                    strMemory.Read(response, 0, (int)strMemory.Length);
+                }
 
                 return new FileContentResult(response, "application/pdf");
             }
@@ -991,10 +999,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-                response = new byte[strMemory.Length];
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                {
+                    response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                    strMemory.Read(response, 0, (int)strMemory.Length);
+                }
 
                 return new FileContentResult(response, "application/pdf");
             }
@@ -1116,10 +1126,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-                response = new byte[strMemory.Length];
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                {
+                    response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                    strMemory.Read(response, 0, (int)strMemory.Length);
+                }
 
                 return new FileContentResult(response, "application/pdf");
             }
@@ -1180,7 +1192,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                     rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                    using (var strMemory = (MemoryStream)rpt.ExportToStream(ExportFormatType.Excel))
+                    using (Stream strMemory = rpt.ExportToStream(ExportFormatType.Excel))
                     {
                         response = new byte[strMemory.Length];
 
@@ -1327,10 +1339,17 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-                response = new byte[strMemory.Length];
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                {
+                    response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                    strMemory.Read(response, 0, (int)strMemory.Length);
+                }
+
+                //System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
+                //response = new byte[strMemory.Length];
+
+                //strMemory.Read(response, 0, (int)strMemory.Length);
 
                 return new FileContentResult(response, "application/pdf");
             }
@@ -1427,10 +1446,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-                response = new byte[strMemory.Length];
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                {
+                    response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                    strMemory.Read(response, 0, (int)strMemory.Length);
+                }
 
                 return new FileContentResult(response, "application/pdf");
             }
@@ -1592,10 +1613,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-                response = new byte[strMemory.Length];
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                {
+                    response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                    strMemory.Read(response, 0, (int)strMemory.Length);
+                }
 
                 return new FileContentResult(response, "application/pdf");
             }
@@ -1661,10 +1684,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             rpt.Load(rutaRpt);
             rpt.SetDataSource(ds.Tables[0]);
 
-            System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-            response = new byte[strMemory.Length];
+            using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+            {
+                response = new byte[strMemory.Length];
 
-            strMemory.Read(response, 0, (int)strMemory.Length);
+                strMemory.Read(response, 0, (int)strMemory.Length);
+            }
 
             return new FileContentResult(response, "application/pdf");
         }
@@ -1684,10 +1709,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             rpt.Load(rutaRpt);
             rpt.SetDataSource(ds.Tables[0]);
 
-            System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-            response = new byte[strMemory.Length];
+            using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+            {
+                response = new byte[strMemory.Length];
 
-            strMemory.Read(response, 0, (int)strMemory.Length);
+                strMemory.Read(response, 0, (int)strMemory.Length);
+            }
 
             return new FileContentResult(response, "application/pdf");
         }
@@ -1744,10 +1771,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                System.IO.MemoryStream strMemory = (System.IO.MemoryStream)rpt.ExportToStream(ExportFormatType.PortableDocFormat);
-                response = new byte[strMemory.Length];
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                {
+                    response = new byte[strMemory.Length];
 
-                strMemory.Read(response, 0, (int)strMemory.Length);
+                    strMemory.Read(response, 0, (int)strMemory.Length);
+                }
 
                 return new FileContentResult(response, "application/pdf");
             }

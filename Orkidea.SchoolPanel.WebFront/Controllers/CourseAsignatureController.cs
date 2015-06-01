@@ -72,17 +72,24 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                     //lsProfesor = lsVmPerson
                 };
 
-                itemVmCourseAsignature.asignatura = lsAsignature.Where(c => c.id.Equals(itemCourseAsignature.idAsignatura)).Select(c => c.Descripcion).First();
-
-                if (itemCourseAsignature.idProfesor != null)
+                try
                 {
-                    Person profesor = lsProfesor.Where(c => c.id.Equals(itemCourseAsignature.idProfesor)).First();
-                    itemVmCourseAsignature.idProfesor = itemCourseAsignature.idProfesor;
-                    itemVmCourseAsignature.profesor = profesor.primerNombre + " " + (string.IsNullOrEmpty(profesor.segundoNombre) ? "" : profesor.segundoNombre + " ") +
-                        profesor.primerApellido + (string.IsNullOrEmpty(profesor.segundoApellido) ? "" : " " + profesor.segundoApellido);
-                }
+                    itemVmCourseAsignature.asignatura = lsAsignature.Where(c => c.id.Equals(itemCourseAsignature.idAsignatura)).Select(c => c.Descripcion).First();
 
-                lsVmCourseAsignature.Add(itemVmCourseAsignature);
+                    if (itemCourseAsignature.idProfesor != null)
+                    {
+                        Person profesor = lsProfesor.Where(c => c.id.Equals(itemCourseAsignature.idProfesor)).First();
+                        itemVmCourseAsignature.idProfesor = itemCourseAsignature.idProfesor;
+                        itemVmCourseAsignature.profesor = profesor.primerNombre + " " + (string.IsNullOrEmpty(profesor.segundoNombre) ? "" : profesor.segundoNombre + " ") +
+                            profesor.primerApellido + (string.IsNullOrEmpty(profesor.segundoApellido) ? "" : " " + profesor.segundoApellido);
+                    }
+
+                    lsVmCourseAsignature.Add(itemVmCourseAsignature);
+                }
+                catch (Exception)
+                {
+                    
+                }
             }
 
             currentVmCourseAsignature.lsCourseAsignature = lsVmCourseAsignature;

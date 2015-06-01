@@ -76,6 +76,17 @@
                 @Html.TextAreaFor(model => model.textoCertificacion, new { @class = "span12" })
             </div>            
         </div>
+        <div class="row-fluid">
+            <div class="span6">
+                <label>Nota comportamiento en letras</label>
+                @Html.CheckBoxFor(c => c.notaComportamientoLetras)
+            </div>
+            <div class="span6">
+                <label>Area de conocimiento basada en porcentaje</label>
+                @Html.CheckBoxFor(c => c.pesoAreaConocimiento)
+            </div>
+        </div>
+        <br />
         <p>
             <input type="submit" value="Guardar" class="btn btn-primary" />|
         @Html.ActionLink("Volver a la lista", "Index")
