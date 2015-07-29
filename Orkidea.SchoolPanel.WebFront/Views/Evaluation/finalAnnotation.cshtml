@@ -1,0 +1,96 @@
+﻿@{
+    ViewBag.Title = "finalAnnotation";
+}
+<!-- validation -->
+@Scripts.Render("~/Scripts/jquery.min.js")
+
+
+<div class="row-fluid">
+    <div id="divAno">
+        <label>Año<span class="f_req">*</span></label>
+        <select name="lstAno" id="lstAno" data-placeholder="Seleccione" class="span3">
+            <option value=""></option>
+        </select>
+    </div>
+</div>
+<div class="row-fluid">
+    <div id="divCurso">
+        <label>Curso<span class="f_req">*</span></label>
+        <select name="lstCurso" id="lstCurso" data-placeholder="Seleccione una opcion" class="span3">
+            <option value=""></option>
+        </select>
+    </div>
+</div>
+<div class="row-fluid">
+    <div class="span12">
+        <div class="row-fluid">
+            <input type="button" class="btn btn-warning" value="Ingresar comentarios finales" id="btnGenerar" />
+            | @Html.ActionLink("Volver al Home", "Index", "Home")
+        </div>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        var select = '@ViewBag.idColegio';
+
+        var anosSelect = $('#lstAno');
+        anosSelect.empty();
+
+        if (select != '' && select != 0) {
+
+
+            $.getJSON('@Url.Action("YearsBySchool")', { idColegio: select }, function (Anos) {
+
+                anosSelect.append($('<option/>', {
+                    value: "0",
+                    text: ""
+                }));
+
+                $.each(Anos, function (index, ano) {
+                    anosSelect.append($('<option/>', {
+                        value: ano,
+                        text: ano
+                    }));
+                });
+            });
+        }
+    });
+
+    $('#divAno').click(function () {
+        var selectColegio = '@ViewBag.idColegio';
+        var selectAno = $('#lstAno')[0].value;
+
+        var cursoSelect = $('#lstCurso');
+        cursoSelect.empty();
+
+        if (selectAno != '' && selectAno != 0) {
+
+            $.getJSON('@Url.Action("CourseByYear")', { idColegio: selectColegio, ano: selectAno }, function (Data) {
+
+                cursoSelect.append($('<option/>', {
+                    value: "0",
+                    text: ""
+                }));
+
+                $.each(Data, function (index, curso) {
+                    cursoSelect.append($('<option/>', {
+                        value: curso.id,
+                        text: curso.Descripcion
+                    }));
+                });
+            });
+        }
+    });
+
+    $('#btnGenerar').click(function () {
+        var selectCurso = $('#lstCurso').val();
+
+        if (selectCurso != '0') {            
+            link = '@Url.Action("finalCourseAnnotation", "Evaluation", new { id = "-1" })';
+
+            link = link.replace("-1", selectCurso);
+            window.open(link, '_self');
+        }
+    });
+</script>

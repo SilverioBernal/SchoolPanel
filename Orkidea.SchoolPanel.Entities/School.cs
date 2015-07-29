@@ -43,6 +43,7 @@ namespace Orkidea.SchoolPanel.Entities
         public string textoCertificacion { get; set; }
         public bool pesoAreaConocimiento { get; set; }
         public bool notaComportamientoLetras { get; set; }
+        public bool mostrarRectorBoletin { get; set; }
     
         public virtual ICollection<AcademicPeriod> AcademicPeriods { get; set; }
         public virtual ICollection<Course> Courses { get; set; }

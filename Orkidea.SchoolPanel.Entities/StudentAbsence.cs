@@ -21,7 +21,7 @@ namespace Orkidea.SchoolPanel.Entities
         public System.DateTime fecha { get; set; }
     
         public virtual AcademicPeriod AcademicPeriod { get; set; }
-        public virtual CourseStudent CourseStudent { get; set; }
         public virtual CourseAsignature CourseAsignature { get; set; }
+        public virtual CourseStudent CourseStudent { get; set; }
     }
 }

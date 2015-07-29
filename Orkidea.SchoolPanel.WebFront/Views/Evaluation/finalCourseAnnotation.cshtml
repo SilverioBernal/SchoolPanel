@@ -1,0 +1,116 @@
+﻿@model IEnumerable<Orkidea.SchoolPanel.WebFront.Models.vmCourseStudent>
+
+@{
+    ViewBag.Title = "finalAnnotation";
+}
+
+@Scripts.Render("~/Scripts/jquery.min.js")
+
+<h2>Notas Finales</h2>
+<div class="row-fluid">
+    <div class="span12">
+        <table class="table table-bordered table-striped table_vam" id="dt_gal">
+            <thead>
+                <tr>
+                    <th>
+                        Nombre estudiante
+                    </th>
+                    <th>
+                        Observaciones
+                    </th>
+                </tr>
+            </thead>
+            <tbody>
+                @foreach (var item in Model)
+                {
+                    <tr class="evaluationRow">
+                        <td>
+                            @item.estudiante.Trim()
+                        </td>
+                        <td>
+                            <textarea class="span12" id='e_@item.idEstudiante'></textarea>
+
+                        </td>
+                    </tr>
+                }
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<div class="row-fluid">
+    <input type="button" class="btn btn-info" value="Guardar" id="btnGuardar" />
+    | @Html.ActionLink("Volver al Home", "Index", "Home")
+</div>
+
+<div class="modal hide fade" id="myModal">
+    <div class="modal-header">
+        <button class="close" data-dismiss="modal">×</button>
+        <h3 id="msgHeader"></h3>
+    </div>
+    <div class="modal-body" id="msgBody">
+    </div>
+    <div class="modal-footer">
+        <input type="button" data-dismiss="modal" class="btn btn-info" value="Aceptar" id="btnSuccess" />
+        @*<a href="#" class="btn btn-danger" data-dismiss="modal" id="btnFail">Revisar</a>*@
+    </div>
+</div>
+
+<script>
+    $('#btnGuardar').click(function () {
+        var filas = $('textarea');
+        var error = 0;
+        var curso =@ViewBag.idCurso;
+
+        var lsFinalNotes = [];
+
+        $(filas).each(function () {
+            var registro = this;
+            var estudiante = this.id.substring(2);
+            var nota = this.value;
+
+
+            lsFinalNotes.push({
+                idEstudiante: estudiante,
+                documento: nota,
+                idCurso: curso
+                });
+        });
+
+        $.ajax({
+            url: '@Url.Action("SavefinalCourseAnnotation")',
+            data: JSON.stringify(lsFinalNotes),
+            success: res,
+            error: error,
+            type: 'POST',
+            contentType: 'application/json, charset=utf-8',
+            dataType: 'json'
+        });
+
+        function res(data) {
+            if (data == "OK") {
+                $(span).removeClass('text-error').addClass('text-success');
+            }
+            else {
+                $(span).removeClass('tex-success').addClass('text-error');
+                error = 1;
+            }
+            span.innerText = data;
+        }
+
+        if (error == 0) {
+            $('#msgHeader')[0].innerText = 'Registro de notas';
+            $('#msgBody')[0].innerText = 'Registro de notas exitoso';
+            $('#btnSuccess').css("display", "inline");
+            $('#btnFail').css("display", "none");
+        }
+        else {
+            $('#msgHeader')[0].innerText = 'Error - Registro de notas';
+            $('#msgBody')[0].innerText = 'Al intentar guardar las notas, algunos registros presentaron inconsistencias. Por favor verifique.';
+            $('#btnSuccess').css("display", "none");
+            $('#btnFail').css("display", "inline");
+        }
+
+        $('#myModal').modal('show');
+    });
+</script>

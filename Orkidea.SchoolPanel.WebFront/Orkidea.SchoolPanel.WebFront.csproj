@@ -260,6 +260,12 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
+    <Compile Include="Reporting\InformeValorativo.cs">
+      <DependentUpon>InformeValorativo.rpt</DependentUpon>
+      <AutoGen>True</AutoGen>
+      <SubType>Component</SubType>
+      <DesignTime>True</DesignTime>
+    </Compile>
     <Compile Include="Reporting\StudentValoration.cs">
       <DependentUpon>StudentValoration.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
@@ -272,8 +278,8 @@
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
     </Compile>
-    <Compile Include="Reporting\InformeValorativo.cs">
-      <DependentUpon>InformeValorativo.rpt</DependentUpon>
+    <Compile Include="Reporting\InformeValorativoOld.cs">
+      <DependentUpon>InformeValorativoOld.rpt</DependentUpon>
       <AutoGen>True</AutoGen>
       <SubType>Component</SubType>
       <DesignTime>True</DesignTime>
@@ -2430,6 +2436,8 @@
     <Content Include="Views\StudentLog\Create.cshtml" />
     <Content Include="Views\StudentLog\Index.cshtml" />
     <Content Include="Views\Evaluation\ReporteFinal.cshtml" />
+    <Content Include="Views\Evaluation\finalAnnotation.cshtml" />
+    <Content Include="Views\Evaluation\finalCourseAnnotation.cshtml" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="App_Code\" />
@@ -2472,6 +2480,10 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>Certificacion.cs</LastGenOutput>
     </EmbeddedResource>
+    <EmbeddedResource Include="Reporting\InformeValorativo.rpt">
+      <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
+      <LastGenOutput>InformeValorativo.cs</LastGenOutput>
+    </EmbeddedResource>
     <EmbeddedResource Include="Reporting\StudentValoration.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>StudentValoration.cs</LastGenOutput>
@@ -2480,9 +2492,9 @@
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
       <LastGenOutput>EvaluationGroupSummary.cs</LastGenOutput>
     </EmbeddedResource>
-    <EmbeddedResource Include="Reporting\InformeValorativo.rpt">
+    <EmbeddedResource Include="Reporting\InformeValorativoOld.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>
-      <LastGenOutput>InformeValorativo.cs</LastGenOutput>
+      <LastGenOutput>InformeValorativoOld.cs</LastGenOutput>
     </EmbeddedResource>
     <EmbeddedResource Include="Reporting\GlobalEvaluation.rpt">
       <Generator>CrystalDecisions.VSDesigner.CodeGen.ReportCodeGenerator</Generator>

@@ -25,8 +25,8 @@ namespace Orkidea.SchoolPanel.Entities
     
         public virtual AcademicPeriod AcademicPeriod { get; set; }
         public virtual CourseAsignature CourseAsignature { get; set; }
-        public virtual CourseStudent CourseStudent { get; set; }
         public virtual EvaluationNote EvaluationNote { get; set; }
         public virtual EvaluationNote EvaluationNote1 { get; set; }
+        public virtual CourseStudent CourseStudent { get; set; }
     }
 }

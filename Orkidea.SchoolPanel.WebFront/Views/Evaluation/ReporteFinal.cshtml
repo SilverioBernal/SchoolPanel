@@ -4,51 +4,249 @@
     ViewBag.Title = "Reporte final";
 }
 
+@{
+    System.Security.Principal.IIdentity context = Context.User.Identity;
+    int user = 0;
+    int rol = 99;
+    int idColegio = 0;
+    string userName = "";
+
+    if (context.IsAuthenticated)
+    {
+        System.Web.Security.FormsIdentity ci = (System.Web.Security.FormsIdentity)Context.User.Identity;
+        string[] userRole = ci.Ticket.UserData.Split('|');
+        user = int.Parse(userRole[0]);
+        rol = int.Parse(userRole[1]);
+        idColegio = int.Parse(userRole[2]);
+        userName = ci.Name;
+    }
+}
+
 <!-- validation -->
 @Scripts.Render("~/Scripts/jquery.min.js")
 @Scripts.Render("~/lib/validation/jquery.validate.min.js")
 @Scripts.Render("~/js/gebo_validation.js")
 
+<style>
+    .columns3 {
+        -webkit-column-count: 3; /* Chrome, Safari, Opera */
+        -moz-column-count: 3; /* Firefox */
+        column-count: 3;
+        -webkit-column-gap: 10px; /* Chrome, Safari, Opera */
+        -moz-column-gap: 10px; /* Firefox */
+        column-gap: 10px;
+        -webkit-column-rule-style: none; /* Chrome, Safari, Opera */
+        -moz-column-rule-style: none; /* Firefox */
+        column-rule-style: none;
+        -webkit-column-rule-width: 1px; /* Chrome, Safari, Opera */
+        -moz-column-rule-width: 1px; /* Firefox */
+        column-rule-width: 1px;
+        font-size: 10px;
+    }
+
+    .columns4 {
+        -webkit-column-count: 4; /* Chrome, Safari, Opera */
+        -moz-column-count: 4; /* Firefox */
+        column-count: 4;
+        -webkit-column-gap: 10px; /* Chrome, Safari, Opera */
+        -moz-column-gap: 10px; /* Firefox */
+        column-gap: 10px;
+        -webkit-column-rule-style: none; /* Chrome, Safari, Opera */
+        -moz-column-rule-style: none; /* Firefox */
+        column-rule-style: none;
+        -webkit-column-rule-width: 1px; /* Chrome, Safari, Opera */
+        -moz-column-rule-width: 1px; /* Firefox */
+        column-rule-width: 1px;
+        font-size: 10px;
+    }
+
+    input[type="checkbox"] {
+        margin: 0 0 0;
+    }
+</style>
+
 <h2>Boletin Final</h2>
 
 <div class="row-fluid">
-    <div class="span6">
-        @using (Ajax.BeginForm("CreateUpload", null, null, new AjaxOptions { UpdateTargetId = "divInvoiceList" }, new { id = "uploaded", @class = "form_validation_ttip", enctype = "multipart/form-data" }))
-        {                   
-            <div id="divAno">
-                <label>Curso<span class="f_req">*</span></label>
-                @Html.DropDownListFor(c => c.idCurso, new SelectList(Model.lsCurso, "id", "descripcion", Model.idCurso), "-- Selecione un curso --", new { @class = "required span12" })
-            </div>            
-            <div id="divPeriodo">
-                <label>Periodo academico<span class="f_req">*</span></label>
-                @Html.DropDownListFor(c => c.idPeriodoAcademico, new SelectList(Model.lsAdademicPeriod, "id", "descripcion", Model.idPeriodoAcademico), "-- Selecione un Periodo --", new { @class = "required span12" })
-            </div>            
-            <hr />
-            <div class="row-fluid">
-                <div class="span12">
-                    <input type="button" value="Generar" class="btn btn-info" id="btnGenerar"/>
-                    | @Html.ActionLink("Volver al Home", "Index", "Home")
-                </div>
-            </div>        
-        }
+    <div class="span12">
+        <div class="row-fluid">
+            <div class="span2" id="divAno">
+                <label>Año</label>
+                <select name="lstAno" id="lstAno" data-placeholder="Seleccione">
+                    <option value=""></option>
+                </select>
+            </div>
+            <div class="span4">
+                <label>Comenzar desde el folio</label>
+                <input type="text" id="folio" />
+            </div>
+        </div>
+        <hr />
+        <div class="row-fluid">
+            <strong>Seleccione las jornadas</strong>
+            <div id="divJornada" class="columns3">
+                <input type="checkbox" id="JM" value="1" class="chJornada" checked /><span class="checkLabel">MAÑANA</span>
+                <input type="checkbox" id="JT" value="2" class="chJornada" checked /><span class="checkLabel">TARDE</span>
+                <input type="checkbox" id="JN" value="3" class="chJornada" checked /><span class="checkLabel">NOCHE</span>
+                <input type="checkbox" id="JU" value="4" class="chJornada" checked /><span class="checkLabel">ÚNICA</span>
+            </div>
+        </div>
+        <hr />
+        <div class="row-fluid">
+            <strong>Seleccione las sedes</strong>
+            <div class="columns3">
+                <ul id="divSede"></ul>
+            </div>
+        </div>
+        <hr />
+        <div class="row-fluid">
+            <strong>Seleccione los cursos (Max 30)</strong>
+            <div id="divCurso" class="columns4">
+                <ul id="divSede"></ul>
+            </div>
+        </div>
+        <hr />
+        <div class="row-fluid">
+            <div class="span12">
+                <input type="button" value="Generar" class="btn btn-info" id="btnGenerar" />
+                | @Html.ActionLink("Volver al Home", "Index", "Home")
+            </div>
+        </div>
     </div>
 </div>
 
 
 
 <script>
+    $(document).ready(function () {
+
+        var anosSelect = $('#lstAno');
+        anosSelect.empty();
+
+        $.getJSON('@Url.Action("YearsBySchool")', { idColegio: @idColegio }, function (Anos) {
+
+            anosSelect.append($('<option/>', {
+                value: "0",
+                text: ""
+            }));
+
+            $.each(Anos, function (index, ano) {
+                anosSelect.append($('<option/>', {
+                    value: ano,
+                    text: ano
+                }));
+            });
+        });
+    });
+
+    $('#divAno').click(function () {
+        var selectColegio = @idColegio;
+        var selectAno = $('#lstAno').val();
+        var divSedes = $('#divSede')
+        var divJornadas = $('#divJornada')
+
+        divSedes.empty();
+
+        $.getJSON('@Url.Action("GetPlaceCourses")', { idColegio: selectColegio, ano: selectAno }, function (Data) {
+            $.each(Data, function () {
+                var id = this.id;
+                var name = this.descripcion;
+
+                $(divSedes).append('<li><input type="checkbox" id="S' + id + '" value="' + id + '" class="chSede"/><span class="checkLabel">'+name+'</span> </li>');
+            });
+        });
+    });
+
+    $('#divJornada').click(GetCourses);
+
+    $('#divSede').click(GetCourses);
+
+    $('#divCurso').click(ValidateCourses);
+
 
     $('#btnGenerar').click(function () {
 
-        var curso = $('#idCurso').val();
-        var periodo = $('#idPeriodoAcademico').val();
+        var colegio = @idColegio;
+        var ano = $('#lstAno').val();
+        var cursos = "";
+        var folio = $('#folio').val();
 
-        if (curso != '' && periodo != '') {
+        if ($('input[class="chCurso"]:checked').length > 0){
+            for(var i = 0; i< $('input[class="chCurso"]:checked').length;i++)
+            {
+                cursos += $('input[class="chCurso"]:checked')[i].value + '|';
+            }
+
+        }
+
+        if (colegio != '' && ano != '' && cursos != '' && folio !="") {
             var link = '@Url.Action("ReporteFinalRep", new { id = "-1" })';
-            link = link.replace("-1", curso + "|" + periodo);
-            window.open(link,'_blank');
+            link = link.replace("-1", colegio + "~" + ano +'~'+ cursos + '~' + folio);
+            window.open(link, '_blank');
+        }
+        else
+        {
+            alert("El año, folio y cursos son obligatorios")
         }
     });
 
-</script>
+    function ValidateCourses()
+    {
+        if ($('input[class="chCurso"]:checked').length > 0){
+            if ($('input[class="chCurso"]:checked').length > 30)
+                for(var i = 30; i< $('input[class="chCurso"]:checked').length;i++)
+                {
+                    $('input[class="chCurso"]:checked')[i].checked = false
+                }
+        }
+    }
 
+
+    function GetCourses(){
+        var divCursos = $('#divCurso');
+        divCursos.empty();
+
+        var selectColegio = @idColegio;
+        var selectAno = $('#lstAno').val();
+
+        if ($('input[class="chSede"]:checked').length > 0 && $('input[class="chJornada"]:checked').length>0)
+        {
+            var sedes = $('input[class="chSede"]:checked')
+            var jornadas = $('input[class="chJornada"]:checked')
+
+            var sedesActivas = "";
+            var jornadasActivas = "";
+
+            $.each(sedes, function(){
+                var sede = this;
+                sedesActivas += sede.value + '|';
+            });
+
+            for(var i = 0; i< $('input[class="chJornada"]:checked').length;i++)
+            {
+                var jornada = $('input[class="chJornada"]:checked')[i];
+                jornadasActivas += jornada.value + '|';
+            }
+
+            sedesActivas = sedesActivas.substr(0,sedesActivas.length-1);
+            jornadasActivas = jornadasActivas.substr(0,jornadasActivas.length-1);
+
+            $.getJSON('@Url.Action("GetCoursesByPlaceTime")', { idColegio: selectColegio, ano: selectAno, jornada: jornadasActivas, sede: sedesActivas }, function (Data) {
+                var cursos = "";
+
+                $.each(Data, function () {
+                    var id = this.id;
+                    var name = this.Descripcion;
+                    cursos+='<li><input type="checkbox" id="C' + id + '" value="' + id + '" class="chCurso"/><span class="checkLabel">' + name + '</span></li>';
+                });
+
+                if ($('input[class="chSede"]:checked').length > 0 && $('input[class="chJornada"]:checked').length>0)
+                    $(divCursos).append(cursos);
+            });
+        }
+        else
+        {
+            divCursos.empty();
+        }
+    };
+</script>

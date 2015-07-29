@@ -735,7 +735,7 @@ namespace Orkidea.SchoolPanel.WebFront.DsReporting {
             [global::System.CodeDom.Compiler.GeneratedCodeAttribute("System.Data.Design.TypedDataSetGenerator", "4.0.0.0")]
             internal void InitVars() {
                 this.columncolegio = base.Columns["colegio"];
-                this.columnsede = base.Columns["sede"];
+                this.columnsede = base.Columns["sedeActual"];
                 this.columnperiodo = base.Columns["periodo"];
                 this.columncurso = base.Columns["curso"];
                 this.columnprofesor = base.Columns["profesor"];
@@ -762,7 +762,7 @@ namespace Orkidea.SchoolPanel.WebFront.DsReporting {
                 this.columnmat19 = base.Columns["mat19"];
                 this.columnmat20 = base.Columns["mat20"];
                 this.columntotal = base.Columns["total"];
-                this.columnjornada = base.Columns["jornada"];
+                this.columnjornada = base.Columns["jornadaActual"];
                 this.columntipoReporte = base.Columns["tipoReporte"];
             }
             
@@ -771,7 +771,7 @@ namespace Orkidea.SchoolPanel.WebFront.DsReporting {
             private void InitClass() {
                 this.columncolegio = new global::System.Data.DataColumn("colegio", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columncolegio);
-                this.columnsede = new global::System.Data.DataColumn("sede", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnsede = new global::System.Data.DataColumn("sedeActual", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnsede);
                 this.columnperiodo = new global::System.Data.DataColumn("periodo", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnperiodo);
@@ -825,7 +825,7 @@ namespace Orkidea.SchoolPanel.WebFront.DsReporting {
                 base.Columns.Add(this.columnmat20);
                 this.columntotal = new global::System.Data.DataColumn("total", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntotal);
-                this.columnjornada = new global::System.Data.DataColumn("jornada", typeof(string), null, global::System.Data.MappingType.Element);
+                this.columnjornada = new global::System.Data.DataColumn("jornadaActual", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columnjornada);
                 this.columntipoReporte = new global::System.Data.DataColumn("tipoReporte", typeof(string), null, global::System.Data.MappingType.Element);
                 base.Columns.Add(this.columntipoReporte);
@@ -1022,7 +1022,7 @@ namespace Orkidea.SchoolPanel.WebFront.DsReporting {
                         return ((string)(this[this.tableRptTable.sedeColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'sede\' in table \'RptTable\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'sedeActual\' in table \'RptTable\' is DBNull.", e);
                     }
                 }
                 set {
@@ -1454,7 +1454,7 @@ namespace Orkidea.SchoolPanel.WebFront.DsReporting {
                         return ((string)(this[this.tableRptTable.jornadaColumn]));
                     }
                     catch (global::System.InvalidCastException e) {
-                        throw new global::System.Data.StrongTypingException("The value for column \'jornada\' in table \'RptTable\' is DBNull.", e);
+                        throw new global::System.Data.StrongTypingException("The value for column \'jornadaActual\' in table \'RptTable\' is DBNull.", e);
                     }
                 }
                 set {

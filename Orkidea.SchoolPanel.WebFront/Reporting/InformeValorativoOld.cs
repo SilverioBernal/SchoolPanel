@@ -16,14 +16,14 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
     using CrystalDecisions.CrystalReports.Engine;
     
     
-    public class InformeValorativo : ReportClass {
+    public class InformeValorativoOld : ReportClass {
         
-        public InformeValorativo() {
+        public InformeValorativoOld() {
         }
         
         public override string ResourceName {
             get {
-                return "InformeValorativo.rpt";
+                return "InformeValorativoOld.rpt";
             }
             set {
                 // Do nothing
@@ -41,7 +41,7 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
         
         public override string FullResourceName {
             get {
-                return "Orkidea.SchoolPanel.WebFront.Reporting.InformeValorativo.rpt";
+                return "Orkidea.SchoolPanel.WebFront.Reporting.InformeValorativoOld.rpt";
             }
             set {
                 // Do nothing
@@ -122,7 +122,7 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_año {
+        public CrystalDecisions.Shared.IParameterField Parameter_curso {
             get {
                 return this.DataDefinition.ParameterFields[0];
             }
@@ -130,33 +130,17 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
         
         [Browsable(false)]
         [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_colegio {
+        public CrystalDecisions.Shared.IParameterField Parameter_periodo {
             get {
                 return this.DataDefinition.ParameterFields[1];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_cursos {
-            get {
-                return this.DataDefinition.ParameterFields[2];
-            }
-        }
-        
-        [Browsable(false)]
-        [DesignerSerializationVisibilityAttribute(System.ComponentModel.DesignerSerializationVisibility.Hidden)]
-        public CrystalDecisions.Shared.IParameterField Parameter_folio {
-            get {
-                return this.DataDefinition.ParameterFields[3];
             }
         }
     }
     
     [System.Drawing.ToolboxBitmapAttribute(typeof(CrystalDecisions.Shared.ExportOptions), "report.bmp")]
-    public class CachedInformeValorativo : Component, ICachedReport {
+    public class CachedInformeValorativoOld : Component, ICachedReport {
         
-        public CachedInformeValorativo() {
+        public CachedInformeValorativoOld() {
         }
         
         [Browsable(false)]
@@ -193,7 +177,7 @@ namespace Orkidea.SchoolPanel.WebFront.Reporting {
         }
         
         public virtual CrystalDecisions.CrystalReports.Engine.ReportDocument CreateReport() {
-            InformeValorativo rpt = new InformeValorativo();
+            InformeValorativoOld rpt = new InformeValorativoOld();
             rpt.Site = this.Site;
             return rpt;
         }

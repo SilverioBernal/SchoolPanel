@@ -487,6 +487,84 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             return Json(res, JsonRequestBehavior.AllowGet);
         }
 
+        public ActionResult finalAnnotation()
+        {
+            #region School identification
+            System.Security.Principal.IIdentity context = HttpContext.User.Identity;
+            int idColegio = 0;
+            int usuario = 0;
+
+            if (context.IsAuthenticated)
+            {
+                System.Web.Security.FormsIdentity ci = (System.Web.Security.FormsIdentity)HttpContext.User.Identity;
+                string[] userRole = ci.Ticket.UserData.Split('|');
+                usuario = int.Parse(userRole[0]);
+                idColegio = int.Parse(userRole[2]);
+            }
+
+            School school = new School() { id = idColegio };
+
+            #endregion
+            ViewBag.idColegio = school.id;
+
+            return View();
+        }
+        public ActionResult finalCourseAnnotation(int id)
+        {
+            CourseStudentBiz courseStudentBiz = new CourseStudentBiz();
+            List<CourseStudent> lsCourseStudent = courseStudentBiz.GetCourseStudentList(new Course() { id = id });
+            List<vmCourseStudent> lsCourseFinalAnnotations = new List<vmCourseStudent>();
+
+            PersonBiz personBiz = new PersonBiz();
+            List<Person> lsPerson = personBiz.GetPersonList(new Course() { id = id }, 5);
+
+            foreach (CourseStudent item in lsCourseStudent)
+            {
+                Person currentStudent = lsPerson.Where(x => x.id.Equals(item.idEstudiante)).FirstOrDefault();
+                if (currentStudent != null)
+                {
+                    string nombreAlumno = currentStudent.primerApellido + " " + (string.IsNullOrEmpty(currentStudent.segundoApellido) ? "" : currentStudent.segundoApellido + " ") +
+                            currentStudent.primerNombre + (string.IsNullOrEmpty(currentStudent.segundoNombre) ? "" : " " + currentStudent.segundoNombre);
+
+                    lsCourseFinalAnnotations.Add(new vmCourseStudent() { idEstudiante = item.idEstudiante, estudiante = nombreAlumno });
+                }
+            }
+
+            ViewBag.idCurso = id;
+
+            return View(lsCourseFinalAnnotations);
+        }
+
+        public JsonResult SavefinalCourseAnnotation(List<vmCourseStudent> lsFinalNotes)
+        {
+            CourseStudentBiz courseStudentBiz = new CourseStudentBiz();
+            string res = "";
+
+            if (lsFinalNotes.Count > 0)
+            {
+                int curso = lsFinalNotes[0].idCurso;
+                List<CourseStudent> lsCourseStudent = courseStudentBiz.GetCourseStudentList(new Course() { id = curso });
+
+                try
+                {
+                    foreach (vmCourseStudent item in lsFinalNotes)
+                    {
+                        CourseStudent student = lsCourseStudent.Where(x => x.idEstudiante.Equals(item.idEstudiante)).First();
+
+                        student.comentariosFinales = item.documento;
+                        courseStudentBiz.SaveCourseStudent(student);
+                    }
+
+                    res = "OK";
+                }
+                catch (Exception)
+                {
+                    res = "Error, verificar informacion";
+                }
+            }
+
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
 
         /******Reporting*******/
         [Authorize]
@@ -1399,10 +1477,12 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
         {
             try
             {
-                string[] parametros = id.Split('|');
+                string[] parametros = id.Split('~');
 
-                int curso = int.Parse(parametros[0]);
-                int idPeriodo = int.Parse(parametros[1]);
+                int colegio = int.Parse(parametros[0]);
+                int año = int.Parse(parametros[1]);
+                string cursos = parametros[2];
+                string folio = parametros[3];
 
                 string oConnStr = ConfigurationManager.ConnectionStrings["SchoolPanelADO"].ToString();
                 string rutaRpt = Server.MapPath("~/Reporting/InformeValorativo.rpt");
@@ -1417,12 +1497,20 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.Load(rutaRpt);
 
                 ParameterDiscreteValue cursoDiscreteValue = new ParameterDiscreteValue();
-                cursoDiscreteValue.Value = curso;
-                rpt.SetParameterValue("curso", cursoDiscreteValue);
+                cursoDiscreteValue.Value = colegio;
+                rpt.SetParameterValue("colegio", cursoDiscreteValue);
 
                 ParameterDiscreteValue peirodoDiscreteValue = new ParameterDiscreteValue();
-                peirodoDiscreteValue.Value = idPeriodo;
-                rpt.SetParameterValue("periodo", peirodoDiscreteValue);
+                peirodoDiscreteValue.Value = año;
+                rpt.SetParameterValue("año", peirodoDiscreteValue);
+
+                ParameterDiscreteValue cursosDiscreteValue = new ParameterDiscreteValue();
+                cursosDiscreteValue.Value = cursos;
+                rpt.SetParameterValue("cursos", cursosDiscreteValue);
+
+                ParameterDiscreteValue folioDiscreteValue = new ParameterDiscreteValue();
+                folioDiscreteValue.Value = folio;
+                rpt.SetParameterValue("folio", folioDiscreteValue);
 
                 CrystalDecisions.Shared.ConnectionInfo connectionInfo = new CrystalDecisions.Shared.ConnectionInfo();
                 connectionInfo.DatabaseName = oConnBuilder.InitialCatalog;
@@ -2242,6 +2330,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 string[] entrada = id.Split('|');
                 int idCurso = int.Parse(entrada[0]);
                 int idPeriodo = int.Parse(entrada[1]);
+                string idReporte = "3";
 
                 #region Instancias de negocio
                 CourseAsignatureBiz courseAsignatureBiz = new CourseAsignatureBiz();
@@ -2256,7 +2345,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 PlaceBiz placeBiz = new PlaceBiz();
                 #endregion
 
-                #region Colegio, curso, sede, jornada, niveles de valoracion
+                #region Colegio, curso, sedeActual, jornadaActual, niveles de valoracion
                 Course course = courseBiz.GetCoursebyKey(new Course() { id = idCurso });
                 School school = schoolBiz.GetSchoolbyKey(new School() { id = course.idColegio });
                 Place place = placeBiz.GetPlaceByKey(new Place() { id = course.idSede });
@@ -2290,7 +2379,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
 
                 #region Asignaturas/Areas de conocimiento del curso
                 List<Asignature> lsAsignature = asignatureBiz.GetAsignatureList(school);
-                List<CourseAsignature> lsCourseAsignature = courseAsignatureBiz.GetCourseAsignatureList(course).Where(x => x.idProfesor!=null).ToList();
+                List<CourseAsignature> lsCourseAsignature = courseAsignatureBiz.GetCourseAsignatureList(course).Where(x => x.idProfesor != null).ToList();
                 List<int> lsCourseAsignatureCode = lsCourseAsignature.Select(x => x.id).Distinct().ToList();
 
                 List<KnowledgeArea> lsKnowledgeArea = knowledgeAreaBiz.GetKnowledgeAreaList(school);
@@ -2319,6 +2408,8 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
 
                 //******** Titulos *********
 
+                idReporte = idReporte + "|" + numPeriodosPromediar.ToString();
+
                 DsCrossReports.RptTableRow titleRow = dsCrossReports.RptTable.NewRptTableRow();
 
                 #region Titulos estaticos
@@ -2331,6 +2422,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 titleRow.curso = course.Descripcion + " - " + course.ano;
                 titleRow.profesor = directorCurso;
                 titleRow.jornada = jornada;
+                titleRow.tipoReporte = idReporte;
                 #endregion
 
                 #region Titulos por Area de conocimiento
@@ -2414,7 +2506,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 foreach (int item in lsCourseStudentCode)
                 {
                     CourseStudent courseStudent = lsCourseSTudent.Where(x => x.id.Equals(item)).FirstOrDefault();
-                    Person student = lsStudents.Where(x => x.id.Equals(courseStudent.idEstudiante)).FirstOrDefault();                    
+                    Person student = lsStudents.Where(x => x.id.Equals(courseStudent.idEstudiante)).FirstOrDefault();
 
                     foreach (AcademicPeriod academicPeriod in lsAcademicPeriod)
                     {
@@ -2444,7 +2536,7 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                         {
                             comportamiento = 0;
                         }
-                            
+
 
                         for (int i = 0; i < lsCourseKnowledgeArea.Count(); i++)
                         {
@@ -2464,9 +2556,9 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                                 {
                                     CourseAsignature courseAsignatureArea = lsCourseAsignature.Where(x => x.idAsignatura.Equals(asignatura.id)).FirstOrDefault();
 
-                                    if (asignatura.ignorarEnPromedio == false)                                    
-                                        subtotalNota += lsStudenEvaluation.Where(x => x.idAsignatura.Equals(courseAsignatureArea.id)).Select(x => x.Nota).FirstOrDefault();                                        
-                                    
+                                    if (asignatura.ignorarEnPromedio == false)
+                                        subtotalNota += lsStudenEvaluation.Where(x => x.idAsignatura.Equals(courseAsignatureArea.id)).Select(x => x.Nota).FirstOrDefault();
+
                                     else
                                         subtotalNota = comportamiento;
 
@@ -2560,8 +2652,9 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                         detailRow.num = numEstudianteActual.ToString();
                         detailRow.total = TAP.ToString();
                         detailRow.periodo = academicPeriod.Descripcion;
+                        detailRow.tipoReporte = idReporte;
 
-                        dsCrossReports.RptTable.AddRptTableRow(detailRow);                         
+                        dsCrossReports.RptTable.AddRptTableRow(detailRow);
                     }
                     numEstudianteActual++;
                 }
@@ -2575,5 +2668,101 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 throw ex;
             }
         }
+
+        [Authorize]
+        public JsonResult GetPlaceCourses(int idColegio, int ano)
+        {
+            string res = "";
+
+            try
+            {
+                CourseBiz courseBiz = new CourseBiz();
+                List<Course> lstCourse = courseBiz.GetCourseList(new School() { id = idColegio }, ano);
+
+                PlaceBiz placeBiz = new PlaceBiz();
+                List<Place> lsPlaces = placeBiz.GetPlaceList(new School() { id = idColegio });
+                List<Place> lsPlacesCourse = new List<Place>();
+
+                foreach (var item in lstCourse)
+                {
+                    int sede = item.idSede;
+                    if (lsPlacesCourse.Where(x => x.id.Equals(sede)).Count() == 0)
+                        lsPlacesCourse.Add(lsPlaces.Where(x => x.id.Equals(sede)).First());
+                }
+
+                return Json(lsPlacesCourse, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                res = "Error";
+            }
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+
+        [Authorize]
+        public JsonResult GetCoursesByPlaceTime(int idColegio, int ano, string jornada, string sede)
+        {
+            string res = "";
+
+            try
+            {
+                CourseBiz courseBiz = new CourseBiz();
+                List<Course> lstCourse = courseBiz.GetCourseList(new School() { id = idColegio }, ano);
+                List<Course> lstCourseReturn = new List<Course>();
+
+                foreach (string sedeActual in sede.Split('|'))
+                {
+                    foreach (string jornadaActual in jornada.Split('|'))
+                    {
+                        int idSede = int.Parse(sedeActual);
+                        int idJornada = int.Parse(jornadaActual);
+                        try
+                        {
+                            lstCourseReturn.AddRange(lstCourse.Where(x => x.idSede.Equals(idSede) && x.idJornada.Equals(idJornada)).ToList());
+                        }
+                        catch { }
+                    }
+                }
+
+                return Json(lstCourseReturn, JsonRequestBehavior.AllowGet);
+            }
+            catch (Exception)
+            {
+                res = "Error";
+            }
+            return Json(res, JsonRequestBehavior.AllowGet);
+        }
+
+
+        //[Authorize]
+        //public JsonResult GetCoursesByPlaceTime(int idColegio, int ano, string jornada, string sede)
+        //{
+        //    string res = "";
+
+        //    try
+        //    {
+        //        CourseBiz courseBiz = new CourseBiz();
+        //        List<Course> lstCourse = courseBiz.GetCourseList(new School() { id = idColegio }, ano);
+        //        List<Course> lstCourseReturn = new List<Course>();
+
+        //        int idSede = int.Parse(sede);
+        //        int idJornada = int.Parse(jornada);
+
+        //        try
+        //        {
+        //            lstCourseReturn.AddRange(lstCourse.Where(x => x.idSede.Equals(idSede) && x.idJornada.Equals(idJornada)).ToList());
+        //        }
+        //        catch { }
+
+
+        //        return Json(lstCourseReturn, JsonRequestBehavior.AllowGet);
+        //    }
+        //    catch (Exception)
+        //    {
+        //        res = "Error";
+        //    }
+        //    return Json(res, JsonRequestBehavior.AllowGet);
+        //}
+
     }
 }

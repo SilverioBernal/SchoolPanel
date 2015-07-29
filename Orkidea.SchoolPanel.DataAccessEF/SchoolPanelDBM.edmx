@@ -64,6 +64,7 @@
           <Property Name="id" Type="int" StoreGeneratedPattern="Identity" Nullable="false" />
           <Property Name="idCurso" Type="int" Nullable="false" />
           <Property Name="idEstudiante" Type="int" Nullable="false" />
+          <Property Name="comentariosFinales" Type="varchar" MaxLength="500" />
         </EntityType>
         <EntityType Name="DiciplineEvaluation">
           <Key>
@@ -205,6 +206,7 @@
           <Property Name="textoCertificacion" Type="varchar" MaxLength="1000" />
           <Property Name="pesoAreaConocimiento" Type="bit" Nullable="false" />
           <Property Name="notaComportamientoLetras" Type="bit" Nullable="false" />
+          <Property Name="mostrarRectorBoletin" Type="bit" Nullable="false" />
         </EntityType>
         <EntityType Name="StudentAbsence">
           <Key>
@@ -257,6 +259,7 @@
           <Property Name="maximo" Type="decimal" Precision="18" Scale="2" Nullable="false" />
           <Property Name="noSupera" Type="bit" Nullable="false" />
           <Property Name="valorLetra" Type="varchar" MaxLength="1" />
+          <Property Name="descValorLetra" Type="varchar" MaxLength="50" />
         </EntityType>
         <Association Name="FK_AcademicPeriod_School">
           <End Role="School" Type="Self.School" Multiplicity="1" />
@@ -832,7 +835,6 @@
       <Schema Namespace="SchoolPanelModel" Alias="Self" p1:UseStrongSpatialTypes="false" xmlns:annotation="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns:p1="http://schemas.microsoft.com/ado/2009/02/edm/annotation" xmlns="http://schemas.microsoft.com/ado/2009/11/edm">
         <EntityContainer Name="SchoolPanelEntities" p1:LazyLoadingEnabled="true">
           <EntitySet Name="AcademicPeriods" EntityType="SchoolPanelModel.AcademicPeriod" />
-          <EntitySet Name="CourseStudents" EntityType="SchoolPanelModel.CourseStudent" />
           <EntitySet Name="Grades" EntityType="SchoolPanelModel.Grade" />
           <EntitySet Name="KnowledgeAreas" EntityType="SchoolPanelModel.KnowledgeArea" />
           <EntitySet Name="NewsAttachments" EntityType="SchoolPanelModel.NewsAttachment" />
@@ -843,10 +845,6 @@
           <EntitySet Name="TaskAttachments" EntityType="SchoolPanelModel.TaskAttachment" />
           <AssociationSet Name="FK_StudentAbsence_AcademicPeriod" Association="SchoolPanelModel.FK_StudentAbsence_AcademicPeriod">
             <End Role="AcademicPeriod" EntitySet="AcademicPeriods" />
-            <End Role="StudentAbsence" EntitySet="StudentAbsences" />
-          </AssociationSet>
-          <AssociationSet Name="FK_StudentAbsence_CourseStudent" Association="SchoolPanelModel.FK_StudentAbsence_CourseStudent">
-            <End Role="CourseStudent" EntitySet="CourseStudents" />
             <End Role="StudentAbsence" EntitySet="StudentAbsences" />
           </AssociationSet>
           <AssociationSet Name="FK_NewsAttachment_NewsPaper" Association="SchoolPanelModel.FK_NewsAttachment_NewsPaper">
@@ -867,10 +865,6 @@
             <End Role="Place" EntitySet="Places" />
             <End Role="Course" EntitySet="Courses" />
           </AssociationSet>
-          <AssociationSet Name="FK_CourseStudent_Course" Association="SchoolPanelModel.FK_CourseStudent_Course">
-            <End Role="Course" EntitySet="Courses" />
-            <End Role="CourseStudent" EntitySet="CourseStudents" />
-          </AssociationSet>
           <AssociationSet Name="FK_CourseTeacher_Course" Association="SchoolPanelModel.FK_CourseTeacher_Course">
             <End Role="Course" EntitySet="Courses" />
             <End Role="CourseAsignature" EntitySet="CourseAsignatures" />
@@ -888,10 +882,6 @@
           <AssociationSet Name="FK_CourseAsignature_Person" Association="SchoolPanelModel.FK_CourseAsignature_Person">
             <End Role="Person" EntitySet="Persons" />
             <End Role="CourseAsignature" EntitySet="CourseAsignatures" />
-          </AssociationSet>
-          <AssociationSet Name="FK_CourseStudent_Person" Association="SchoolPanelModel.FK_CourseStudent_Person">
-            <End Role="Person" EntitySet="Persons" />
-            <End Role="CourseStudent" EntitySet="CourseStudents" />
           </AssociationSet>
           <AssociationSet Name="FK_Person_Place" Association="SchoolPanelModel.FK_Person_Place">
             <End Role="Place" EntitySet="Places" />
@@ -913,10 +903,6 @@
           </AssociationSet>
           <AssociationSet Name="FK_Evaluation_CourseAsignature" Association="SchoolPanelModel.FK_Evaluation_CourseAsignature">
             <End Role="CourseAsignature" EntitySet="CourseAsignatures" />
-            <End Role="Evaluation" EntitySet="Evaluations" />
-          </AssociationSet>
-          <AssociationSet Name="FK_Evaluation_CourseStudent" Association="SchoolPanelModel.FK_Evaluation_CourseStudent">
-            <End Role="CourseStudent" EntitySet="CourseStudents" />
             <End Role="Evaluation" EntitySet="Evaluations" />
           </AssociationSet>
           <AssociationSet Name="FK_Evaluation_EvaluationNote" Association="SchoolPanelModel.FK_Evaluation_EvaluationNote">
@@ -951,7 +937,6 @@
             <End Role="Asignature" EntitySet="Asignatures" />
             <End Role="CourseAsignature" EntitySet="CourseAsignatures" />
           </AssociationSet>
-          <EntitySet Name="ValuationLevels" EntityType="SchoolPanelModel.ValuationLevel" />
           <EntitySet Name="Schools" EntityType="SchoolPanelModel.School" />
           <AssociationSet Name="FK_AcademicPeriod_School" Association="SchoolPanelModel.FK_AcademicPeriod_School">
             <End Role="School" EntitySet="Schools" />
@@ -985,9 +970,27 @@
             <End Role="School" EntitySet="Schools" />
             <End Role="Place" EntitySet="Places" />
           </AssociationSet>
+          <EntitySet Name="ValuationLevels" EntityType="SchoolPanelModel.ValuationLevel" />
           <AssociationSet Name="FK_ValuationLevel_School" Association="SchoolPanelModel.FK_ValuationLevel_School">
             <End Role="School" EntitySet="Schools" />
             <End Role="ValuationLevel" EntitySet="ValuationLevels" />
+          </AssociationSet>
+          <EntitySet Name="CourseStudents" EntityType="SchoolPanelModel.CourseStudent" />
+          <AssociationSet Name="FK_CourseStudent_Course" Association="SchoolPanelModel.FK_CourseStudent_Course">
+            <End Role="Course" EntitySet="Courses" />
+            <End Role="CourseStudent" EntitySet="CourseStudents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_CourseStudent_Person" Association="SchoolPanelModel.FK_CourseStudent_Person">
+            <End Role="Person" EntitySet="Persons" />
+            <End Role="CourseStudent" EntitySet="CourseStudents" />
+          </AssociationSet>
+          <AssociationSet Name="FK_Evaluation_CourseStudent" Association="SchoolPanelModel.FK_Evaluation_CourseStudent">
+            <End Role="CourseStudent" EntitySet="CourseStudents" />
+            <End Role="Evaluation" EntitySet="Evaluations" />
+          </AssociationSet>
+          <AssociationSet Name="FK_StudentAbsence_CourseStudent" Association="SchoolPanelModel.FK_StudentAbsence_CourseStudent">
+            <End Role="CourseStudent" EntitySet="CourseStudents" />
+            <End Role="StudentAbsence" EntitySet="StudentAbsences" />
           </AssociationSet>
           </EntityContainer>
         <EntityType Name="AcademicPeriod">
@@ -1001,18 +1004,6 @@
           <NavigationProperty Name="StudentAbsences" Relationship="SchoolPanelModel.FK_StudentAbsence_AcademicPeriod" FromRole="AcademicPeriod" ToRole="StudentAbsence" />
           <NavigationProperty Name="Evaluations" Relationship="SchoolPanelModel.FK_Evaluation_AcademicPeriod" FromRole="AcademicPeriod" ToRole="Evaluation" />
           <NavigationProperty Name="School" Relationship="SchoolPanelModel.FK_AcademicPeriod_School" FromRole="AcademicPeriod" ToRole="School" />
-        </EntityType>
-        <EntityType Name="CourseStudent">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Type="Int32" Name="id" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Type="Int32" Name="idCurso" Nullable="false" />
-          <Property Type="Int32" Name="idEstudiante" Nullable="false" />
-          <NavigationProperty Name="StudentAbsences" Relationship="SchoolPanelModel.FK_StudentAbsence_CourseStudent" FromRole="CourseStudent" ToRole="StudentAbsence" />
-          <NavigationProperty Name="Course" Relationship="SchoolPanelModel.FK_CourseStudent_Course" FromRole="CourseStudent" ToRole="Course" />
-          <NavigationProperty Name="Person" Relationship="SchoolPanelModel.FK_CourseStudent_Person" FromRole="CourseStudent" ToRole="Person" />
-          <NavigationProperty Name="Evaluations" Relationship="SchoolPanelModel.FK_Evaluation_CourseStudent" FromRole="CourseStudent" ToRole="Evaluation" />
         </EntityType>
         <EntityType Name="Grade">
           <Key>
@@ -1091,8 +1082,8 @@
           <Property Type="Int32" Name="idPeriodoAcademico" Nullable="false" />
           <Property Type="DateTime" Name="fecha" Nullable="false" Precision="0" />
           <NavigationProperty Name="AcademicPeriod" Relationship="SchoolPanelModel.FK_StudentAbsence_AcademicPeriod" FromRole="StudentAbsence" ToRole="AcademicPeriod" />
-          <NavigationProperty Name="CourseStudent" Relationship="SchoolPanelModel.FK_StudentAbsence_CourseStudent" FromRole="StudentAbsence" ToRole="CourseStudent" />
           <NavigationProperty Name="CourseAsignature" Relationship="SchoolPanelModel.FK_StudentAbsence_CourseAsignature" FromRole="StudentAbsence" ToRole="CourseAsignature" />
+          <NavigationProperty Name="CourseStudent" Relationship="SchoolPanelModel.FK_StudentAbsence_CourseStudent" FromRole="StudentAbsence" ToRole="CourseStudent" />
         </EntityType>
         <EntityType Name="TaskAttachment">
           <Key>
@@ -1112,18 +1103,6 @@
             </Principal>
             <Dependent Role="StudentAbsence">
               <PropertyRef Name="idPeriodoAcademico" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_StudentAbsence_CourseStudent">
-          <End Type="SchoolPanelModel.CourseStudent" Role="CourseStudent" Multiplicity="1" />
-          <End Type="SchoolPanelModel.StudentAbsence" Role="StudentAbsence" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CourseStudent">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="StudentAbsence">
-              <PropertyRef Name="idEstudiante" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1181,10 +1160,10 @@
           <Property Type="Boolean" Name="finalizado" Nullable="false" />
           <NavigationProperty Name="Grade" Relationship="SchoolPanelModel.FK_Course_Grade" FromRole="Course" ToRole="Grade" />
           <NavigationProperty Name="Place" Relationship="SchoolPanelModel.FK_Course_Place" FromRole="Course" ToRole="Place" />
-          <NavigationProperty Name="CourseStudents" Relationship="SchoolPanelModel.FK_CourseStudent_Course" FromRole="Course" ToRole="CourseStudent" />
           <NavigationProperty Name="CourseAsignatures" Relationship="SchoolPanelModel.FK_CourseTeacher_Course" FromRole="Course" ToRole="CourseAsignature" />
           <NavigationProperty Name="Person" Relationship="SchoolPanelModel.FK_Course_Person" FromRole="Course" ToRole="Person" />
           <NavigationProperty Name="School" Relationship="SchoolPanelModel.FK_Course_School" FromRole="Course" ToRole="School" />
+          <NavigationProperty Name="CourseStudents" Relationship="SchoolPanelModel.FK_CourseStudent_Course" FromRole="Course" ToRole="CourseStudent" />
         </EntityType>
         <Association Name="FK_Course_Grade">
           <End Type="SchoolPanelModel.Grade" Role="Grade" Multiplicity="1" />
@@ -1207,18 +1186,6 @@
             </Principal>
             <Dependent Role="Course">
               <PropertyRef Name="idSede" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CourseStudent_Course">
-          <End Type="SchoolPanelModel.Course" Role="Course" Multiplicity="1" />
-          <End Type="SchoolPanelModel.CourseStudent" Role="CourseStudent" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Course">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="CourseStudent">
-              <PropertyRef Name="idCurso" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1303,13 +1270,13 @@
           <Property Type="String" Name="telefonoOtroContacto" MaxLength="50" FixedLength="false" Unicode="false" />
           <Property Type="Boolean" Name="retirado" Nullable="false" />
           <NavigationProperty Name="CourseAsignatures" Relationship="SchoolPanelModel.FK_CourseAsignature_Person" FromRole="Person" ToRole="CourseAsignature" />
-          <NavigationProperty Name="CourseStudents" Relationship="SchoolPanelModel.FK_CourseStudent_Person" FromRole="Person" ToRole="CourseStudent" />
           <NavigationProperty Name="Place" Relationship="SchoolPanelModel.FK_Person_Place" FromRole="Person" ToRole="Place" />
           <NavigationProperty Name="PersonBitacores" Relationship="SchoolPanelModel.FK_PersonBitacore_Person" FromRole="Person" ToRole="PersonBitacore" />
           <NavigationProperty Name="Courses" Relationship="SchoolPanelModel.FK_Course_Person" FromRole="Person" ToRole="Course" />
           <NavigationProperty Name="StudentLogs" Relationship="SchoolPanelModel.FK_StudentLog_Person" FromRole="Person" ToRole="StudentLog" />
           <NavigationProperty Name="StudentLogs1" Relationship="SchoolPanelModel.FK_StudentLog_Person1" FromRole="Person" ToRole="StudentLog" />
           <NavigationProperty Name="School" Relationship="SchoolPanelModel.FK_Student_School" FromRole="Person" ToRole="School" />
+          <NavigationProperty Name="CourseStudents" Relationship="SchoolPanelModel.FK_CourseStudent_Person" FromRole="Person" ToRole="CourseStudent" />
         </EntityType>
         <Association Name="FK_CourseAsignature_Person">
           <End Type="SchoolPanelModel.Person" Role="Person" Multiplicity="0..1" />
@@ -1320,18 +1287,6 @@
             </Principal>
             <Dependent Role="CourseAsignature">
               <PropertyRef Name="idProfesor" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_CourseStudent_Person">
-          <End Type="SchoolPanelModel.Person" Role="Person" Multiplicity="1" />
-          <End Type="SchoolPanelModel.CourseStudent" Role="CourseStudent" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="Person">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="CourseStudent">
-              <PropertyRef Name="idEstudiante" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1398,9 +1353,9 @@
           <Property Type="Int32" Name="numeroFallas" />
           <NavigationProperty Name="AcademicPeriod" Relationship="SchoolPanelModel.FK_Evaluation_AcademicPeriod" FromRole="Evaluation" ToRole="AcademicPeriod" />
           <NavigationProperty Name="CourseAsignature" Relationship="SchoolPanelModel.FK_Evaluation_CourseAsignature" FromRole="Evaluation" ToRole="CourseAsignature" />
-          <NavigationProperty Name="CourseStudent" Relationship="SchoolPanelModel.FK_Evaluation_CourseStudent" FromRole="Evaluation" ToRole="CourseStudent" />
           <NavigationProperty Name="EvaluationNote" Relationship="SchoolPanelModel.FK_Evaluation_EvaluationNote" FromRole="Evaluation" ToRole="EvaluationNote" />
           <NavigationProperty Name="EvaluationNote1" Relationship="SchoolPanelModel.FK_Evaluation_EvaluationNote1" FromRole="Evaluation" ToRole="EvaluationNote" />
+          <NavigationProperty Name="CourseStudent" Relationship="SchoolPanelModel.FK_Evaluation_CourseStudent" FromRole="Evaluation" ToRole="CourseStudent" />
         </EntityType>
         <Association Name="FK_Evaluation_AcademicPeriod">
           <End Type="SchoolPanelModel.AcademicPeriod" Role="AcademicPeriod" Multiplicity="1" />
@@ -1423,18 +1378,6 @@
             </Principal>
             <Dependent Role="Evaluation">
               <PropertyRef Name="idAsignatura" />
-            </Dependent>
-          </ReferentialConstraint>
-        </Association>
-        <Association Name="FK_Evaluation_CourseStudent">
-          <End Type="SchoolPanelModel.CourseStudent" Role="CourseStudent" Multiplicity="1" />
-          <End Type="SchoolPanelModel.Evaluation" Role="Evaluation" Multiplicity="*" />
-          <ReferentialConstraint>
-            <Principal Role="CourseStudent">
-              <PropertyRef Name="id" />
-            </Principal>
-            <Dependent Role="Evaluation">
-              <PropertyRef Name="idEstudiante" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1568,19 +1511,6 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
-        <EntityType Name="ValuationLevel">
-          <Key>
-            <PropertyRef Name="id" />
-          </Key>
-          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
-          <Property Name="idColegio" Type="Int32" Nullable="false" />
-          <Property Name="descripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
-          <Property Name="minimo" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="maximo" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
-          <Property Name="noSupera" Type="Boolean" Nullable="false" />
-          <Property Name="valorLetra" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
-          <NavigationProperty Name="School" Relationship="SchoolPanelModel.FK_ValuationLevel_School" FromRole="ValuationLevel" ToRole="School" />
-        </EntityType>
         <EntityType Name="School">
           <Key>
             <PropertyRef Name="id" />
@@ -1609,6 +1539,7 @@
           <NavigationProperty Name="NewsPapers" Relationship="SchoolPanelModel.FK_NewsPaper_School" FromRole="School" ToRole="NewsPaper" />
           <NavigationProperty Name="People" Relationship="SchoolPanelModel.FK_Student_School" FromRole="School" ToRole="Person" />
           <NavigationProperty Name="Places" Relationship="SchoolPanelModel.FK_Place_School" FromRole="School" ToRole="Place" />
+          <Property Name="mostrarRectorBoletin" Type="Boolean" Nullable="false" />
           <NavigationProperty Name="ValuationLevels" Relationship="SchoolPanelModel.FK_ValuationLevel_School" FromRole="School" ToRole="ValuationLevel" />
         </EntityType>
         <Association Name="FK_AcademicPeriod_School">
@@ -1707,6 +1638,20 @@
             </Dependent>
           </ReferentialConstraint>
         </Association>
+        <EntityType Name="ValuationLevel">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idColegio" Type="Int32" Nullable="false" />
+          <Property Name="descripcion" Type="String" Nullable="false" MaxLength="50" FixedLength="false" Unicode="false" />
+          <Property Name="minimo" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="maximo" Type="Decimal" Nullable="false" Precision="18" Scale="2" />
+          <Property Name="noSupera" Type="Boolean" Nullable="false" />
+          <Property Name="valorLetra" Type="String" MaxLength="1" FixedLength="false" Unicode="false" />
+          <Property Name="descValorLetra" Type="String" MaxLength="50" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="School" Relationship="SchoolPanelModel.FK_ValuationLevel_School" FromRole="ValuationLevel" ToRole="School" />
+        </EntityType>
         <Association Name="FK_ValuationLevel_School">
           <End Type="SchoolPanelModel.School" Role="School" Multiplicity="1" />
           <End Type="SchoolPanelModel.ValuationLevel" Role="ValuationLevel" Multiplicity="*" />
@@ -1716,6 +1661,67 @@
             </Principal>
             <Dependent Role="ValuationLevel">
               <PropertyRef Name="idColegio" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <EntityType Name="CourseStudent">
+          <Key>
+            <PropertyRef Name="id" />
+          </Key>
+          <Property Name="id" Type="Int32" Nullable="false" annotation:StoreGeneratedPattern="Identity" />
+          <Property Name="idCurso" Type="Int32" Nullable="false" />
+          <Property Name="idEstudiante" Type="Int32" Nullable="false" />
+          <Property Name="comentariosFinales" Type="String" MaxLength="500" FixedLength="false" Unicode="false" />
+          <NavigationProperty Name="Course" Relationship="SchoolPanelModel.FK_CourseStudent_Course" FromRole="CourseStudent" ToRole="Course" />
+          <NavigationProperty Name="Person" Relationship="SchoolPanelModel.FK_CourseStudent_Person" FromRole="CourseStudent" ToRole="Person" />
+          <NavigationProperty Name="Evaluations" Relationship="SchoolPanelModel.FK_Evaluation_CourseStudent" FromRole="CourseStudent" ToRole="Evaluation" />
+          <NavigationProperty Name="StudentAbsences" Relationship="SchoolPanelModel.FK_StudentAbsence_CourseStudent" FromRole="CourseStudent" ToRole="StudentAbsence" />
+        </EntityType>
+        <Association Name="FK_CourseStudent_Course">
+          <End Type="SchoolPanelModel.Course" Role="Course" Multiplicity="1" />
+          <End Type="SchoolPanelModel.CourseStudent" Role="CourseStudent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Course">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="CourseStudent">
+              <PropertyRef Name="idCurso" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_CourseStudent_Person">
+          <End Type="SchoolPanelModel.Person" Role="Person" Multiplicity="1" />
+          <End Type="SchoolPanelModel.CourseStudent" Role="CourseStudent" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="Person">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="CourseStudent">
+              <PropertyRef Name="idEstudiante" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_Evaluation_CourseStudent">
+          <End Type="SchoolPanelModel.CourseStudent" Role="CourseStudent" Multiplicity="1" />
+          <End Type="SchoolPanelModel.Evaluation" Role="Evaluation" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CourseStudent">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="Evaluation">
+              <PropertyRef Name="idEstudiante" />
+            </Dependent>
+          </ReferentialConstraint>
+        </Association>
+        <Association Name="FK_StudentAbsence_CourseStudent">
+          <End Type="SchoolPanelModel.CourseStudent" Role="CourseStudent" Multiplicity="1" />
+          <End Type="SchoolPanelModel.StudentAbsence" Role="StudentAbsence" Multiplicity="*" />
+          <ReferentialConstraint>
+            <Principal Role="CourseStudent">
+              <PropertyRef Name="id" />
+            </Principal>
+            <Dependent Role="StudentAbsence">
+              <PropertyRef Name="idEstudiante" />
             </Dependent>
           </ReferentialConstraint>
         </Association>
@@ -1731,15 +1737,6 @@
                 <ScalarProperty Name="valorPorcentual" ColumnName="valorPorcentual" />
                 <ScalarProperty Name="Descripcion" ColumnName="Descripcion" />
                 <ScalarProperty Name="idColegio" ColumnName="idColegio" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
-          <EntitySetMapping Name="CourseStudents">
-            <EntityTypeMapping TypeName="SchoolPanelModel.CourseStudent">
-              <MappingFragment StoreEntitySet="CourseStudent">
-                <ScalarProperty Name="idEstudiante" ColumnName="idEstudiante" />
-                <ScalarProperty Name="idCurso" ColumnName="idCurso" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>
@@ -1960,22 +1957,10 @@
               </MappingFragment>
             </EntityTypeMapping>
           </EntitySetMapping>
-          <EntitySetMapping Name="ValuationLevels">
-            <EntityTypeMapping TypeName="SchoolPanelModel.ValuationLevel">
-              <MappingFragment StoreEntitySet="ValuationLevel">
-                <ScalarProperty Name="valorLetra" ColumnName="valorLetra" />
-                <ScalarProperty Name="noSupera" ColumnName="noSupera" />
-                <ScalarProperty Name="maximo" ColumnName="maximo" />
-                <ScalarProperty Name="minimo" ColumnName="minimo" />
-                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
-                <ScalarProperty Name="idColegio" ColumnName="idColegio" />
-                <ScalarProperty Name="id" ColumnName="id" />
-              </MappingFragment>
-            </EntityTypeMapping>
-          </EntitySetMapping>
           <EntitySetMapping Name="Schools">
             <EntityTypeMapping TypeName="SchoolPanelModel.School">
               <MappingFragment StoreEntitySet="School">
+                <ScalarProperty Name="mostrarRectorBoletin" ColumnName="mostrarRectorBoletin" />
                 <ScalarProperty Name="notaComportamientoLetras" ColumnName="notaComportamientoLetras" />
                 <ScalarProperty Name="pesoAreaConocimiento" ColumnName="pesoAreaConocimiento" />
                 <ScalarProperty Name="textoCertificacion" ColumnName="textoCertificacion" />
@@ -1991,6 +1976,30 @@
                 <ScalarProperty Name="especialidad" ColumnName="especialidad" />
                 <ScalarProperty Name="nit" ColumnName="nit" />
                 <ScalarProperty Name="nombreColegio" ColumnName="nombreColegio" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="ValuationLevels">
+            <EntityTypeMapping TypeName="SchoolPanelModel.ValuationLevel">
+              <MappingFragment StoreEntitySet="ValuationLevel">
+                <ScalarProperty Name="descValorLetra" ColumnName="descValorLetra" />
+                <ScalarProperty Name="valorLetra" ColumnName="valorLetra" />
+                <ScalarProperty Name="noSupera" ColumnName="noSupera" />
+                <ScalarProperty Name="maximo" ColumnName="maximo" />
+                <ScalarProperty Name="minimo" ColumnName="minimo" />
+                <ScalarProperty Name="descripcion" ColumnName="descripcion" />
+                <ScalarProperty Name="idColegio" ColumnName="idColegio" />
+                <ScalarProperty Name="id" ColumnName="id" />
+              </MappingFragment>
+            </EntityTypeMapping>
+          </EntitySetMapping>
+          <EntitySetMapping Name="CourseStudents">
+            <EntityTypeMapping TypeName="SchoolPanelModel.CourseStudent">
+              <MappingFragment StoreEntitySet="CourseStudent">
+                <ScalarProperty Name="comentariosFinales" ColumnName="comentariosFinales" />
+                <ScalarProperty Name="idEstudiante" ColumnName="idEstudiante" />
+                <ScalarProperty Name="idCurso" ColumnName="idCurso" />
                 <ScalarProperty Name="id" ColumnName="id" />
               </MappingFragment>
             </EntityTypeMapping>

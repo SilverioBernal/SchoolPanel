@@ -27,7 +27,6 @@ namespace Orkidea.SchoolPanel.DataAccessEF
         }
     
         public DbSet<AcademicPeriod> AcademicPeriods { get; set; }
-        public DbSet<CourseStudent> CourseStudents { get; set; }
         public DbSet<Grade> Grades { get; set; }
         public DbSet<KnowledgeArea> KnowledgeAreas { get; set; }
         public DbSet<NewsAttachment> NewsAttachments { get; set; }
@@ -46,7 +45,8 @@ namespace Orkidea.SchoolPanel.DataAccessEF
         public DbSet<ClosedAcademicPeriod> ClosedAcademicPeriods { get; set; }
         public DbSet<DiciplineEvaluation> DiciplineEvaluations { get; set; }
         public DbSet<Asignature> Asignatures { get; set; }
-        public DbSet<ValuationLevel> ValuationLevels { get; set; }
         public DbSet<School> Schools { get; set; }
+        public DbSet<ValuationLevel> ValuationLevels { get; set; }
+        public DbSet<CourseStudent> CourseStudents { get; set; }
     }
 }

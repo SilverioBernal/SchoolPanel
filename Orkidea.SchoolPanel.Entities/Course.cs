@@ -16,8 +16,8 @@ namespace Orkidea.SchoolPanel.Entities
     {
         public Course()
         {
-            this.CourseStudents = new HashSet<CourseStudent>();
             this.CourseAsignatures = new HashSet<CourseAsignature>();
+            this.CourseStudents = new HashSet<CourseStudent>();
         }
     
         public int id { get; set; }
@@ -32,9 +32,9 @@ namespace Orkidea.SchoolPanel.Entities
     
         public virtual Grade Grade { get; set; }
         public virtual Place Place { get; set; }
-        public virtual ICollection<CourseStudent> CourseStudents { get; set; }
         public virtual ICollection<CourseAsignature> CourseAsignatures { get; set; }
         public virtual Person Person { get; set; }
         public virtual School School { get; set; }
+        public virtual ICollection<CourseStudent> CourseStudents { get; set; }
     }
 }

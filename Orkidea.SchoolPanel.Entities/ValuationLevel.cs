@@ -21,6 +21,7 @@ namespace Orkidea.SchoolPanel.Entities
         public decimal maximo { get; set; }
         public bool noSupera { get; set; }
         public string valorLetra { get; set; }
+        public string descValorLetra { get; set; }
     
         public virtual School School { get; set; }
     }

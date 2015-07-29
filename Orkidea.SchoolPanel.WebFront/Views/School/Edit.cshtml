@@ -77,14 +77,18 @@
             </div>            
         </div>
         <div class="row-fluid">
-            <div class="span6">
+            <div class="span4">
                 <label>Nota comportamiento en letras</label>
                 @Html.CheckBoxFor(c => c.notaComportamientoLetras)
             </div>
-            <div class="span6">
+            <div class="span4">
                 <label>Area de conocimiento basada en porcentaje</label>
                 @Html.CheckBoxFor(c => c.pesoAreaConocimiento)
             </div>
+            <div class="span4">
+                <label>Mostrar Rector en Boletín</label>
+                @Html.CheckBoxFor(c => c.mostrarRectorBoletin)
+            </div>   
         </div>
         <br />
         <p>

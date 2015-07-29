@@ -16,17 +16,18 @@ namespace Orkidea.SchoolPanel.Entities
     {
         public CourseStudent()
         {
-            this.StudentAbsences = new HashSet<StudentAbsence>();
             this.Evaluations = new HashSet<Evaluation>();
+            this.StudentAbsences = new HashSet<StudentAbsence>();
         }
     
         public int id { get; set; }
         public int idCurso { get; set; }
         public int idEstudiante { get; set; }
+        public string comentariosFinales { get; set; }
     
-        public virtual ICollection<StudentAbsence> StudentAbsences { get; set; }
         public virtual Course Course { get; set; }
         public virtual Person Person { get; set; }
         public virtual ICollection<Evaluation> Evaluations { get; set; }
+        public virtual ICollection<StudentAbsence> StudentAbsences { get; set; }
     }
 }
