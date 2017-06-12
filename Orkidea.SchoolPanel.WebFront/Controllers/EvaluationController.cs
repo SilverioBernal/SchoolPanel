@@ -1355,10 +1355,24 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
             #endregion
 
             CourseBiz courseBiz = new CourseBiz();
-            AcademicPeriodBiz academicPeriodBiz = new AcademicPeriodBiz();
+            PlaceBiz placesBiz = new PlaceBiz();
 
-            vmReporting reporting = new vmReporting();
-            reporting.lsCurso = courseBiz.GetCourseList(school).Where(x => !x.finalizado).OrderBy(x => x.Descripcion).ToList();
+            AcademicPeriodBiz academicPeriodBiz = new AcademicPeriodBiz();            
+
+            List<Course> cursos = courseBiz.GetCourseList(school).Where(x => !x.finalizado).OrderBy(x => x.Descripcion).ToList();
+            List<Place> sedes = placesBiz.GetPlaceList(school);
+
+            vmReporting reporting = new vmReporting();            
+
+            foreach (Course item in cursos)
+            {
+                int idSede = item.idSede;
+                string nombreSede = sedes.Where(x => x.id.Equals(idSede)).Select(x => x.descripcion).FirstOrDefault();
+
+                item.Descripcion = string.Format("{0} :: {1}", item.Descripcion, nombreSede);
+            }
+
+            reporting.lsCurso.AddRange(cursos);
 
             reporting.lsAdademicPeriod = academicPeriodBiz.GetAcademicPeriodList(school);
 
@@ -1701,14 +1715,14 @@ namespace Orkidea.SchoolPanel.WebFront.Controllers
                 rpt.SetDatabaseLogon(oConnBuilder.UserID, oConnBuilder.Password, oConnBuilder.DataSource, oConnBuilder.InitialCatalog);
 
 
-                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.PortableDocFormat))
+                using (Stream strMemory = rpt.ExportToStream(ExportFormatType.WordForWindows))
                 {
                     response = new byte[strMemory.Length];
 
                     strMemory.Read(response, 0, (int)strMemory.Length);
                 }
 
-                return new FileContentResult(response, "application/pdf");
+                return new FileContentResult(response, "application/word");
             }
             catch (Exception ex)
             {
